@@ -33,21 +33,17 @@ build-prod: swag ## Build the dev binary file
 
 swag: ### swag init
 	@echo "${RED}swag init"
-	@swag init -g pkg/httpserver/server.go
+	@swag init -g cmd/app/main.go
 .PHONY: swag
 
-run: ## Run the swag binary file
-	@echo "${GREEN}run the swag binary file"
-	@go mod tidy && go mod download && ./bin/among
+run: swag ## Run the swag binary file
+	@echo "${GREEN}run the main.go file"
+	@go mod tidy && go mod download && go run ./cmd/app/main.go
 .PHONY: run
 
 mock: ### run mockery
 	@mockery --all --keeptree --dir $(PWD)/internal --output $(PWD)/mocks --disable-version-string
 .PHONY: mock
-
-test:
-	@go test ./... -cover
-.PHONY: test
 
 compose-up: ### Run docker-compose
 	docker-compose up --build -d postgres rabbitmq && docker-compose logs -f

@@ -1,8 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
+	"log"
 )
 
 type Config struct {
@@ -39,20 +39,21 @@ type Mysql struct {
 
 var configTarget string = "dev"
 
-// New returns app config.
 func New() (*Config, error) {
 	cfg := &Config{}
 
 	viper.SetConfigName(configTarget) // name of config file (without extension)
 	viper.SetConfigType("yaml")       // REQUIRED if the config file does not have the extension in the name
 	viper.AddConfigPath("./config/")  // path to look for the config file in
-	err := viper.ReadInConfig()       // Find and read the config file
+
+	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {
-		return cfg, fmt.Errorf("fatal error config file: %w", err)
+		log.Fatalf("error read config file\n: %v", err)
 	}
+
 	err = viper.Unmarshal(cfg)
 	if err != nil {
-		return cfg, fmt.Errorf("fatal error config file: %w", err)
+		log.Fatalf("error unmarshal config file\n: %v", err)
 	}
 
 	return cfg, nil

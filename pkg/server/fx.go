@@ -12,10 +12,10 @@ import (
 
 func Invoke(lc fx.Lifecycle, g *gin.Engine, cfg *config.Config) {
 	lc.Append(fx.Hook{
-		OnStart: func(_ context.Context) error {
+		OnStart: func(ctx context.Context) error {
 			go func() {
 				if err := g.Run(cfg.HTTP.Port); !errors.Is(err, http.ErrServerClosed) {
-					log.Fatalf("error running server: %v", err)
+					log.Fatalf("error running server: %v\n", err)
 				}
 			}()
 			return nil
