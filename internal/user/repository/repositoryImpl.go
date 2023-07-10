@@ -1,23 +1,41 @@
 package repository
 
 import (
+	"cryptoChallenges/internal/user/entity"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"gorm.io/gorm"
 )
 
 type userRepository struct {
-	gorm *gorm.DB
-	sqlx *sqlx.DB
+	gormDB *gorm.DB
+	sqlxDB *sqlx.DB
 }
 
-func New(gorm *gorm.DB, sqlx *sqlx.DB) *userRepository {
+func New(gormDB *gorm.DB, sqlxDB *sqlx.DB) *userRepository {
 	return &userRepository{
-		gorm: gorm,
-		sqlx: sqlx,
+		gormDB: gormDB,
+		sqlxDB: sqlxDB,
 	}
 }
 
-func (u *userRepository) GetUsers() (string, error) {
-	//TODO implement me
-	panic("implement me")
+func (ur *userRepository) CreateUser(user *entity.User) (*entity.User, error) {
+	err := ur.gormDB.Create(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (ur *userRepository) ReadUser(id uuid.UUID) (entity.User, error) {
+	return entity.User{}, nil
+}
+
+func (ur *userRepository) UpdateUser(user *entity.User) (entity.User, error) {
+
+	return entity.User{}, nil
+}
+
+func (ur *userRepository) DeleteUser(id uuid.UUID) error {
+	return nil
 }
