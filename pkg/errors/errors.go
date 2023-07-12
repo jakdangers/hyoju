@@ -28,8 +28,6 @@ type Error struct {
 	Op   Op
 	Kind Kind
 	Err  error
-	// 디버그 태그 모드에서 활성화
-	stack
 }
 
 // 문자열을 이용한 에러 생성
@@ -40,7 +38,6 @@ type errorString struct {
 // Error 관련
 func (e *Error) Error() string {
 	b := new(bytes.Buffer)
-	e.printStack(b)
 	if e.Op != "" {
 		pad(b, ": ")
 		b.WriteString(string(e.Op))
@@ -98,9 +95,6 @@ func E(args ...interface{}) error {
 			return Errorf("unknown type %T, value %v in error call", arg, arg)
 		}
 	}
-
-	// 디버그 태그 모드에서 활성화
-	e.populateStack()
 
 	prev, ok := e.Err.(*Error)
 	if !ok {
@@ -180,6 +174,20 @@ func Match(err1, err2 error) bool {
 		}
 	}
 	return true
+}
+
+func Is(kind Kind, err error) bool {
+	e, ok := err.(*Error)
+	if !ok {
+		return false
+	}
+	if e.Kind != Other {
+		return e.Kind == kind
+	}
+	if e.Err != nil {
+		return Is(kind, e.Err)
+	}
+	return false
 }
 
 // errorString 관련
