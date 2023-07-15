@@ -1,5 +1,8 @@
 package service
 
+import "context"
+
 type UserService interface {
-	GetUsers() (string, error)
+	CreateUser(ctx context.Context, createUserRequest)
+	ReadUser(ctx context.Context) (string, error)
 }
