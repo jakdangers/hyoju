@@ -2,10 +2,12 @@ package controller
 
 import (
 	"cryptoChallenges/internal/user/service"
+	"cryptoChallenges/pkg/log"
 	"github.com/gin-gonic/gin"
 )
 
 type userController struct {
+	log     log.Logger
 	service service.UserService
 }
 

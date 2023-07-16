@@ -5,44 +5,50 @@ import (
 	"go.uber.org/zap"
 )
 
-type loggerWrapper struct {
-	defaultLogger *zap.Logger
-	sugarLogger   *zap.SugaredLogger
+type logger struct {
+	logger      *zap.Logger
+	sugarLogger *zap.SugaredLogger
 }
 
 type Logger interface {
 	Debug(msg string, fields ...interface{})
-	Info(msg string, fields map[string]interface{})
-	Warn(msg string, fields map[string]interface{})
-	Error(msg string, fields map[string]interface{})
-	Fatal(msg string, fields map[string]interface{})
+	Info(msg string, fields ...interface{})
+	Warn(msg string, fields ...interface{})
+	Error(msg string, fields ...interface{})
+	Fatal(msg string, fields ...interface{})
+	Sync()
 }
 
-var logger loggerWrapper
+var _ Logger = (*logger)(nil)
 
-var _ LoggerWrapper = (*loggerWrapper)(nil)
-
-func New(cfg *config.Config) *loggerWrapper {
+func New(cfg *config.Config) *logger {
 	newLogger, _ := zap.NewProduction()
-	logger = loggerWrapper{
-		defaultLogger: newLogger,
-		sugarLogger:   newLogger.Sugar(),
+	return &logger{
+		logger:      newLogger,
+		sugarLogger: newLogger.Sugar(),
 	}
-	return &logger
 }
 
-func (l *loggerWrapper) Debug(msg string, fields map[string]interface{}) {
-	l.defaultLogger.Debug(msg, zap.Any())
+func (l *logger) Debug(msg string, fields ...interface{}) {
+	l.logger.Debug(msg)
 }
 
-func (l *loggerWrapper) Info(msg string, fields map[string]interface{}) {
+func (l *logger) Info(msg string, fields ...interface{}) {
+	l.logger.Info(msg)
 }
 
-func (l *loggerWrapper) Warn(msg string, fields map[string]interface{}) {
+func (l *logger) Warn(msg string, fields ...interface{}) {
+	l.logger.Warn(msg)
 }
 
-func (l *loggerWrapper) Error(msg string, fields map[string]interface{}) {
+func (l *logger) Error(msg string, fields ...interface{}) {
+	l.logger.Error(msg)
 }
 
-func (l *loggerWrapper) Fatal(msg string, fields map[string]interface{}) {
+func (l *logger) Fatal(msg string, fields ...interface{}) {
+	l.logger.Fatal(msg)
+}
+
+func (l *logger) Sync() {
+	l.Sync()
 }

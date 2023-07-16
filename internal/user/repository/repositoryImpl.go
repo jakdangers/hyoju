@@ -21,6 +21,8 @@ func New(gormDB *gorm.DB, sqlxDB *sqlx.DB) *userRepository {
 	}
 }
 
+var _ UserRepository = (*userRepository)(nil)
+
 func (ur *userRepository) CreateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
 	const op errors.Op = "user/createUser"
 	err := ur.gormDB.WithContext(ctx).Create(&user).Error
@@ -30,13 +32,13 @@ func (ur *userRepository) CreateUser(ctx context.Context, user *entity.User) (*e
 	return user, nil
 }
 
-func (ur *userRepository) ReadUser(ctx context.Context, id uuid.UUID) (entity.User, error) {
-	return entity.User{}, nil
+func (ur *userRepository) ReadUser(ctx context.Context, id uuid.UUID) (*entity.User, error) {
+	return &entity.User{}, nil
 }
 
-func (ur *userRepository) UpdateUser(ctx context.Context, user *entity.User) (entity.User, error) {
+func (ur *userRepository) UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
 
-	return entity.User{}, nil
+	return &entity.User{}, nil
 }
 
 func (ur *userRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {

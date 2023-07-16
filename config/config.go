@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/spf13/viper"
+	"go.uber.org/fx"
 	"log"
 )
 
@@ -38,6 +39,8 @@ type Mysql struct {
 }
 
 var configTarget string = "dev"
+
+var Module = fx.Options(fx.Provide(New))
 
 func New() (*Config, error) {
 	cfg := &Config{}

@@ -3,10 +3,13 @@ package gorm
 import (
 	"cryptoChallenges/config"
 	"fmt"
+	"go.uber.org/fx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
 )
+
+var Module = fx.Options(fx.Provide(New))
 
 func New(cfg *config.Config) (*gorm.DB, error) {
 	datetimePrecision := 2

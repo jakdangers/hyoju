@@ -13,5 +13,6 @@ var Module = fx.Options(
 		fx.Annotate(service.New, fx.As(new(service.UserService))),
 		fx.Annotate(controller.New, fx.As(new(controller.UserController))),
 	),
-	fx.Invoke(controller.Routes),
 )
+
+var Invoke = controller.Routes

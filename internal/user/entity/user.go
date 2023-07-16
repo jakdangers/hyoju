@@ -1,11 +1,11 @@
 package entity
 
-import "cryptoChallenges/pkg/common"
+import "gorm.io/gorm"
 
 type User struct {
-	common.Model
+	gorm.Model
 	Name     string `db:"name"`
 	Email    string `db:"email"`
-	UserID   int64  `db:"user_id"`
+	UserID   string `db:"user_id"`
 	Password string `db:"password"`
 }

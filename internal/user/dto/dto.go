@@ -1,5 +1,4 @@
 package dto
 
-type UserDTO {
-
+type UserDTO struct {
 }
