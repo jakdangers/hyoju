@@ -1,7 +1,6 @@
 package log
 
 import (
-	"cryptoChallenges/config"
 	"go.uber.org/zap"
 )
 
@@ -21,7 +20,7 @@ type Logger interface {
 
 var _ Logger = (*logger)(nil)
 
-func New(cfg *config.Config) *logger {
+func New() *logger {
 	newLogger, _ := zap.NewProduction()
 	return &logger{
 		logger:      newLogger,

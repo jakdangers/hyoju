@@ -7,15 +7,26 @@ import (
 )
 
 type userController struct {
-	log     log.Logger
+	logger  log.Logger
 	service service.UserService
 }
 
-func New(service service.UserService) *userController {
-	return &userController{service: service}
+func New(service service.UserService, logger log.Logger) *userController {
+	return &userController{
+		logger:  logger,
+		service: service,
+	}
 }
 
-func (uc *userController) GetUsers(ctx *gin.Context) {
+var _ UserController = (*userController)(nil)
+
+func (uc *userController) CreateUser(ctx *gin.Context) {
+	ctx.JSON(200, gin.H{
+		"message": "pong",
+	})
+}
+
+func (uc *userController) GetUser(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{
 		"message": "pong",
 	})

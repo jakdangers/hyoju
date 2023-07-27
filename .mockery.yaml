@@ -1,0 +1,17 @@
+all: True
+quiet: False
+keeptree: False
+disable-version-string: True
+with-expecter: True
+mockname: "{{.InterfaceName}}"
+filename: "{{.MockName}}.go"
+outpkg: mocks
+dir: ./mocks
+packages:
+  cryptoChallenges/internal:
+    config:
+      recursive: true
+  cryptoChallenges/pkg/log:
+    config:
+      recursive: true
+

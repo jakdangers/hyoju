@@ -5,9 +5,10 @@ import (
 )
 
 type UserController interface {
-	GetUsers(ctx *gin.Context)
+	GetUser(ctx *gin.Context)
+	CreateUser(ctx *gin.Context)
 }
 
 func Routes(e *gin.Engine, controller UserController) {
-	e.GET("/users", controller.GetUsers)
+	e.GET("/users", controller.GetUser)
 }

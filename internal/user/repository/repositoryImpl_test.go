@@ -53,13 +53,15 @@ func (us *userRepositoryTestSuite) SetupSuite() {
 }
 
 func (us *userRepositoryTestSuite) Test_userRepository_CreateUser() {
-	tests := map[string]struct {
+	tests := []struct {
+		name    string
 		input   *entity.User
 		want    *entity.User
 		mock    func()
 		wantErr bool
 	}{
-		"success": {
+		{
+			name: "success - default",
 			input: &entity.User{
 				Name:     "cryptoChallenges",
 				Email:    "cryptoChallenges@gmail.com",
@@ -86,20 +88,47 @@ func (us *userRepositoryTestSuite) Test_userRepository_CreateUser() {
 			},
 			wantErr: false,
 		},
+		{
+			name: "fail - duplicated key",
+			input: &entity.User{
+				Name:     "cryptoChallenges",
+				Email:    "cryptoChallenges@gmail.com",
+				UserID:   "cryptoChallenges",
+				Password: "password",
+			},
+			want: &entity.User{
+				Name:     "cryptoChallenges",
+				Email:    "cryptoChallenges@gmail.com",
+				UserID:   "cryptoChallenges",
+				Password: "password",
+			},
+			mock: func() {
+				us.sqlMock.ExpectExec("INSERT INTO `users` (`created_at`,`updated_at`,`deleted_at`,`name`,`email`,`user_id`,`password`) VALUES (?,?,?,?,?,?,?)").
+					WithArgs(
+						AnyTime{},
+						AnyTime{},
+						nil,
+						"cryptoChallenges",
+						"cryptoChallenges@gmail.com",
+						"cryptoChallenges",
+						"password",
+					).WillReturnError(gorm.ErrDuplicatedKey)
+			},
+			wantErr: true,
+		},
 	}
 
 	for _, test := range tests {
-		ur := New(us.gormDB, us.sqlxDB)
-		test.mock()
-		got, err := ur.CreateUser(us.ctx, test.want)
-		if us.NoError(err) {
-			isEqual := cmp.Equal(test.want, got, cmpopts.IgnoreFields(entity.User{}, "ID", "CreatedAt", "UpdatedAt", "DeletedAt"))
-			us.Equal(true, isEqual)
-		}
-		//us.EqualErrorf(err, expectedErrorString, "error message %s", "formatted")
-		//us.Errorf(err, "error message %s", "formatted")
-		if us.Error(err) {
-
-		}
+		us.T().Run(test.name, func(t *testing.T) {
+			ur := New(us.gormDB, us.sqlxDB)
+			test.mock()
+			got, err := ur.CreateUser(us.ctx, test.want)
+			if err == nil {
+				us.Equal(true, cmp.Equal(test.want, got, cmpopts.IgnoreFields(entity.User{}, "ID", "CreatedAt", "UpdatedAt", "DeletedAt")))
+			}
+			if err != nil {
+				us.EqualError(err, "user/createUser: internal error: duplicated key not allowed")
+			}
+		})
 	}
 }
