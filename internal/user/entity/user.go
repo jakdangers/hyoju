@@ -1,9 +1,9 @@
 package entity
 
-import "gorm.io/gorm"
+import "cryptoChallenges/pkg/models"
 
 type User struct {
-	gorm.Model
+	models.Base
 	Name     string `db:"name"`
 	Email    string `db:"email"`
 	UserID   string `db:"user_id"`

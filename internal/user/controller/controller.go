@@ -10,5 +10,6 @@ type UserController interface {
 }
 
 func Routes(e *gin.Engine, controller UserController) {
+	e.POST("/users", controller.CreateUser)
 	e.GET("/users", controller.GetUser)
 }

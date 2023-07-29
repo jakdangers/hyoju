@@ -1,11 +1,13 @@
 package controller
 
 import (
-	"cryptoChallenges/internal/user/service"
 	"cryptoChallenges/mocks"
 	"cryptoChallenges/pkg/log"
 	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -13,41 +15,47 @@ type userControllerTestSuite struct {
 	suite.Suite
 	router         *gin.Engine
 	log            log.Logger
-	userService    service.UserService
-	userController UserController
+	userService    *mocks.UserService
+	userController *mocks.UserController
 }
 
 func (us *userControllerTestSuite) SetupTest() {
 	us.router = gin.Default()
 	us.log = mocks.NewLogger(us.T())
 	us.userService = mocks.NewUserService(us.T())
-	us.userController = New(us.userService, us.log)
+	us.userController = mocks.NewUserController(us.T())
+	Routes(us.router, us.userController)
 }
 
-//func (us *userControllerTestSuite) Test_userController_CreateUser() {
-//	tests := []struct {
-//		name string
-//	}{
-//		{
-//			name: "success case",
-//		},
-//	}
-//	for _, tt := range tests {
-//		w := httptest.NewRecorder()
-//		req, _ := http.NewRequest(http.MethodGet, "/users", nil)
-//		us.router.ServeHTTP(w, req)
-//		assert.Equal(t, 200, w.Code)
-//		assert.Equal(t, "pong", w.Body.String())
-//	}
-//}
-
-func Test_userController_GetUser(t *testing.T) {
+func (us *userControllerTestSuite) Test_userController_CreateUser() {
 	tests := []struct {
-		name string
+		name  string
+		mock  func()
+		given func()
+		want  func()
 	}{
-		// TODO: Add test cases.
+		{
+			name: "성공-기본",
+			mock: func() {
+				us.userService.EXPECT().CreateUser(mock.Anything).Return("test", nil)
+			},
+			given: nil,
+			want:  nil,
+		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {})
+		us.T().Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			w := httptest.NewRecorder()
+			req, _ := http.NewRequest(http.MethodPost, "/ping", nil)
+			us.router.ServeHTTP(w, req)
+			//got, err := ur.CreateUser(us.ctx, tt.want)
+			//if err == nil {
+			//	us.Equal(true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			//}
+			//if err != nil {
+			//	us.EqualError(err, "user/createUser: internal error: duplicated key not allowed")
+			//}
+		})
 	}
 }
