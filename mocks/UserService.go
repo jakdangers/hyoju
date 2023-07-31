@@ -125,12 +125,13 @@ func (_c *UserService_ReadUser_Call) RunAndReturn(run func(context.Context) (str
 	return _c
 }
 
-// NewUserService creates a new instance of UserService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-// The first argument is typically a *testing.T value.
-func NewUserService(t interface {
+type mockConstructorTestingTNewUserService interface {
 	mock.TestingT
 	Cleanup(func())
-}) *UserService {
+}
+
+// NewUserService creates a new instance of UserService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
+func NewUserService(t mockConstructorTestingTNewUserService) *UserService {
 	mock := &UserService{}
 	mock.Mock.Test(t)
 

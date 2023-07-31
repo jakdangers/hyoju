@@ -21,10 +21,9 @@ func New(service service.UserService, logger log.Logger) *userController {
 var _ UserController = (*userController)(nil)
 
 func (uc *userController) CreateUser(ctx *gin.Context) {
-	uc.service.CreateUser(ctx)
-	ctx.JSON(200, gin.H{
-		"message": "pong",
-	})
+	res, _ := uc.service.CreateUser(ctx)
+	// logging
+	ctx.JSON(200, res)
 }
 
 func (uc *userController) GetUser(ctx *gin.Context) {

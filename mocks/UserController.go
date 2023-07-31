@@ -53,45 +53,46 @@ func (_c *UserController_CreateUser_Call) RunAndReturn(run func(*gin.Context)) *
 	return _c
 }
 
-// GetUsers provides a mock function with given fields: ctx
-func (_m *UserController) GetUsers(ctx *gin.Context) {
+// GetUser provides a mock function with given fields: ctx
+func (_m *UserController) GetUser(ctx *gin.Context) {
 	_m.Called(ctx)
 }
 
-// UserController_GetUsers_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUsers'
-type UserController_GetUsers_Call struct {
+// UserController_GetUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUser'
+type UserController_GetUser_Call struct {
 	*mock.Call
 }
 
-// GetUsers is a helper method to define mock.On call
+// GetUser is a helper method to define mock.On call
 //   - ctx *gin.Context
-func (_e *UserController_Expecter) GetUsers(ctx interface{}) *UserController_GetUsers_Call {
-	return &UserController_GetUsers_Call{Call: _e.mock.On("GetUsers", ctx)}
+func (_e *UserController_Expecter) GetUser(ctx interface{}) *UserController_GetUser_Call {
+	return &UserController_GetUser_Call{Call: _e.mock.On("GetUser", ctx)}
 }
 
-func (_c *UserController_GetUsers_Call) Run(run func(ctx *gin.Context)) *UserController_GetUsers_Call {
+func (_c *UserController_GetUser_Call) Run(run func(ctx *gin.Context)) *UserController_GetUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(*gin.Context))
 	})
 	return _c
 }
 
-func (_c *UserController_GetUsers_Call) Return() *UserController_GetUsers_Call {
+func (_c *UserController_GetUser_Call) Return() *UserController_GetUser_Call {
 	_c.Call.Return()
 	return _c
 }
 
-func (_c *UserController_GetUsers_Call) RunAndReturn(run func(*gin.Context)) *UserController_GetUsers_Call {
+func (_c *UserController_GetUser_Call) RunAndReturn(run func(*gin.Context)) *UserController_GetUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// NewUserController creates a new instance of UserController. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-// The first argument is typically a *testing.T value.
-func NewUserController(t interface {
+type mockConstructorTestingTNewUserController interface {
 	mock.TestingT
 	Cleanup(func())
-}) *UserController {
+}
+
+// NewUserController creates a new instance of UserController. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
+func NewUserController(t mockConstructorTestingTNewUserController) *UserController {
 	mock := &UserController{}
 	mock.Mock.Test(t)
 

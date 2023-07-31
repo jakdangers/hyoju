@@ -232,12 +232,13 @@ func (_c *UserRepository_UpdateUser_Call) RunAndReturn(run func(context.Context,
 	return _c
 }
 
-// NewUserRepository creates a new instance of UserRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-// The first argument is typically a *testing.T value.
-func NewUserRepository(t interface {
+type mockConstructorTestingTNewUserRepository interface {
 	mock.TestingT
 	Cleanup(func())
-}) *UserRepository {
+}
+
+// NewUserRepository creates a new instance of UserRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
+func NewUserRepository(t mockConstructorTestingTNewUserRepository) *UserRepository {
 	mock := &UserRepository{}
 	mock.Mock.Test(t)
 

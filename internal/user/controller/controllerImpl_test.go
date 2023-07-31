@@ -27,6 +27,10 @@ func (us *userControllerTestSuite) SetupTest() {
 	Routes(us.router, us.userController)
 }
 
+func TestControllerSuite(t *testing.T) {
+	suite.Run(t, new(userControllerTestSuite))
+}
+
 func (us *userControllerTestSuite) Test_userController_CreateUser() {
 	tests := []struct {
 		name  string
@@ -37,7 +41,7 @@ func (us *userControllerTestSuite) Test_userController_CreateUser() {
 		{
 			name: "성공-기본",
 			mock: func() {
-				us.userService.EXPECT().CreateUser(mock.Anything).Return("test", nil)
+				us.userService.EXPECT().CreateUser(mock.Anything).Return("create", nil)
 			},
 			given: nil,
 			want:  nil,
@@ -46,16 +50,11 @@ func (us *userControllerTestSuite) Test_userController_CreateUser() {
 	for _, tt := range tests {
 		us.T().Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			w := httptest.NewRecorder()
-			req, _ := http.NewRequest(http.MethodPost, "/ping", nil)
-			us.router.ServeHTTP(w, req)
-			//got, err := ur.CreateUser(us.ctx, tt.want)
-			//if err == nil {
-			//	us.Equal(true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
-			//}
-			//if err != nil {
-			//	us.EqualError(err, "user/createUser: internal error: duplicated key not allowed")
-			//}
+			rec := httptest.NewRecorder()
+			req, _ := http.NewRequest(http.MethodPost, "/users", nil)
+			us.router.ServeHTTP(rec, req)
+			us.Equal(http.StatusOK, rec.Code)
+			us.Equal("create", rec.Body.String())
 		})
 	}
 }
