@@ -26,7 +26,7 @@ type HTTP struct {
 
 // Log -.
 type Log struct {
-	Level string `env-required:"true" yaml:"log_level"   env:"LOG_LEVEL"`
+	Level string `env-required:"true" yaml:"log_level"  env:"LOG_LEVEL"`
 }
 
 // Mysql -.
@@ -38,18 +38,18 @@ type Mysql struct {
 	DbName   string `env-required:"true" yaml:"dbName"`
 }
 
-var configTarget string = "dev"
+var configName string = "dev"
 
-var Module = fx.Options(fx.Provide(New))
+var Module = fx.Options(fx.Provide(NewConfig))
 
-func New() (*Config, error) {
+func NewConfig() (*Config, error) {
 	cfg := &Config{}
 
-	viper.SetConfigName(configTarget) // name of config file (without extension)
-	viper.SetConfigType("yaml")       // REQUIRED if the config file does not have the extension in the name
-	viper.AddConfigPath("./config/")  // path to look for the config file in
+	viper.SetConfigName(configName)
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("./config/")
 
-	err := viper.ReadInConfig() // Find and read the config file
+	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatalf("error read config file\n: %v", err)
 	}

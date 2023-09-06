@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	entity "cryptoChallenges/internal/user/entity"
+	entity "cryptoChallenges/entity"
 
 	mock "github.com/stretchr/testify/mock"
 
@@ -24,17 +24,17 @@ func (_m *UserRepository) EXPECT() *UserRepository_Expecter {
 	return &UserRepository_Expecter{mock: &_m.Mock}
 }
 
-// CreateUser provides a mock function with given fields: ctx, user
-func (_m *UserRepository) CreateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
-	ret := _m.Called(ctx, user)
+// CreateUser provides a mock function with given fields: tx, user
+func (_m *UserRepository) CreateUser(tx context.Context, user *entity.User) (*entity.User, error) {
+	ret := _m.Called(tx, user)
 
 	var r0 *entity.User
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, *entity.User) (*entity.User, error)); ok {
-		return rf(ctx, user)
+		return rf(tx, user)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, *entity.User) *entity.User); ok {
-		r0 = rf(ctx, user)
+		r0 = rf(tx, user)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.User)
@@ -42,7 +42,7 @@ func (_m *UserRepository) CreateUser(ctx context.Context, user *entity.User) (*e
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, *entity.User) error); ok {
-		r1 = rf(ctx, user)
+		r1 = rf(tx, user)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -56,13 +56,13 @@ type UserRepository_CreateUser_Call struct {
 }
 
 // CreateUser is a helper method to define mock.On call
-//   - ctx context.Context
+//   - tx context.Context
 //   - user *entity.User
-func (_e *UserRepository_Expecter) CreateUser(ctx interface{}, user interface{}) *UserRepository_CreateUser_Call {
-	return &UserRepository_CreateUser_Call{Call: _e.mock.On("CreateUser", ctx, user)}
+func (_e *UserRepository_Expecter) CreateUser(tx interface{}, user interface{}) *UserRepository_CreateUser_Call {
+	return &UserRepository_CreateUser_Call{Call: _e.mock.On("CreateUser", tx, user)}
 }
 
-func (_c *UserRepository_CreateUser_Call) Run(run func(ctx context.Context, user *entity.User)) *UserRepository_CreateUser_Call {
+func (_c *UserRepository_CreateUser_Call) Run(run func(tx context.Context, user *entity.User)) *UserRepository_CreateUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(*entity.User))
 	})
@@ -232,13 +232,12 @@ func (_c *UserRepository_UpdateUser_Call) RunAndReturn(run func(context.Context,
 	return _c
 }
 
-type mockConstructorTestingTNewUserRepository interface {
+// NewUserRepository creates a new instance of UserRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
+// The first argument is typically a *testing.T value.
+func NewUserRepository(t interface {
 	mock.TestingT
 	Cleanup(func())
-}
-
-// NewUserRepository creates a new instance of UserRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-func NewUserRepository(t mockConstructorTestingTNewUserRepository) *UserRepository {
+}) *UserRepository {
 	mock := &UserRepository{}
 	mock.Mock.Test(t)
 

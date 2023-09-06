@@ -4,6 +4,7 @@ package mocks
 
 import (
 	context "context"
+	dto "cryptoChallenges/dto"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -21,23 +22,23 @@ func (_m *UserService) EXPECT() *UserService_Expecter {
 	return &UserService_Expecter{mock: &_m.Mock}
 }
 
-// CreateUser provides a mock function with given fields: ctx
-func (_m *UserService) CreateUser(ctx context.Context) (string, error) {
-	ret := _m.Called(ctx)
+// CreateUser provides a mock function with given fields: ctx, user
+func (_m *UserService) CreateUser(ctx context.Context, user dto.CreateUserRequest) (dto.CreateUserDTOResponse, error) {
+	ret := _m.Called(ctx, user)
 
-	var r0 string
+	var r0 dto.CreateUserDTOResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context) (string, error)); ok {
-		return rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, dto.CreateUserRequest) (dto.CreateUserDTOResponse, error)); ok {
+		return rf(ctx, user)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context) string); ok {
-		r0 = rf(ctx)
+	if rf, ok := ret.Get(0).(func(context.Context, dto.CreateUserRequest) dto.CreateUserDTOResponse); ok {
+		r0 = rf(ctx, user)
 	} else {
-		r0 = ret.Get(0).(string)
+		r0 = ret.Get(0).(dto.CreateUserDTOResponse)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
+	if rf, ok := ret.Get(1).(func(context.Context, dto.CreateUserRequest) error); ok {
+		r1 = rf(ctx, user)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -52,23 +53,24 @@ type UserService_CreateUser_Call struct {
 
 // CreateUser is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *UserService_Expecter) CreateUser(ctx interface{}) *UserService_CreateUser_Call {
-	return &UserService_CreateUser_Call{Call: _e.mock.On("CreateUser", ctx)}
+//   - user dto.CreateUserRequest
+func (_e *UserService_Expecter) CreateUser(ctx interface{}, user interface{}) *UserService_CreateUser_Call {
+	return &UserService_CreateUser_Call{Call: _e.mock.On("CreateUser", ctx, user)}
 }
 
-func (_c *UserService_CreateUser_Call) Run(run func(ctx context.Context)) *UserService_CreateUser_Call {
+func (_c *UserService_CreateUser_Call) Run(run func(ctx context.Context, user dto.CreateUserRequest)) *UserService_CreateUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run(args[0].(context.Context), args[1].(dto.CreateUserRequest))
 	})
 	return _c
 }
 
-func (_c *UserService_CreateUser_Call) Return(_a0 string, _a1 error) *UserService_CreateUser_Call {
+func (_c *UserService_CreateUser_Call) Return(_a0 dto.CreateUserDTOResponse, _a1 error) *UserService_CreateUser_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *UserService_CreateUser_Call) RunAndReturn(run func(context.Context) (string, error)) *UserService_CreateUser_Call {
+func (_c *UserService_CreateUser_Call) RunAndReturn(run func(context.Context, dto.CreateUserRequest) (dto.CreateUserDTOResponse, error)) *UserService_CreateUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -125,13 +127,12 @@ func (_c *UserService_ReadUser_Call) RunAndReturn(run func(context.Context) (str
 	return _c
 }
 
-type mockConstructorTestingTNewUserService interface {
+// NewUserService creates a new instance of UserService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
+// The first argument is typically a *testing.T value.
+func NewUserService(t interface {
 	mock.TestingT
 	Cleanup(func())
-}
-
-// NewUserService creates a new instance of UserService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-func NewUserService(t mockConstructorTestingTNewUserService) *UserService {
+}) *UserService {
 	mock := &UserService{}
 	mock.Mock.Test(t)
 

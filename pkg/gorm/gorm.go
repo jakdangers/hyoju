@@ -9,9 +9,9 @@ import (
 	"log"
 )
 
-var Module = fx.Options(fx.Provide(New))
+var Module = fx.Options(fx.Provide(NewGorm))
 
-func New(cfg *config.Config) (*gorm.DB, error) {
+func NewGorm(cfg *config.Config) (*gorm.DB, error) {
 	datetimePrecision := 2
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", cfg.Mysql.User, cfg.Mysql.Password, cfg.Mysql.Host, cfg.Mysql.Port, cfg.Mysql.DbName)
 	db, err := gorm.Open(mysql.New(mysql.Config{

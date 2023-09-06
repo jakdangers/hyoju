@@ -10,9 +10,9 @@ import (
 	"time"
 )
 
-var Module = fx.Options(fx.Provide(New))
+var Module = fx.Options(fx.Provide(NewSqlx))
 
-func New(cfg *config.Config) (*sqlx.DB, error) {
+func NewSqlx(cfg *config.Config) (*sqlx.DB, error) {
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", cfg.Mysql.User, cfg.Mysql.Password, cfg.Mysql.Host, cfg.Mysql.Port, cfg.Mysql.DbName)
 	db, err := sqlx.Connect("mysql", dataSourceName)
 	if err != nil {

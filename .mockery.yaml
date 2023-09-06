@@ -4,14 +4,9 @@ keeptree: False
 disable-version-string: True
 with-expecter: True
 mockname: "{{.InterfaceName}}"
-filename: "{{.MockName}}.go"
 outpkg: mocks
-dir: ./mocks
+dir: ./entity/mocks
 packages:
-  cryptoChallenges/internal:
-    config:
-      recursive: true
+  cryptoChallenges/entity:
   cryptoChallenges/pkg/log:
-    config:
-      recursive: true
 

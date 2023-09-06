@@ -1,18 +1,14 @@
 package user
 
 import (
-	"cryptoChallenges/internal/user/controller"
-	"cryptoChallenges/internal/user/repository"
-	"cryptoChallenges/internal/user/service"
+	"cryptoChallenges/entity"
 	"go.uber.org/fx"
 )
 
 var Module = fx.Options(
 	fx.Provide(
-		fx.Annotate(repository.New, fx.As(new(repository.UserRepository))),
-		fx.Annotate(service.New, fx.As(new(service.UserService))),
-		fx.Annotate(controller.New, fx.As(new(controller.UserController))),
+		fx.Annotate(NewUserRepository, fx.As(new(entity.UserRepository))),
+		fx.Annotate(NewUserService, fx.As(new(entity.UserService))),
+		fx.Annotate(NewUserController, fx.As(new(entity.UserController))),
 	),
 )
-
-var Invoke = controller.Routes

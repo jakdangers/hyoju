@@ -1,6 +1,7 @@
 package log
 
 import (
+	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
 
@@ -15,12 +16,13 @@ type Logger interface {
 	Warn(msg string, fields ...interface{})
 	Error(msg string, fields ...interface{})
 	Fatal(msg string, fields ...interface{})
-	Sync()
 }
 
 var _ Logger = (*logger)(nil)
 
-func New() *logger {
+var Module = fx.Options(fx.Provide(fx.Annotate(NewLogger, fx.As(new(Logger)))))
+
+func NewLogger() *logger {
 	newLogger, _ := zap.NewProduction()
 	return &logger{
 		logger:      newLogger,
@@ -46,8 +48,4 @@ func (l *logger) Error(msg string, fields ...interface{}) {
 
 func (l *logger) Fatal(msg string, fields ...interface{}) {
 	l.logger.Fatal(msg)
-}
-
-func (l *logger) Sync() {
-	l.Sync()
 }

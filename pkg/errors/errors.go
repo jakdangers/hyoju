@@ -2,6 +2,7 @@ package errors
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"runtime"
@@ -16,6 +17,7 @@ var Separator = ":\n\t"
 const (
 	Other      Kind = iota // 분류되지 않은 오류의 경우 (이 값은 메시지에 포함하지 않음).
 	Invalid                // 유효하지 않은 행위를 한 경우.
+	Auth                   // 비인증.
 	Permission             // 권한이 옳바르지 않은 경우.
 	IO                     // I/O에 문제가 있는 경우 (네트워트 오류 등).
 	Exist                  // 이미 존재하는 경우.
@@ -24,10 +26,10 @@ const (
 )
 
 type Error struct {
-	User UserName
-	Op   Op
-	Kind Kind
-	Err  error
+	User UserName // 요청자
+	Op   Op       // 도메인/액션
+	Kind Kind     // 에러 종류
+	Err  error    // 에러
 }
 
 // 문자열을 이용한 에러 생성
@@ -52,7 +54,8 @@ func (e *Error) Error() string {
 		b.WriteString(e.Kind.String())
 	}
 	if e.Err != nil {
-		if prevErr, ok := e.Err.(*Error); ok {
+		var prevErr *Error
+		if errors.As(e.Err, &prevErr) {
 			if !prevErr.isZero() {
 				pad(b, Separator)
 				b.WriteString(e.Err.Error())
@@ -96,7 +99,8 @@ func E(args ...interface{}) error {
 		}
 	}
 
-	prev, ok := e.Err.(*Error)
+	var prev *Error
+	ok := errors.As(e.Err, &prev)
 	if !ok {
 		return e
 	}
@@ -122,6 +126,8 @@ func (k Kind) String() string {
 		return "other error"
 	case Invalid:
 		return "invalid operation"
+	case Auth:
+		return "unauthorized"
 	case Permission:
 		return "permission denied"
 	case IO:
@@ -148,11 +154,13 @@ func pad(b *bytes.Buffer, str string) {
 }
 
 func Match(err1, err2 error) bool {
-	e1, ok := err1.(*Error)
+	var e1 *Error
+	ok := errors.As(err1, &e1)
 	if !ok {
 		return false
 	}
-	e2, ok := err2.(*Error)
+	var e2 *Error
+	ok = errors.As(err2, &e2)
 	if !ok {
 		return false
 	}
@@ -166,7 +174,8 @@ func Match(err1, err2 error) bool {
 		return false
 	}
 	if e1.Err != nil {
-		if _, ok := e1.Err.(*Error); ok {
+		var cErr *Error
+		if errors.As(e1.Err, &cErr) {
 			return Match(e1.Err, e2.Err)
 		}
 		if e2.Err == nil || e2.Err.Error() != e1.Err.Error() {
@@ -176,21 +185,26 @@ func Match(err1, err2 error) bool {
 	return true
 }
 
-func Is(kind Kind, err error) bool {
-	e, ok := err.(*Error)
-	if !ok {
-		return false
-	}
-	if e.Kind != Other {
-		return e.Kind == kind
-	}
-	if e.Err != nil {
-		return Is(kind, e.Err)
-	}
-	return false
+//func Is(kind Kind, err error) bool {
+//	var e *Error
+//	ok := errors.As(err, &e)
+//	if !ok {
+//		return false
+//	}
+//	if e.Kind != Other {
+//		return e.Kind == kind
+//	}
+//	if e.Err != nil {
+//		return Is(kind, e.Err)
+//	}
+//	return false
+//}
+
+func Is(err, target error) bool {
+	return errors.Is(err, target)
 }
 
-// errorString 관련
+// Str errorString 관련
 func Str(text string) error {
 	return &errorString{text}
 }

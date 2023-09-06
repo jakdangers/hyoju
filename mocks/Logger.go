@@ -269,13 +269,12 @@ func (_c *Logger_Warn_Call) RunAndReturn(run func(string, ...interface{})) *Logg
 	return _c
 }
 
-type mockConstructorTestingTNewLogger interface {
+// NewLogger creates a new instance of Logger. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
+// The first argument is typically a *testing.T value.
+func NewLogger(t interface {
 	mock.TestingT
 	Cleanup(func())
-}
-
-// NewLogger creates a new instance of Logger. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
-func NewLogger(t mockConstructorTestingTNewLogger) *Logger {
+}) *Logger {
 	mock := &Logger{}
 	mock.Mock.Test(t)
 
