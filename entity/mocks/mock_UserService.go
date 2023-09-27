@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	dto "cryptoChallenges/dto"
+	dto "pixelix/dto"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -73,6 +73,49 @@ func (_c *UserService_CreateUser_Call) Return(_a0 *dto.CreateUserResponse, _a1 e
 }
 
 func (_c *UserService_CreateUser_Call) RunAndReturn(run func(context.Context, dto.CreateUserRequest) (*dto.CreateUserResponse, error)) *UserService_CreateUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteUser provides a mock function with given fields: ctx, req
+func (_m *UserService) DeleteUser(ctx context.Context, req dto.DeleteUserRequest) error {
+	ret := _m.Called(ctx, req)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, dto.DeleteUserRequest) error); ok {
+		r0 = rf(ctx, req)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UserService_DeleteUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteUser'
+type UserService_DeleteUser_Call struct {
+	*mock.Call
+}
+
+// DeleteUser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - req dto.DeleteUserRequest
+func (_e *UserService_Expecter) DeleteUser(ctx interface{}, req interface{}) *UserService_DeleteUser_Call {
+	return &UserService_DeleteUser_Call{Call: _e.mock.On("DeleteUser", ctx, req)}
+}
+
+func (_c *UserService_DeleteUser_Call) Run(run func(ctx context.Context, req dto.DeleteUserRequest)) *UserService_DeleteUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(dto.DeleteUserRequest))
+	})
+	return _c
+}
+
+func (_c *UserService_DeleteUser_Call) Return(_a0 error) *UserService_DeleteUser_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *UserService_DeleteUser_Call) RunAndReturn(run func(context.Context, dto.DeleteUserRequest) error) *UserService_DeleteUser_Call {
 	_c.Call.Return(run)
 	return _c
 }

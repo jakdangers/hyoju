@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	entity "cryptoChallenges/entity"
+	entity "pixelix/entity"
 
 	mock "github.com/stretchr/testify/mock"
 

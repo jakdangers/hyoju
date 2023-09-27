@@ -8,5 +8,5 @@ outpkg: mocks
 dir: ./entity/mocks
 packages:
   cryptoChallenges/entity:
-  cryptoChallenges/pkg/log:
+  cryptoChallenges/pkg/logger:
 

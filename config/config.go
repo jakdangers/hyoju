@@ -40,7 +40,7 @@ type Mysql struct {
 
 var configName string = "dev"
 
-var Module = fx.Options(fx.Provide(NewConfig))
+var Module = fx.Module("config", fx.Provide(NewConfig))
 
 func NewConfig() (*Config, error) {
 	cfg := &Config{}

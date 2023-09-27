@@ -2,10 +2,11 @@ package user
 
 import (
 	"context"
-	"cryptoChallenges/entity"
-	"cryptoChallenges/pkg/errors"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 	"gorm.io/gorm"
+	"pixelix/entity"
+	"pixelix/pkg/cerrors"
 )
 
 type userRepository struct {
@@ -21,33 +22,36 @@ func NewUserRepository(gormDB *gorm.DB) *userRepository {
 var _ entity.UserRepository = (*userRepository)(nil)
 
 func (ur *userRepository) CreateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
-	const op errors.Op = "user/repository/createUser"
+	const op cerrors.Op = "user/repository/createUser"
 
-	err := ur.gormDB.WithContext(ctx).Create(&user).Error
+	err := ur.gormDB.WithContext(ctx).Create(user).Error
 	if err != nil {
-		return nil, errors.E(op, errors.Internal, err)
+		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
 	return user, nil
 }
 
 func (ur *userRepository) ReadUser(ctx context.Context, user *entity.User) (*entity.User, error) {
-	const op errors.Op = "user/repository/readUser"
+	const op cerrors.Op = "user/repository/readUser"
 
 	result := ur.gormDB.WithContext(ctx).Take(user)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil, errors.E(op, errors.NotExist, "user does not exists")
+		return nil, nil
 	}
 	if result.Error != nil {
-		return nil, errors.E(op, errors.Internal, result.Error)
+		return nil, cerrors.E(op, cerrors.Internal, result.Error)
 	}
 
 	return user, nil
 }
 
 func (ur *userRepository) UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
+	const op cerrors.Op = "user/repository/updateUser"
 
-	return &entity.User{}, nil
+	ur.gormDB.Save(user)
+
+	return user, nil
 }
 
 func (ur *userRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {

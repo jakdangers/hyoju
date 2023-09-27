@@ -2,9 +2,7 @@ package user
 
 import (
 	"context"
-	"cryptoChallenges/entity"
 	"database/sql"
-	"database/sql/driver"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -12,8 +10,9 @@ import (
 	"github.com/stretchr/testify/suite"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"pixelix/entity"
+	"pixelix/test"
 	"testing"
-	"time"
 )
 
 type userRepositoryTestSuite struct {
@@ -26,13 +25,6 @@ type userRepositoryTestSuite struct {
 
 func TestUserRepositorySuite(t *testing.T) {
 	suite.Run(t, new(userRepositoryTestSuite))
-}
-
-type AnyTime struct{}
-
-func (a AnyTime) Match(v driver.Value) bool {
-	_, ok := v.(time.Time)
-	return ok
 }
 
 func (us *userRepositoryTestSuite) SetupTest() {
@@ -84,8 +76,8 @@ func (us *userRepositoryTestSuite) Test_userRepository_CreateUser() {
 				us.sqlMock.ExpectExec("INSERT INTO `users`").
 					WithArgs(
 						id,
-						AnyTime{},
-						AnyTime{},
+						test.AnyTime{},
+						test.AnyTime{},
 						nil,
 						"cryptoChallenges",
 						"cryptoChallenges@gmail.com",
@@ -105,7 +97,7 @@ func (us *userRepositoryTestSuite) Test_userRepository_CreateUser() {
 			wantErr: false,
 		},
 		{
-			name: "실패-아이디중복",
+			name: "FAIL 중복 userID",
 			input: &entity.User{
 				Base: entity.Base{
 					ID: id,
@@ -118,9 +110,9 @@ func (us *userRepositoryTestSuite) Test_userRepository_CreateUser() {
 			mock: func() {
 				us.sqlMock.ExpectExec("INSERT INTO `users`").
 					WithArgs(
-						id,
-						AnyTime{},
-						AnyTime{},
+						id.String(),
+						test.AnyTime{},
+						test.AnyTime{},
 						nil,
 						"cryptoChallenges",
 						"cryptoChallenges@gmail.com",
@@ -155,7 +147,7 @@ func (us *userRepositoryTestSuite) Test_userRepository_ReadUser() {
 		wantErr bool
 	}{
 		{
-			name: "PASS 기본 userID",
+			name: "PASS 존재하는 userID로 조회",
 			input: &entity.User{
 				Base: entity.Base{
 					ID: testUserID,
@@ -178,6 +170,21 @@ func (us *userRepositoryTestSuite) Test_userRepository_ReadUser() {
 			},
 			wantErr: false,
 		},
+		{
+			name: "PASS 존재하지 않는 userID로 조회",
+			input: &entity.User{
+				Base: entity.Base{
+					ID: testUserID,
+				},
+			},
+			ctx: context.Background(),
+			mock: func() {
+				query := "SELECT (.+) FROM `users`"
+				us.sqlMock.ExpectQuery(query).WillReturnError(gorm.ErrRecordNotFound)
+			},
+			want:    nil,
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {
@@ -185,7 +192,60 @@ func (us *userRepositoryTestSuite) Test_userRepository_ReadUser() {
 			tt.mock()
 			got, err := us.userRepository.ReadUser(tt.ctx, tt.input)
 			us.Equal(true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
-			us.Equal(tt.wantErr, err != nil)
+			if err != nil {
+				us.Equalf(tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}
+
+func (us *userRepositoryTestSuite) Test_userRepository_UpdateUser() {
+	testUserID := uuid.New()
+
+	tests := []struct {
+		name    string
+		input   *entity.User
+		ctx     context.Context
+		mock    func()
+		want    *entity.User
+		wantErr bool
+	}{
+		{
+			name: "PASS 유저 업데이트",
+			input: &entity.User{
+				Base: entity.Base{
+					ID: testUserID,
+				},
+				Name:     "modified_pixelix",
+				Email:    "modified_pixelix@gmail.com",
+				UserID:   "pixelix",
+				Password: "pixelix",
+			},
+			ctx: context.Background(),
+			mock: func() {
+				query := "UPDATE `users` SET (.+)"
+				us.sqlMock.ExpectExec(query).WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+			want: &entity.User{
+				Base: entity.Base{
+					ID: testUserID,
+				},
+				Name:     "modified_pixelix",
+				Email:    "modified_pixelix@gmail.com",
+				UserID:   "pixelix",
+				Password: "pixelix",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		us.T().Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := us.userRepository.UpdateUser(tt.ctx, tt.input)
+			us.Equal(true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			if err != nil {
+				us.Equalf(tt.wantErr, err != nil, err.Error())
+			}
 		})
 	}
 }

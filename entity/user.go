@@ -2,9 +2,9 @@ package entity
 
 import (
 	"context"
-	"cryptoChallenges/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"pixelix/dto"
 )
 
 type User struct {
@@ -26,10 +26,12 @@ type UserService interface {
 	CreateUser(ctx context.Context, req dto.CreateUserRequest) (*dto.CreateUserResponse, error)
 	ReadUser(ctx context.Context, req dto.ReadUserRequest) (*dto.ReadUserResponse, error)
 	UpdateUser(ctx context.Context, req dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
+	DeleteUser(ctx context.Context, req dto.DeleteUserRequest) error
 }
 
 type UserController interface {
 	CreateUser(c *gin.Context)
 	ReadUser(c *gin.Context)
 	UpdateUser(c *gin.Context)
+	DeleteUser(c *gin.Context)
 }

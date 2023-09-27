@@ -1,32 +1,33 @@
 package main
 
 import (
-	"cryptoChallenges/config"
-	"cryptoChallenges/internal/user"
-	"cryptoChallenges/pkg/gorm"
-	"cryptoChallenges/pkg/log"
-	"cryptoChallenges/pkg/mux"
-	"cryptoChallenges/pkg/server"
-	"cryptoChallenges/pkg/sqlx"
 	"go.uber.org/fx"
+	"pixelix/config"
+	"pixelix/internal/user"
+	"pixelix/pkg/db"
+	"pixelix/pkg/handler"
+	"pixelix/pkg/logger"
+	"pixelix/pkg/server"
 )
 
 func main() {
 
 	fx.New(
-		// Infra Modules
+		// infra module
 		config.Module,
-		mux.Module,
-		log.Module,
-		gorm.Module,
-		sqlx.Module,
-		// Service Modules
+		db.GormModule,
+		handler.Module,
+		logger.Module,
+
+		// service module
 		user.Module,
+
+		// invoke
 		fx.Invoke(
 			// service Invoke
-			user.Routes,
+			user.RegisterRoutes,
 			// Infra Invoke
-			server.NewServer,
+			server.NewHTTPServer,
 		),
 	).Run()
 }

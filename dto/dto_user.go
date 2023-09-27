@@ -1,8 +1,8 @@
 package dto
 
 import (
-	"cryptoChallenges/pkg/errors"
 	"github.com/google/uuid"
+	"pixelix/pkg/cerrors"
 )
 
 type UserDTO struct {
@@ -48,10 +48,10 @@ type UpdateUserRequest struct {
 }
 
 func (ur UpdateUserRequest) Valid() error {
-	const op errors.Op = "/user/controller/valid"
+	const op cerrors.Op = "/user/controller/valid"
 
 	if ur.Name == "" || ur.Email == "" || ur.Password == "" {
-		return errors.E(op, errors.Invalid, "invalid input")
+		return cerrors.E(op, cerrors.Invalid, "invalid input")
 	}
 
 	return nil
@@ -62,4 +62,8 @@ type UpdateUserResponse struct {
 	Name   string `json:"name"`
 	Email  string `json:"email"`
 	UserID string `json:"userID"`
+}
+
+type DeleteUserRequest struct {
+	ID string `json:"ID" uri:"ID"`
 }

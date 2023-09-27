@@ -2,27 +2,28 @@ package user
 
 import (
 	"context"
-	"cryptoChallenges/dto"
-	"cryptoChallenges/entity"
-	"cryptoChallenges/pkg/errors"
-	"cryptoChallenges/pkg/log"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"pixelix/dto"
+	"pixelix/entity"
+	"pixelix/pkg/cerrors"
+	"pixelix/pkg/logger"
 	"time"
 )
 
-func Routes(e *gin.Engine, controller entity.UserController) {
+func RegisterRoutes(e *gin.Engine, controller entity.UserController) {
 	e.POST("/users", controller.CreateUser)
 	e.GET("/users", controller.ReadUser)
 	e.PUT("/users", controller.UpdateUser)
+	e.DELETE("/users/:ID", controller.DeleteUser)
 }
 
 type userController struct {
-	logger  log.Logger
+	logger  logger.Logger
 	service entity.UserService
 }
 
-func NewUserController(service entity.UserService, logger log.Logger) *userController {
+func NewUserController(service entity.UserService, logger logger.Logger) *userController {
 	return &userController{
 		logger:  logger,
 		service: service,
@@ -35,7 +36,7 @@ func (uc *userController) CreateUser(c *gin.Context) {
 	var req dto.CreateUserRequest
 
 	if err := c.ShouldBind(&req); err != nil {
-		c.JSON(errors.ToSentinelAPIError(err))
+		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
 
@@ -45,7 +46,7 @@ func (uc *userController) CreateUser(c *gin.Context) {
 
 	res, err := uc.service.CreateUser(ctx, req)
 	if err != nil {
-		c.JSON(errors.ToSentinelAPIError(err))
+		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
 
@@ -56,7 +57,7 @@ func (uc *userController) ReadUser(c *gin.Context) {
 	var req dto.ReadUserRequest
 
 	if err := c.ShouldBind(&req); err != nil {
-		c.JSON(errors.ToSentinelAPIError(err))
+		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
 
@@ -66,27 +67,22 @@ func (uc *userController) ReadUser(c *gin.Context) {
 
 	res, err := uc.service.ReadUser(ctx, req)
 	if err != nil {
-		c.JSON(errors.ToSentinelAPIError(err))
+		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
-
-	// 0 보다작다 이렇게 핸들링할게 거의없다?
-	// 코드로
-	// API 개발사 ??
-
-	c.JSON(200, res)
+	c.JSON(http.StatusOK, res)
 }
 
 func (uc *userController) UpdateUser(c *gin.Context) {
 	var req dto.UpdateUserRequest
 
 	if err := c.ShouldBind(&req); err != nil {
-		c.JSON(errors.ToSentinelAPIError(err))
+		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
 
 	if err := req.Valid(); err != nil {
-		c.JSON(errors.ToSentinelAPIError(err))
+		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
 
@@ -95,9 +91,28 @@ func (uc *userController) UpdateUser(c *gin.Context) {
 
 	res, err := uc.service.UpdateUser(ctx, req)
 	if err != nil {
-		c.JSON(errors.ToSentinelAPIError(err))
+		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
 
-	c.JSON(200, res)
+	c.JSON(http.StatusOK, res)
+}
+
+func (uc *userController) DeleteUser(c *gin.Context) {
+	var request dto.DeleteUserRequest
+
+	if err := c.ShouldBindUri(&request); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	if err := uc.service.DeleteUser(ctx, request); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.Status(http.StatusOK)
 }

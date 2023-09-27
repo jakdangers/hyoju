@@ -53,6 +53,39 @@ func (_c *UserController_CreateUser_Call) RunAndReturn(run func(*gin.Context)) *
 	return _c
 }
 
+// DeleteUser provides a mock function with given fields: c
+func (_m *UserController) DeleteUser(c *gin.Context) {
+	_m.Called(c)
+}
+
+// UserController_DeleteUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteUser'
+type UserController_DeleteUser_Call struct {
+	*mock.Call
+}
+
+// DeleteUser is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *UserController_Expecter) DeleteUser(c interface{}) *UserController_DeleteUser_Call {
+	return &UserController_DeleteUser_Call{Call: _e.mock.On("DeleteUser", c)}
+}
+
+func (_c *UserController_DeleteUser_Call) Run(run func(c *gin.Context)) *UserController_DeleteUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *UserController_DeleteUser_Call) Return() *UserController_DeleteUser_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *UserController_DeleteUser_Call) RunAndReturn(run func(*gin.Context)) *UserController_DeleteUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ReadUser provides a mock function with given fields: c
 func (_m *UserController) ReadUser(c *gin.Context) {
 	_m.Called(c)

@@ -2,11 +2,6 @@ package user
 
 import (
 	"bytes"
-	"cryptoChallenges/dto"
-	"cryptoChallenges/entity"
-	"cryptoChallenges/entity/mocks"
-	"cryptoChallenges/pkg/errors"
-	"cryptoChallenges/pkg/log"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/go-faker/faker/v4"
@@ -16,13 +11,18 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"pixelix/dto"
+	"pixelix/entity"
+	"pixelix/entity/mocks"
+	"pixelix/pkg/cerrors"
+	"pixelix/pkg/logger"
 	"testing"
 )
 
 type userControllerTestSuite struct {
 	suite.Suite
 	router         *gin.Engine
-	log            log.Logger
+	log            logger.Logger
 	userService    *mocks.UserService
 	userController entity.UserController
 }
@@ -33,7 +33,7 @@ func (us *userControllerTestSuite) SetupTest() {
 	us.log = mocks.NewLogger(us.T())
 	us.userService = mocks.NewUserService(us.T())
 	us.userController = NewUserController(us.userService, us.log)
-	Routes(us.router, us.userController)
+	RegisterRoutes(us.router, us.userController)
 }
 
 func TestControllerSuite(t *testing.T) {
@@ -87,7 +87,7 @@ func (us *userControllerTestSuite) Test_userController_CreateUser() {
 					Email:    "cryptoChallenge@gmail.com",
 					UserID:   "cryptoChallenge",
 					Password: "cryptoChallenge",
-				}).Return(&dto.CreateUserResponse{}, &errors.Error{Kind: errors.Internal}).Once()
+				}).Return(&dto.CreateUserResponse{}, &cerrors.Error{Kind: cerrors.Internal}).Once()
 			},
 			status: http.StatusInternalServerError,
 		},
@@ -110,7 +110,7 @@ func (us *userControllerTestSuite) Test_userController_CreateUser() {
 	}
 }
 
-func (us *userControllerTestSuite) Test_userController_GetUser() {
+func (us *userControllerTestSuite) Test_userController_ReadUser() {
 	testUserID := "998c084a-9982-4c24-9663-4f24e2e3db36"
 
 	tests := []struct {
@@ -120,7 +120,7 @@ func (us *userControllerTestSuite) Test_userController_GetUser() {
 		status int
 	}{
 		{
-			name: "pass ID로 조회",
+			name: "PASS 존재하는 userID로 조회",
 			input: func() string {
 				params := url.Values{}
 				params.Add("ID", testUserID)
@@ -165,7 +165,7 @@ func (us *userControllerTestSuite) Test_userController_UpdateUser() {
 		status int
 	}{
 		{
-			name: "PASS 기본",
+			name: "PASS 존재하는 userID 수정",
 			input: func() *bytes.Reader {
 				req := dto.UpdateUserRequest{
 					ID:       testUserID.String(),
@@ -192,7 +192,7 @@ func (us *userControllerTestSuite) Test_userController_UpdateUser() {
 			status: http.StatusOK,
 		},
 		{
-			name: "FAIL 기본",
+			name: "FAIL 잘못된 인수",
 			input: func() *bytes.Reader {
 				req := dto.UpdateUserRequest{
 					ID:       testUserID.String(),
@@ -215,6 +215,48 @@ func (us *userControllerTestSuite) Test_userController_UpdateUser() {
 			tt.mock()
 			req, _ := http.NewRequest(http.MethodPut, "/users", tt.input())
 			req.Header.Set("Content-Type", "application/json")
+
+			// when
+			rec := httptest.NewRecorder()
+			us.router.ServeHTTP(rec, req)
+
+			// then
+			us.Equal(tt.status, rec.Code)
+			us.userService.AssertExpectations(t)
+		})
+	}
+}
+
+func (us *userControllerTestSuite) Test_userController_DeleteUser() {
+	testUserID := uuid.New()
+
+	tests := []struct {
+		name   string
+		input  func() string
+		mock   func()
+		status int
+	}{
+		{
+			name: "PASS 존재하는 userID",
+			input: func() string {
+				path, _ := url.JoinPath("/users", testUserID.String())
+				return path
+
+			},
+			mock: func() {
+				us.userService.EXPECT().DeleteUser(mock.Anything, dto.DeleteUserRequest{
+					ID: testUserID.String(),
+				}).Return(nil).Once()
+			},
+			status: http.StatusOK,
+		},
+	}
+
+	for _, tt := range tests {
+		us.T().Run(tt.name, func(t *testing.T) {
+			// input
+			tt.mock()
+			req, _ := http.NewRequest(http.MethodDelete, tt.input(), nil)
 
 			// when
 			rec := httptest.NewRecorder()
