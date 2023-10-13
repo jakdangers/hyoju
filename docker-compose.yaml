@@ -2,13 +2,13 @@ version: '3.9'
 services:
   db:
     image: mysql:latest
-    container_name: crypto-challenges-sqlx
+    container_name: blipix-mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: cryptoChallenges
-      MYSQL_DATABASE: cryptoChallenges
-      MYSQL_USER: cryptoChallenges
-      MYSQL_PASSWORD: cryptoChallenges
+      MYSQL_ROOT_PASSWORD: blipix
+      MYSQL_DATABASE: blipix
+      MYSQL_USER: blipix
+      MYSQL_PASSWORD: blipix
     ports:
       - "3306:3306"

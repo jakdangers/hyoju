@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 	"pixelix/entity"
@@ -32,13 +31,10 @@ func (ur *userRepository) CreateUser(ctx context.Context, user *entity.User) (*e
 	return user, nil
 }
 
-func (ur *userRepository) ReadUser(ctx context.Context, user *entity.User) (*entity.User, error) {
-	const op cerrors.Op = "user/repository/readUser"
+func (ur *userRepository) UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
+	const op cerrors.Op = "user/repository/updateUser"
 
-	result := ur.gormDB.WithContext(ctx).Take(user)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil, nil
-	}
+	result := ur.gormDB.WithContext(ctx).Save(user)
 	if result.Error != nil {
 		return nil, cerrors.E(op, cerrors.Internal, result.Error)
 	}
@@ -46,14 +42,44 @@ func (ur *userRepository) ReadUser(ctx context.Context, user *entity.User) (*ent
 	return user, nil
 }
 
-func (ur *userRepository) UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
-	const op cerrors.Op = "user/repository/updateUser"
+func (ur *userRepository) DeleteUser(ctx context.Context, id entity.BinaryUUID) error {
+	const op cerrors.Op = "user/repository/deleteUser"
 
-	ur.gormDB.Save(user)
+	result := ur.gormDB.WithContext(ctx).Delete(&entity.User{}, id)
+	if result.Error != nil {
+		return cerrors.E(op, cerrors.Internal, result.Error)
+	}
 
-	return user, nil
+	return nil
 }
 
-func (ur *userRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
-	return nil
+func (ur *userRepository) FindByEmail(ctx context.Context, email string) (*entity.User, error) {
+	var user entity.User
+
+	const op cerrors.Op = "user/repository/findByEmail"
+
+	result := ur.gormDB.WithContext(ctx).Where("email = ?", email).First(&user)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	if result.Error != nil {
+		return nil, cerrors.E(op, cerrors.Internal, result.Error)
+	}
+
+	return &user, nil
+}
+
+func (ur *userRepository) FindByID(ctx context.Context, id entity.BinaryUUID) (*entity.User, error) {
+	var user entity.User
+	const op cerrors.Op = "user/repository/readUser"
+
+	result := ur.gormDB.WithContext(ctx).Where("id = ?", id).First(&user)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	if result.Error != nil {
+		return nil, cerrors.E(op, cerrors.Internal, result.Error)
+	}
+
+	return &user, nil
 }

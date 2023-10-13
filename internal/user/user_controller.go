@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"pixelix/dto"
@@ -12,10 +13,10 @@ import (
 )
 
 func RegisterRoutes(e *gin.Engine, controller entity.UserController) {
-	e.POST("/users", controller.CreateUser)
 	e.GET("/users", controller.ReadUser)
 	e.PUT("/users", controller.UpdateUser)
 	e.DELETE("/users/:ID", controller.DeleteUser)
+	e.POST("/users/login", controller.OAuthLoginUser)
 }
 
 type userController struct {
@@ -32,27 +33,6 @@ func NewUserController(service entity.UserService, logger logger.Logger) *userCo
 
 var _ entity.UserController = (*userController)(nil)
 
-func (uc *userController) CreateUser(c *gin.Context) {
-	var req dto.CreateUserRequest
-
-	if err := c.ShouldBind(&req); err != nil {
-		c.JSON(cerrors.ToSentinelAPIError(err))
-		return
-	}
-
-	// TODO 유효성 검증
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
-	defer cancel()
-
-	res, err := uc.service.CreateUser(ctx, req)
-	if err != nil {
-		c.JSON(cerrors.ToSentinelAPIError(err))
-		return
-	}
-
-	c.JSON(http.StatusOK, res)
-}
-
 func (uc *userController) ReadUser(c *gin.Context) {
 	var req dto.ReadUserRequest
 
@@ -67,6 +47,7 @@ func (uc *userController) ReadUser(c *gin.Context) {
 
 	res, err := uc.service.ReadUser(ctx, req)
 	if err != nil {
+		fmt.Println("dddddd")
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
@@ -115,4 +96,24 @@ func (uc *userController) DeleteUser(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func (uc *userController) OAuthLoginUser(c *gin.Context) {
+	var req dto.OAuthLoginUserRequest
+
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	res, err := uc.service.OAuthLoginUser(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
 }

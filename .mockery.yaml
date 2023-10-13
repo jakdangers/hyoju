@@ -1,12 +1,11 @@
 all: True
 quiet: False
-keeptree: False
-disable-version-string: True
+disable-version-string: False
 with-expecter: True
 mockname: "{{.InterfaceName}}"
+filename: "{{.MockName}}.go"
+dir: mocks/.
 outpkg: mocks
-dir: ./entity/mocks
 packages:
-  cryptoChallenges/entity:
-  cryptoChallenges/pkg/logger:
-
+  pixelix/entity:
+  pixelix/pkg/logger:

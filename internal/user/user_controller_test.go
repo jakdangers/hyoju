@@ -4,114 +4,42 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"github.com/go-faker/faker/v4"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/suite"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"pixelix/dto"
 	"pixelix/entity"
-	"pixelix/entity/mocks"
+	"pixelix/mocks"
 	"pixelix/pkg/cerrors"
 	"pixelix/pkg/logger"
 	"testing"
 )
 
 type userControllerTestSuite struct {
-	suite.Suite
 	router         *gin.Engine
 	log            logger.Logger
 	userService    *mocks.UserService
 	userController entity.UserController
 }
 
-func (us *userControllerTestSuite) SetupTest() {
+func setupUserControllerTestSuite(t *testing.T) userControllerTestSuite {
+	var us userControllerTestSuite
+
 	gin.SetMode(gin.TestMode)
 	us.router = gin.Default()
-	us.log = mocks.NewLogger(us.T())
-	us.userService = mocks.NewUserService(us.T())
+	us.userService = mocks.NewUserService(t)
 	us.userController = NewUserController(us.userService, us.log)
 	RegisterRoutes(us.router, us.userController)
+
+	return us
 }
 
-func TestControllerSuite(t *testing.T) {
-	suite.Run(t, new(userControllerTestSuite))
-}
-
-func (us *userControllerTestSuite) Test_userController_CreateUser() {
-	tests := []struct {
-		name   string
-		input  func() *bytes.Reader
-		mock   func()
-		status int
-	}{
-		{
-			name: "성공-기본",
-			input: func() *bytes.Reader {
-				user := dto.CreateUserRequest{
-					Name:     "cryptoChallenge",
-					Email:    "cryptoChallenge@gmail.com",
-					UserID:   "cryptoChallenge",
-					Password: "cryptoChallenge",
-				}
-				jsonData, _ := json.Marshal(user)
-				return bytes.NewReader(jsonData)
-			},
-			mock: func() {
-				us.userService.On("CreateUser", mock.Anything, dto.CreateUserRequest{
-					Name:     "cryptoChallenge",
-					Email:    "cryptoChallenge@gmail.com",
-					UserID:   "cryptoChallenge",
-					Password: "cryptoChallenge",
-				}).Return(dto.CreateUserResponse{}, nil).Once()
-			},
-			status: http.StatusOK,
-		},
-		{
-			name: "실패-기본",
-			input: func() *bytes.Reader {
-				user := dto.CreateUserRequest{
-					Name:     "cryptoChallenge",
-					Email:    "cryptoChallenge@gmail.com",
-					UserID:   "cryptoChallenge",
-					Password: "cryptoChallenge",
-				}
-				jsonData, _ := json.Marshal(user)
-				return bytes.NewReader(jsonData)
-			},
-			mock: func() {
-				us.userService.EXPECT().CreateUser(mock.Anything, dto.CreateUserRequest{
-					Name:     "cryptoChallenge",
-					Email:    "cryptoChallenge@gmail.com",
-					UserID:   "cryptoChallenge",
-					Password: "cryptoChallenge",
-				}).Return(&dto.CreateUserResponse{}, &cerrors.Error{Kind: cerrors.Internal}).Once()
-			},
-			status: http.StatusInternalServerError,
-		},
-	}
-	for _, tt := range tests {
-		us.T().Run(tt.name, func(t *testing.T) {
-			// input
-			tt.mock()
-			req, _ := http.NewRequest(http.MethodPost, "/users", tt.input())
-			req.Header.Set("Content-Type", "application/json")
-
-			// when
-			rec := httptest.NewRecorder()
-			us.router.ServeHTTP(rec, req)
-
-			// then
-			us.Equal(tt.status, rec.Code)
-			us.userService.AssertExpectations(t)
-		})
-	}
-}
-
-func (us *userControllerTestSuite) Test_userController_ReadUser() {
+func Test_userController_ReadUser(t *testing.T) {
 	testUserID := "998c084a-9982-4c24-9663-4f24e2e3db36"
+	us := setupUserControllerTestSuite(t)
 
 	tests := []struct {
 		name   string
@@ -120,25 +48,39 @@ func (us *userControllerTestSuite) Test_userController_ReadUser() {
 		status int
 	}{
 		{
-			name: "PASS 존재하는 userID로 조회",
+			name: "PASS 존재하는 userID 조회",
 			input: func() string {
 				params := url.Values{}
 				params.Add("ID", testUserID)
 				return params.Encode()
 			},
 			mock: func() {
-				var res dto.ReadUserResponse
-				err := faker.FakeData(&res)
-				us.NoError(err)
 				us.userService.EXPECT().ReadUser(mock.Anything, dto.ReadUserRequest{
 					ID: testUserID,
-				}).Return(&res, nil)
+				}).Return(&dto.ReadUserResponse{
+					ID: testUserID,
+				}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
+		{
+			name: "PASS 존재하지 않는 userID 조회",
+			input: func() string {
+				params := url.Values{}
+				params.Add("ID", testUserID)
+				return params.Encode()
+			},
+			mock: func() {
+				us.userService.EXPECT().ReadUser(mock.Anything, dto.ReadUserRequest{
+					ID: testUserID,
+				}).Return(nil, cerrors.E(cerrors.Invalid)).Once()
+			},
+			status: http.StatusBadRequest,
+		},
 	}
+
 	for _, tt := range tests {
-		us.T().Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			// input
 			tt.mock()
 			req, _ := http.NewRequest(http.MethodGet, "/users", nil)
@@ -149,13 +91,14 @@ func (us *userControllerTestSuite) Test_userController_ReadUser() {
 			us.router.ServeHTTP(rec, req)
 
 			// then
-			us.Equal(tt.status, rec.Code)
+			assert.Equal(t, tt.status, rec.Code)
 			us.userService.AssertExpectations(t)
 		})
 	}
 }
 
-func (us *userControllerTestSuite) Test_userController_UpdateUser() {
+func Test_userController_UpdateUser(t *testing.T) {
+	us := setupUserControllerTestSuite(t)
 	testUserID := uuid.New()
 
 	tests := []struct {
@@ -169,9 +112,7 @@ func (us *userControllerTestSuite) Test_userController_UpdateUser() {
 			input: func() *bytes.Reader {
 				req := dto.UpdateUserRequest{
 					ID:       testUserID.String(),
-					Name:     "cryptoChallenge",
-					Email:    "cryptoChallenge@gmail.com",
-					Password: "cryptoChallenge",
+					NickName: "modified_nickName",
 				}
 				jsonData, _ := json.Marshal(req)
 				return bytes.NewReader(jsonData)
@@ -179,38 +120,37 @@ func (us *userControllerTestSuite) Test_userController_UpdateUser() {
 			mock: func() {
 				us.userService.EXPECT().UpdateUser(mock.Anything, dto.UpdateUserRequest{
 					ID:       testUserID.String(),
-					Name:     "cryptoChallenge",
-					Email:    "cryptoChallenge@gmail.com",
-					Password: "cryptoChallenge",
+					NickName: "modified_nickName",
 				}).Return(&dto.UpdateUserResponse{
-					ID:     testUserID.String(),
-					UserID: "cryptoChallenge",
-					Name:   "cryptoChallenge",
-					Email:  "cryptoChallenge@gmail.com",
+					ID:       testUserID.String(),
+					Email:    "blipix@blipix.com",
+					NickName: "modified_nickName",
 				}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
 		{
-			name: "FAIL 잘못된 인수",
+			name: "FAIL 존재하지 않는 userID 수정",
 			input: func() *bytes.Reader {
 				req := dto.UpdateUserRequest{
 					ID:       testUserID.String(),
-					Name:     "",
-					Email:    "",
-					Password: "",
+					NickName: "modified_nickName",
 				}
 				jsonData, _ := json.Marshal(req)
 				return bytes.NewReader(jsonData)
 			},
 			mock: func() {
+				us.userService.EXPECT().UpdateUser(mock.Anything, dto.UpdateUserRequest{
+					ID:       testUserID.String(),
+					NickName: "modified_nickName",
+				}).Return(nil, cerrors.E(cerrors.Invalid)).Once()
 			},
 			status: http.StatusBadRequest,
 		},
 	}
 
 	for _, tt := range tests {
-		us.T().Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			// input
 			tt.mock()
 			req, _ := http.NewRequest(http.MethodPut, "/users", tt.input())
@@ -221,13 +161,14 @@ func (us *userControllerTestSuite) Test_userController_UpdateUser() {
 			us.router.ServeHTTP(rec, req)
 
 			// then
-			us.Equal(tt.status, rec.Code)
+			assert.Equal(t, tt.status, rec.Code)
 			us.userService.AssertExpectations(t)
 		})
 	}
 }
 
-func (us *userControllerTestSuite) Test_userController_DeleteUser() {
+func Test_userController_DeleteUser(t *testing.T) {
+	us := setupUserControllerTestSuite(t)
 	testUserID := uuid.New()
 
 	tests := []struct {
@@ -253,17 +194,65 @@ func (us *userControllerTestSuite) Test_userController_DeleteUser() {
 	}
 
 	for _, tt := range tests {
-		us.T().Run(tt.name, func(t *testing.T) {
-			// input
+		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			req, _ := http.NewRequest(http.MethodDelete, tt.input(), nil)
+
+			rec := httptest.NewRecorder()
+			us.router.ServeHTTP(rec, req)
+
+			assert.Equal(t, tt.status, rec.Code)
+			us.userService.AssertExpectations(t)
+		})
+	}
+}
+
+func Test_userController_OAuthLoginUser(t *testing.T) {
+	us := setupUserControllerTestSuite(t)
+
+	tests := []struct {
+		name  string
+		input func() *bytes.Reader
+		mock  func()
+		want  int
+	}{
+		{
+			name: "PASS OAuth 로그인",
+			input: func() *bytes.Reader {
+				req := dto.OAuthLoginUserRequest{
+					Email:       "blipix@blipix.com",
+					FirebaseUID: "firebaseUID",
+					Provider:    "blipix",
+				}
+				jsonData, _ := json.Marshal(req)
+
+				return bytes.NewReader(jsonData)
+			},
+			mock: func() {
+				us.userService.EXPECT().OAuthLoginUser(mock.Anything, dto.OAuthLoginUserRequest{
+					Email:       "blipix@blipix.com",
+					FirebaseUID: "firebaseUID",
+					Provider:    "blipix",
+				}).Return(&dto.OAuthLoginUserResponse{
+					AccessToken: "accessToken",
+				}, nil)
+			},
+			want: http.StatusOK,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			req, _ := http.NewRequest(http.MethodPost, "/users/login", tt.input())
+			req.Header.Set("Content-Type", "application/json")
 
 			// when
 			rec := httptest.NewRecorder()
 			us.router.ServeHTTP(rec, req)
 
 			// then
-			us.Equal(tt.status, rec.Code)
+			assert.Equal(t, tt.want, rec.Code)
 			us.userService.AssertExpectations(t)
 		})
 	}

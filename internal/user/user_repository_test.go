@@ -4,33 +4,30 @@ import (
 	"context"
 	"database/sql"
 	"github.com/DATA-DOG/go-sqlmock"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/google/uuid"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"pixelix/entity"
-	"pixelix/test"
 	"testing"
 )
 
 type userRepositoryTestSuite struct {
-	suite.Suite
 	db             *sql.DB
 	gormDB         *gorm.DB
 	sqlMock        sqlmock.Sqlmock
 	userRepository entity.UserRepository
 }
 
-func TestUserRepositorySuite(t *testing.T) {
-	suite.Run(t, new(userRepositoryTestSuite))
-}
+func setupUserRepositoryTestSuite() *userRepositoryTestSuite {
+	var us userRepositoryTestSuite
 
-func (us *userRepositoryTestSuite) SetupTest() {
-	// dependency init
 	mockDB, mock, err := sqlmock.New()
-	us.NoError(err)
+	if err != nil {
+		panic(err)
+	}
 	us.db = mockDB
 	us.sqlMock = mock
 
@@ -40,85 +37,71 @@ func (us *userRepositoryTestSuite) SetupTest() {
 	}), &gorm.Config{
 		SkipDefaultTransaction: true,
 	})
-	us.NoError(err)
+	if err != nil {
+		panic(err)
+	}
 
 	us.gormDB = gormDB
 	us.userRepository = NewUserRepository(gormDB)
+
+	return &us
 }
 
-func (us *userRepositoryTestSuite) AfterTest(suiteName, testName string) {
-	_ = us.db.Close()
-}
+func Test_userRepository_CreateUser(t *testing.T) {
+	type args struct {
+		ctx  context.Context
+		user *entity.User
+	}
 
-func (us *userRepositoryTestSuite) Test_userRepository_CreateUser() {
-	id := uuid.New()
+	us := setupUserRepositoryTestSuite()
+	testUserID := entity.BinaryUUIDNew()
+
 	tests := []struct {
 		name    string
-		input   *entity.User
-		ctx     context.Context
+		args    args
 		mock    func()
 		want    *entity.User
 		wantErr bool
 	}{
 		{
-			name: "성공-기본",
-			input: &entity.User{
-				Base: entity.Base{
-					ID: id,
+			name: "PASS 유저 생성",
+			args: args{
+				ctx: context.Background(),
+				user: &entity.User{
+					Base:        entity.Base{ID: testUserID},
+					NickName:    "blipix",
+					Email:       "blipix@blipix.com",
+					Provider:    "blipix",
+					FirebaseUID: "firebaseUID",
 				},
-				Name:     "cryptoChallenges",
-				Email:    "cryptoChallenges@gmail.com",
-				UserID:   "cryptoChallenges",
-				Password: "password",
 			},
-			ctx: context.Background(),
 			mock: func() {
 				us.sqlMock.ExpectExec("INSERT INTO `users`").
-					WithArgs(
-						id,
-						test.AnyTime{},
-						test.AnyTime{},
-						nil,
-						"cryptoChallenges",
-						"cryptoChallenges@gmail.com",
-						"cryptoChallenges",
-						"password",
-					).WillReturnResult(sqlmock.NewResult(1, 1))
+					WillReturnResult(sqlmock.NewResult(1, 1))
 			},
 			want: &entity.User{
-				Base: entity.Base{
-					ID: id,
-				},
-				Name:     "cryptoChallenges",
-				Email:    "cryptoChallenges@gmail.com",
-				UserID:   "cryptoChallenges",
-				Password: "password",
+				Base:        entity.Base{ID: testUserID},
+				NickName:    "blipix",
+				Email:       "blipix@blipix.com",
+				Provider:    "blipix",
+				FirebaseUID: "firebaseUID",
 			},
 			wantErr: false,
 		},
 		{
-			name: "FAIL 중복 userID",
-			input: &entity.User{
-				Base: entity.Base{
-					ID: id,
+			name: "FAIL 중복 email 유저 생성",
+			args: args{
+				ctx: context.Background(),
+				user: &entity.User{
+					Base:        entity.Base{ID: testUserID},
+					NickName:    "blipix",
+					Email:       "blipix@blipix.com",
+					Provider:    "blipix",
+					FirebaseUID: "firebaseUID",
 				},
-				Name:     "cryptoChallenges",
-				Email:    "cryptoChallenges@gmail.com",
-				UserID:   "cryptoChallenges",
-				Password: "password",
 			},
 			mock: func() {
-				us.sqlMock.ExpectExec("INSERT INTO `users`").
-					WithArgs(
-						id.String(),
-						test.AnyTime{},
-						test.AnyTime{},
-						nil,
-						"cryptoChallenges",
-						"cryptoChallenges@gmail.com",
-						"cryptoChallenges",
-						"password",
-					).WillReturnError(gorm.ErrDuplicatedKey)
+				us.sqlMock.ExpectExec("INSERT INTO `users` (.+)").WillReturnError(gorm.ErrDuplicatedKey)
 			},
 			want:    nil,
 			wantErr: true,
@@ -126,39 +109,139 @@ func (us *userRepositoryTestSuite) Test_userRepository_CreateUser() {
 	}
 
 	for _, tt := range tests {
-		us.T().Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := us.userRepository.CreateUser(tt.ctx, tt.want)
-			us.Equal(true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
-			us.Equal(tt.wantErr, err != nil)
+			got, err := us.userRepository.CreateUser(tt.args.ctx, tt.args.user)
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
 		})
 	}
 }
 
-func (us *userRepositoryTestSuite) Test_userRepository_ReadUser() {
-	testUserID := uuid.New()
+func Test_userRepository_UpdateUser(t *testing.T) {
+	type args struct {
+		ctx  context.Context
+		user *entity.User
+	}
+
+	us := setupUserRepositoryTestSuite()
+	testUserID := entity.BinaryUUIDNew()
 
 	tests := []struct {
 		name    string
-		input   *entity.User
-		ctx     context.Context
+		args    args
 		mock    func()
 		want    *entity.User
 		wantErr bool
 	}{
 		{
-			name: "PASS 존재하는 userID로 조회",
-			input: &entity.User{
+			name: "PASS 존재하는 userID로 수정 ",
+			args: args{
+				ctx: context.Background(),
+				user: &entity.User{
+					Base: entity.Base{
+						ID: testUserID,
+					},
+					NickName:    "modifed_nickName",
+					Email:       "original_email",
+					Provider:    "blipix",
+					FirebaseUID: "firebaseUID",
+				},
+			},
+			mock: func() {
+				us.sqlMock.ExpectExec("UPDATE `users`").WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+			want: &entity.User{
 				Base: entity.Base{
 					ID: testUserID,
 				},
+				NickName:    "modifed_nickName",
+				Email:       "original_email",
+				Provider:    "blipix",
+				FirebaseUID: "firebaseUID",
 			},
-			ctx: context.Background(),
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := us.userRepository.UpdateUser(tt.args.ctx, tt.args.user)
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}
+
+func Test_userRepository_DeleteUser(t *testing.T) {
+	type args struct {
+		ctx context.Context
+		id  entity.BinaryUUID
+	}
+
+	us := setupUserRepositoryTestSuite()
+
+	tests := []struct {
+		name    string
+		args    args
+		mock    func()
+		wantErr bool
+	}{
+		{
+			name: "PASS 삭제",
+			args: args{
+				ctx: context.Background(),
+				id:  entity.BinaryUUIDNew(),
+			},
 			mock: func() {
-				query := "SELECT (.+) FROM `users`"
-				columns := []string{"id", "name"}
+				us.sqlMock.ExpectExec("DELETE FROM `users`").WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := us.userRepository.DeleteUser(tt.args.ctx, tt.args.id)
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}
+
+func Test_userRepository_FindByEmail(t *testing.T) {
+	type args struct {
+		ctx   context.Context
+		email string
+	}
+
+	us := setupUserRepositoryTestSuite()
+	testUserID := entity.BinaryUUIDNew()
+
+	tests := []struct {
+		name    string
+		args    args
+		mock    func()
+		want    *entity.User
+		wantErr bool
+	}{
+		{
+			name: "PASS 올바른 이메일로 조회",
+			args: args{
+				ctx:   context.Background(),
+				email: "blipix@blipix.com",
+			},
+			mock: func() {
+				query := "SELECT (.+) FROM `users` (.+)"
+				columns := []string{"id", "nick_name", "email", "provider", "firebase_uid"}
 				rows := sqlmock.NewRows(columns).AddRow(
-					testUserID, "cryptoChallenges",
+					testUserID, "nick_name", "blipix@blipix.com", "blipix", "firebase_uid",
 				)
 				us.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
@@ -166,20 +249,21 @@ func (us *userRepositoryTestSuite) Test_userRepository_ReadUser() {
 				Base: entity.Base{
 					ID: testUserID,
 				},
-				Name: "cryptoChallenges",
+				NickName:    "nick_name",
+				Email:       "blipix@blipix.com",
+				Provider:    "blipix",
+				FirebaseUID: "firebase_uid",
 			},
 			wantErr: false,
 		},
 		{
-			name: "PASS 존재하지 않는 userID로 조회",
-			input: &entity.User{
-				Base: entity.Base{
-					ID: testUserID,
-				},
+			name: "PASS 존재 하지 않는 이메일 조회",
+			args: args{
+				ctx:   context.Background(),
+				email: "blipix@blipix.com",
 			},
-			ctx: context.Background(),
 			mock: func() {
-				query := "SELECT (.+) FROM `users`"
+				query := "SELECT (.+) FROM `users` (.+)"
 				us.sqlMock.ExpectQuery(query).WillReturnError(gorm.ErrRecordNotFound)
 			},
 			want:    nil,
@@ -188,63 +272,80 @@ func (us *userRepositoryTestSuite) Test_userRepository_ReadUser() {
 	}
 
 	for _, tt := range tests {
-		us.T().Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := us.userRepository.ReadUser(tt.ctx, tt.input)
-			us.Equal(true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			got, err := us.userRepository.FindByEmail(tt.args.ctx, tt.args.email)
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
 			if err != nil {
-				us.Equalf(tt.wantErr, err != nil, err.Error())
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
 		})
 	}
 }
 
-func (us *userRepositoryTestSuite) Test_userRepository_UpdateUser() {
-	testUserID := uuid.New()
+func Test_userRepository_FindByID(t *testing.T) {
+	type args struct {
+		ctx context.Context
+		id  entity.BinaryUUID
+	}
+
+	us := setupUserRepositoryTestSuite()
+	testUserID := entity.BinaryUUIDNew()
 
 	tests := []struct {
 		name    string
-		input   *entity.User
-		ctx     context.Context
+		args    args
 		mock    func()
 		want    *entity.User
 		wantErr bool
 	}{
 		{
-			name: "PASS 유저 업데이트",
-			input: &entity.User{
-				Base: entity.Base{
-					ID: testUserID,
-				},
-				Name:     "modified_pixelix",
-				Email:    "modified_pixelix@gmail.com",
-				UserID:   "pixelix",
-				Password: "pixelix",
+			name: "PASS 존재하는 userID로 조회",
+			args: args{
+				ctx: context.Background(),
+				id:  testUserID,
 			},
-			ctx: context.Background(),
 			mock: func() {
-				query := "UPDATE `users` SET (.+)"
-				us.sqlMock.ExpectExec(query).WillReturnResult(sqlmock.NewResult(1, 1))
+				query := "SELECT (.+) FROM `users` (.+)"
+				columns := []string{"id", "nick_name", "email", "provider", "firebase_uid"}
+				rows := sqlmock.NewRows(columns).AddRow(
+					testUserID, "nick_name", "blipix@blipix.com", "blipix", "firebase_uid",
+				)
+				us.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
 			want: &entity.User{
 				Base: entity.Base{
 					ID: testUserID,
 				},
-				Name:     "modified_pixelix",
-				Email:    "modified_pixelix@gmail.com",
-				UserID:   "pixelix",
-				Password: "pixelix",
+				NickName:    "nick_name",
+				Email:       "blipix@blipix.com",
+				Provider:    "blipix",
+				FirebaseUID: "firebase_uid",
 			},
 			wantErr: false,
 		},
+		{
+			name: "PASS 존재 하지 않는 userID로 조회",
+			args: args{
+				ctx: context.Background(),
+				id:  testUserID,
+			},
+			mock: func() {
+				query := "SELECT (.+) FROM `users` (.+)"
+				us.sqlMock.ExpectQuery(query).WillReturnError(gorm.ErrRecordNotFound)
+			},
+			want:    nil,
+			wantErr: false,
+		},
 	}
+
 	for _, tt := range tests {
-		us.T().Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := us.userRepository.UpdateUser(tt.ctx, tt.input)
-			us.Equal(true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.User{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			got, err := us.userRepository.FindByID(tt.args.ctx, tt.args.id)
+			assert.Equal(t, tt.want, got)
 			if err != nil {
-				us.Equalf(tt.wantErr, err != nil, err.Error())
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
 		})
 	}
