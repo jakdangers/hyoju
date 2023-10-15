@@ -12,6 +12,7 @@ type User struct {
 	Email       string `db:"email"`
 	Provider    string `db:"provider"`
 	FirebaseUID string `db:"firebase_uid"`
+	FriendCode  string `db:"friend_code"`
 }
 
 type UserRepository interface {

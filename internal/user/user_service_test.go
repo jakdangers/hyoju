@@ -214,6 +214,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 				us.repository.EXPECT().FindByEmail(mock.Anything, "blipix@blipix.com").Return(nil, nil).Once()
 				us.repository.EXPECT().CreateUser(mock.Anything, mock.Anything).Return(&entity.User{
 					Email:       "blipix@blipix.com",
+					NickName:    "blipix@blipix.com",
 					FirebaseUID: "firebaseUID",
 					Provider:    "blipix",
 				}, nil).Once()

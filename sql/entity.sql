@@ -7,5 +7,6 @@ CREATE TABLE users
     nick_name    varchar(255),
     email        varchar(255),
     provider     varchar(255),
-    firebase_uid varchar(255)
+    firebase_uid varchar(255),
+    friend_code  varchar(255)
 )

@@ -101,6 +101,7 @@ func (us *userService) OAuthLoginUser(ctx context.Context, req dto.OAuthLoginUse
 				ID: entity.BinaryUUIDNew(),
 			},
 			Email:       req.Email,
+			NickName:    req.Email,
 			Provider:    req.Provider,
 			FirebaseUID: req.FirebaseUID,
 		})
