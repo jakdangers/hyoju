@@ -53,6 +53,72 @@ func (_c *MissionController_CreateMission_Call) RunAndReturn(run func(*gin.Conte
 	return _c
 }
 
+// ListMissions provides a mock function with given fields: c
+func (_m *MissionController) ListMissions(c *gin.Context) {
+	_m.Called(c)
+}
+
+// MissionController_ListMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMissions'
+type MissionController_ListMissions_Call struct {
+	*mock.Call
+}
+
+// ListMissions is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *MissionController_Expecter) ListMissions(c interface{}) *MissionController_ListMissions_Call {
+	return &MissionController_ListMissions_Call{Call: _e.mock.On("ListMissions", c)}
+}
+
+func (_c *MissionController_ListMissions_Call) Run(run func(c *gin.Context)) *MissionController_ListMissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *MissionController_ListMissions_Call) Return() *MissionController_ListMissions_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MissionController_ListMissions_Call) RunAndReturn(run func(*gin.Context)) *MissionController_ListMissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PatchMission provides a mock function with given fields: c
+func (_m *MissionController) PatchMission(c *gin.Context) {
+	_m.Called(c)
+}
+
+// MissionController_PatchMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchMission'
+type MissionController_PatchMission_Call struct {
+	*mock.Call
+}
+
+// PatchMission is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *MissionController_Expecter) PatchMission(c interface{}) *MissionController_PatchMission_Call {
+	return &MissionController_PatchMission_Call{Call: _e.mock.On("PatchMission", c)}
+}
+
+func (_c *MissionController_PatchMission_Call) Run(run func(c *gin.Context)) *MissionController_PatchMission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *MissionController_PatchMission_Call) Return() *MissionController_PatchMission_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MissionController_PatchMission_Call) RunAndReturn(run func(*gin.Context)) *MissionController_PatchMission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMissionController creates a new instance of MissionController. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMissionController(t interface {

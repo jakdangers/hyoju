@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"pixelix/dto"
 	"pixelix/entity"
 	"pixelix/mocks"
 	"pixelix/pkg/cerrors"
@@ -55,9 +54,9 @@ func Test_userController_ReadUser(t *testing.T) {
 				return params.Encode()
 			},
 			mock: func() {
-				us.userService.EXPECT().ReadUser(mock.Anything, dto.ReadUserRequest{
+				us.userService.EXPECT().ReadUser(mock.Anything, entity.ReadUserRequest{
 					ID: testUserID,
-				}).Return(&dto.ReadUserResponse{
+				}).Return(&entity.ReadUserResponse{
 					ID: testUserID,
 				}, nil).Once()
 			},
@@ -71,7 +70,7 @@ func Test_userController_ReadUser(t *testing.T) {
 				return params.Encode()
 			},
 			mock: func() {
-				us.userService.EXPECT().ReadUser(mock.Anything, dto.ReadUserRequest{
+				us.userService.EXPECT().ReadUser(mock.Anything, entity.ReadUserRequest{
 					ID: testUserID,
 				}).Return(nil, cerrors.E(cerrors.Invalid)).Once()
 			},
@@ -110,7 +109,7 @@ func Test_userController_UpdateUser(t *testing.T) {
 		{
 			name: "PASS 존재하는 userID 수정",
 			input: func() *bytes.Reader {
-				req := dto.UpdateUserRequest{
+				req := entity.UpdateUserRequest{
 					ID:       testUserID.String(),
 					NickName: "modified_nickName",
 				}
@@ -118,10 +117,10 @@ func Test_userController_UpdateUser(t *testing.T) {
 				return bytes.NewReader(jsonData)
 			},
 			mock: func() {
-				us.userService.EXPECT().UpdateUser(mock.Anything, dto.UpdateUserRequest{
+				us.userService.EXPECT().UpdateUser(mock.Anything, entity.UpdateUserRequest{
 					ID:       testUserID.String(),
 					NickName: "modified_nickName",
-				}).Return(&dto.UpdateUserResponse{
+				}).Return(&entity.UpdateUserResponse{
 					ID:       testUserID.String(),
 					Email:    "blipix@blipix.com",
 					NickName: "modified_nickName",
@@ -132,7 +131,7 @@ func Test_userController_UpdateUser(t *testing.T) {
 		{
 			name: "FAIL 존재하지 않는 userID 수정",
 			input: func() *bytes.Reader {
-				req := dto.UpdateUserRequest{
+				req := entity.UpdateUserRequest{
 					ID:       testUserID.String(),
 					NickName: "modified_nickName",
 				}
@@ -140,7 +139,7 @@ func Test_userController_UpdateUser(t *testing.T) {
 				return bytes.NewReader(jsonData)
 			},
 			mock: func() {
-				us.userService.EXPECT().UpdateUser(mock.Anything, dto.UpdateUserRequest{
+				us.userService.EXPECT().UpdateUser(mock.Anything, entity.UpdateUserRequest{
 					ID:       testUserID.String(),
 					NickName: "modified_nickName",
 				}).Return(nil, cerrors.E(cerrors.Invalid)).Once()
@@ -182,10 +181,9 @@ func Test_userController_DeleteUser(t *testing.T) {
 			input: func() string {
 				path, _ := url.JoinPath("/users", testUserID.String())
 				return path
-
 			},
 			mock: func() {
-				us.userService.EXPECT().DeleteUser(mock.Anything, dto.DeleteUserRequest{
+				us.userService.EXPECT().DeleteUser(mock.Anything, entity.DeleteUserRequest{
 					ID: testUserID.String(),
 				}).Return(nil).Once()
 			},
@@ -219,7 +217,7 @@ func Test_userController_OAuthLoginUser(t *testing.T) {
 		{
 			name: "PASS OAuth 로그인",
 			input: func() *bytes.Reader {
-				req := dto.OAuthLoginUserRequest{
+				req := entity.OAuthLoginUserRequest{
 					Email:       "blipix@blipix.com",
 					FirebaseUID: "firebaseUID",
 					Provider:    "blipix",
@@ -229,11 +227,11 @@ func Test_userController_OAuthLoginUser(t *testing.T) {
 				return bytes.NewReader(jsonData)
 			},
 			mock: func() {
-				us.userService.EXPECT().OAuthLoginUser(mock.Anything, dto.OAuthLoginUserRequest{
+				us.userService.EXPECT().OAuthLoginUser(mock.Anything, entity.OAuthLoginUserRequest{
 					Email:       "blipix@blipix.com",
 					FirebaseUID: "firebaseUID",
 					Provider:    "blipix",
-				}).Return(&dto.OAuthLoginUserResponse{
+				}).Return(&entity.OAuthLoginUserResponse{
 					AccessToken: "accessToken",
 				}, nil)
 			},

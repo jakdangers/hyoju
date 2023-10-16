@@ -3,6 +3,7 @@ package main
 import (
 	"go.uber.org/fx"
 	"pixelix/config"
+	"pixelix/internal/mission"
 	"pixelix/internal/user"
 	"pixelix/pkg/db"
 	"pixelix/pkg/handler"
@@ -21,11 +22,13 @@ func main() {
 
 		// service module
 		user.Module,
+		mission.Module,
 
 		// invoke
 		fx.Invoke(
 			// service Invoke
 			user.RegisterRoutes,
+			mission.RegisterRoutes,
 			// Infra Invoke
 			server.NewHTTPServer,
 		),

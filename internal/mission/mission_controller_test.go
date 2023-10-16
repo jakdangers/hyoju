@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
-	"pixelix/dto"
+	"net/url"
 	"pixelix/entity"
 	"pixelix/mocks"
 	"pixelix/pkg/logger"
@@ -16,29 +16,28 @@ import (
 	"time"
 )
 
-type missionControllerTestSuite struct {
-	router         *gin.Engine
-	log            logger.Logger
-	taskService    *mocks.TaskService
-	taskController entity.MissionController
+type controllerTestSuite struct {
+	router            *gin.Engine
+	log               logger.Logger
+	missionService    *mocks.MissionService
+	missionController entity.MissionController
 }
 
-func setupMissionControllerTestSuite(t *testing.T) missionControllerTestSuite {
-	var ms missionControllerTestSuite
+func initControllerTestSuite(t *testing.T) controllerTestSuite {
+	var ts controllerTestSuite
 
 	gin.SetMode(gin.TestMode)
-	ms.router = gin.Default()
-	ms.taskService = mocks.NewTaskService(t)
-	ms.taskController = NewTaskController(ms.taskService, ms.log)
-	RegisterRoutes(ms.router, ms.taskController)
+	ts.router = gin.Default()
+	ts.missionService = mocks.NewMissionService(t)
+	ts.missionController = NewMissionController(ts.missionService, ts.log)
+	RegisterRoutes(ts.router, ts.missionController)
 
-	return ms
+	return ts
 }
 
 func Test_missionController_CreateTask(t *testing.T) {
-
-	ms := setupMissionControllerTestSuite(t)
-	testMeID := entity.BinaryUUIDNew().String()
+	ts := initControllerTestSuite(t)
+	testUserID := entity.BinaryUUIDNew().String()
 
 	tests := []struct {
 		name   string
@@ -49,34 +48,128 @@ func Test_missionController_CreateTask(t *testing.T) {
 		{
 			name: "PASS mission 생성",
 			body: func() *bytes.Reader {
-				req := dto.CreateMissionRequest{
-					Title:            "tet_mission",
-					Emoji:            "test_emoji",
-					Duration:         "DAILY",
-					StartDate:        time.Time{},
-					EndDate:          time.Time{},
-					PlanTime:         time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
-					Alarm:            true,
-					Days:             []string{"SUNDAY", "MONDAY"},
-					ParticipateUsers: []string{testMeID},
+				req := entity.CreateMissionRequest{
+					UserID:   testUserID,
+					Title:    "tet_mission",
+					Emoji:    "test_emoji",
+					Duration: entity.Daily,
+					PlanTime: time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
+					Alarm:    true,
+					WeekDay:  []string{"SUNDAY", "MONDAY"},
+					Type:     entity.Single,
 				}
 				jb, _ := json.Marshal(req)
 
 				return bytes.NewReader(jb)
 			},
 			mock: func() {
-				ms.taskService.EXPECT().CreateTask(mock.Anything, dto.CreateMissionRequest{
-					Title:            "tet_mission",
-					Emoji:            "test_emoji",
-					Duration:         "DAILY",
-					StartDate:        time.Time{},
-					EndDate:          time.Time{},
-					PlanTime:         time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
-					Alarm:            true,
-					Days:             []string{"SUNDAY", "MONDAY"},
-					ParticipateUsers: []string{testMeID},
+				ts.missionService.EXPECT().CreateMission(mock.Anything, entity.CreateMissionRequest{
+					UserID:   testUserID,
+					Title:    "tet_mission",
+					Emoji:    "test_emoji",
+					Duration: entity.Daily,
+					PlanTime: time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
+					Alarm:    true,
+					WeekDay:  []string{"SUNDAY", "MONDAY"},
+					Type:     entity.Single,
 				}).
-					Return(dto.CreateMissionResponse{}, nil).Once()
+					Return(entity.CreateMissionResponse{}, nil).Once()
+			},
+			status: http.StatusOK,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			req, _ := http.NewRequest(http.MethodPost, "/mission", tt.body())
+			req.Header.Set("Content-Type", "application/json")
+
+			rec := httptest.NewRecorder()
+			ts.router.ServeHTTP(rec, req)
+
+			assert.Equal(t, tt.status, rec.Code)
+			ts.missionService.AssertExpectations(t)
+		})
+	}
+}
+
+func Test_missionController_ListMissions(t *testing.T) {
+	ts := initControllerTestSuite(t)
+	testUserID := entity.BinaryUUIDNew().String()
+
+	tests := []struct {
+		name   string
+		url    func() string
+		mock   func()
+		status int
+	}{
+		{
+			name: "PASS 미션 리스트 조회",
+			url: func() string {
+				path, _ := url.JoinPath("/mission", testUserID)
+				return path
+			},
+			mock: func() {
+				ts.missionService.EXPECT().ListMissions(mock.Anything, entity.ListMissionsRequest{
+					UserID: testUserID,
+				}).Return(entity.ListMissionsResponse{}, nil).Once()
+			},
+			status: http.StatusOK,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			req, _ := http.NewRequest(http.MethodGet, tt.url(), nil)
+
+			rec := httptest.NewRecorder()
+			ts.router.ServeHTTP(rec, req)
+
+			assert.Equal(t, tt.status, rec.Code)
+			ts.missionService.AssertExpectations(t)
+		})
+	}
+}
+
+func Test_missionController_PatchMission(t *testing.T) {
+	ts := initControllerTestSuite(t)
+
+	tests := []struct {
+		name   string
+		body   func() *bytes.Reader
+		mock   func()
+		status int
+	}{
+		{
+			name: "PASS 미션 수정",
+			body: func() *bytes.Reader {
+				req := entity.PatchMissionRequest{
+					ID:       1,
+					Title:    "modified_mission",
+					Emoji:    "modified_emoji",
+					Duration: "DAILY",
+					Alarm:    false,
+					WeekDay:  []string{"MONDAY", "TUESDAY"},
+					Type:     entity.Single,
+					Status:   entity.Active,
+				}
+				jb, _ := json.Marshal(req)
+
+				return bytes.NewReader(jb)
+			},
+			mock: func() {
+				ts.missionService.EXPECT().PatchMission(mock.Anything, entity.PatchMissionRequest{
+					ID:       1,
+					Title:    "modified_mission",
+					Emoji:    "modified_emoji",
+					Duration: "DAILY",
+					Alarm:    false,
+					WeekDay:  []string{"MONDAY", "TUESDAY"},
+					Type:     entity.Single,
+					Status:   entity.Active,
+				}).Return(entity.PatchMissionResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
@@ -84,14 +177,14 @@ func Test_missionController_CreateTask(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			req, _ := http.NewRequest(http.MethodPost, "/tasks", tt.body())
+			req, _ := http.NewRequest(http.MethodPatch, "/mission", tt.body())
 			req.Header.Set("Content-Type", "application/json")
 
 			rec := httptest.NewRecorder()
-			ms.router.ServeHTTP(rec, req)
+			ts.router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			ms.taskService.AssertExpectations(t)
+			ts.missionService.AssertExpectations(t)
 		})
 	}
 }

@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	dto "pixelix/dto"
+	entity "pixelix/entity"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -23,21 +23,21 @@ func (_m *MissionService) EXPECT() *MissionService_Expecter {
 }
 
 // CreateMission provides a mock function with given fields: ctx, req
-func (_m *MissionService) CreateMission(ctx context.Context, req dto.CreateMissionRequest) (dto.CreateMissionResponse, error) {
+func (_m *MissionService) CreateMission(ctx context.Context, req entity.CreateMissionRequest) (entity.CreateMissionResponse, error) {
 	ret := _m.Called(ctx, req)
 
-	var r0 dto.CreateMissionResponse
+	var r0 entity.CreateMissionResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, dto.CreateMissionRequest) (dto.CreateMissionResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateMissionRequest) (entity.CreateMissionResponse, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, dto.CreateMissionRequest) dto.CreateMissionResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateMissionRequest) entity.CreateMissionResponse); ok {
 		r0 = rf(ctx, req)
 	} else {
-		r0 = ret.Get(0).(dto.CreateMissionResponse)
+		r0 = ret.Get(0).(entity.CreateMissionResponse)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, dto.CreateMissionRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, entity.CreateMissionRequest) error); ok {
 		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
@@ -53,24 +53,130 @@ type MissionService_CreateMission_Call struct {
 
 // CreateMission is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req dto.CreateMissionRequest
+//   - req entity.CreateMissionRequest
 func (_e *MissionService_Expecter) CreateMission(ctx interface{}, req interface{}) *MissionService_CreateMission_Call {
 	return &MissionService_CreateMission_Call{Call: _e.mock.On("CreateMission", ctx, req)}
 }
 
-func (_c *MissionService_CreateMission_Call) Run(run func(ctx context.Context, req dto.CreateMissionRequest)) *MissionService_CreateMission_Call {
+func (_c *MissionService_CreateMission_Call) Run(run func(ctx context.Context, req entity.CreateMissionRequest)) *MissionService_CreateMission_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dto.CreateMissionRequest))
+		run(args[0].(context.Context), args[1].(entity.CreateMissionRequest))
 	})
 	return _c
 }
 
-func (_c *MissionService_CreateMission_Call) Return(_a0 dto.CreateMissionResponse, _a1 error) *MissionService_CreateMission_Call {
+func (_c *MissionService_CreateMission_Call) Return(_a0 entity.CreateMissionResponse, _a1 error) *MissionService_CreateMission_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MissionService_CreateMission_Call) RunAndReturn(run func(context.Context, dto.CreateMissionRequest) (dto.CreateMissionResponse, error)) *MissionService_CreateMission_Call {
+func (_c *MissionService_CreateMission_Call) RunAndReturn(run func(context.Context, entity.CreateMissionRequest) (entity.CreateMissionResponse, error)) *MissionService_CreateMission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListMissions provides a mock function with given fields: ctx, req
+func (_m *MissionService) ListMissions(ctx context.Context, req entity.ListMissionsRequest) (entity.ListMissionsResponse, error) {
+	ret := _m.Called(ctx, req)
+
+	var r0 entity.ListMissionsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMissionsRequest) (entity.ListMissionsResponse, error)); ok {
+		return rf(ctx, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMissionsRequest) entity.ListMissionsResponse); ok {
+		r0 = rf(ctx, req)
+	} else {
+		r0 = ret.Get(0).(entity.ListMissionsResponse)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ListMissionsRequest) error); ok {
+		r1 = rf(ctx, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MissionService_ListMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMissions'
+type MissionService_ListMissions_Call struct {
+	*mock.Call
+}
+
+// ListMissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - req entity.ListMissionsRequest
+func (_e *MissionService_Expecter) ListMissions(ctx interface{}, req interface{}) *MissionService_ListMissions_Call {
+	return &MissionService_ListMissions_Call{Call: _e.mock.On("ListMissions", ctx, req)}
+}
+
+func (_c *MissionService_ListMissions_Call) Run(run func(ctx context.Context, req entity.ListMissionsRequest)) *MissionService_ListMissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.ListMissionsRequest))
+	})
+	return _c
+}
+
+func (_c *MissionService_ListMissions_Call) Return(_a0 entity.ListMissionsResponse, _a1 error) *MissionService_ListMissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MissionService_ListMissions_Call) RunAndReturn(run func(context.Context, entity.ListMissionsRequest) (entity.ListMissionsResponse, error)) *MissionService_ListMissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PatchMission provides a mock function with given fields: ctx, req
+func (_m *MissionService) PatchMission(ctx context.Context, req entity.PatchMissionRequest) (entity.PatchMissionResponse, error) {
+	ret := _m.Called(ctx, req)
+
+	var r0 entity.PatchMissionResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.PatchMissionRequest) (entity.PatchMissionResponse, error)); ok {
+		return rf(ctx, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.PatchMissionRequest) entity.PatchMissionResponse); ok {
+		r0 = rf(ctx, req)
+	} else {
+		r0 = ret.Get(0).(entity.PatchMissionResponse)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.PatchMissionRequest) error); ok {
+		r1 = rf(ctx, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MissionService_PatchMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchMission'
+type MissionService_PatchMission_Call struct {
+	*mock.Call
+}
+
+// PatchMission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - req entity.PatchMissionRequest
+func (_e *MissionService_Expecter) PatchMission(ctx interface{}, req interface{}) *MissionService_PatchMission_Call {
+	return &MissionService_PatchMission_Call{Call: _e.mock.On("PatchMission", ctx, req)}
+}
+
+func (_c *MissionService_PatchMission_Call) Run(run func(ctx context.Context, req entity.PatchMissionRequest)) *MissionService_PatchMission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.PatchMissionRequest))
+	})
+	return _c
+}
+
+func (_c *MissionService_PatchMission_Call) Return(_a0 entity.PatchMissionResponse, _a1 error) *MissionService_PatchMission_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MissionService_PatchMission_Call) RunAndReturn(run func(context.Context, entity.PatchMissionRequest) (entity.PatchMissionResponse, error)) *MissionService_PatchMission_Call {
 	_c.Call.Return(run)
 	return _c
 }

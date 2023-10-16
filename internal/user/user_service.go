@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"github.com/golang-jwt/jwt/v5"
-	"pixelix/dto"
 	"pixelix/entity"
 	"pixelix/pkg/cerrors"
 )
@@ -18,7 +17,7 @@ func NewUserService(repo entity.UserRepository) *userService {
 
 var _ entity.UserService = (*userService)(nil)
 
-func (us *userService) ReadUser(ctx context.Context, req dto.ReadUserRequest) (*dto.ReadUserResponse, error) {
+func (us *userService) ReadUser(ctx context.Context, req entity.ReadUserRequest) (*entity.ReadUserResponse, error) {
 	const op cerrors.Op = "user/service/readUser"
 
 	userID, err := entity.ParseUUID(req.ID)
@@ -34,14 +33,14 @@ func (us *userService) ReadUser(ctx context.Context, req dto.ReadUserRequest) (*
 		return nil, cerrors.E(op, cerrors.Invalid, "user not exist")
 	}
 
-	return &dto.ReadUserResponse{
+	return &entity.ReadUserResponse{
 		ID:       user.ID.String(),
 		Email:    user.Email,
 		NickName: user.NickName,
 	}, nil
 }
 
-func (us *userService) UpdateUser(ctx context.Context, req dto.UpdateUserRequest) (*dto.UpdateUserResponse, error) {
+func (us *userService) UpdateUser(ctx context.Context, req entity.UpdateUserRequest) (*entity.UpdateUserResponse, error) {
 	const op cerrors.Op = "user/service/updateUser"
 
 	userID, err := entity.ParseUUID(req.ID)
@@ -64,14 +63,14 @@ func (us *userService) UpdateUser(ctx context.Context, req dto.UpdateUserRequest
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	return &dto.UpdateUserResponse{
+	return &entity.UpdateUserResponse{
 		ID:       user.ID.String(),
 		Email:    user.Email,
 		NickName: user.NickName,
 	}, nil
 }
 
-func (us *userService) DeleteUser(ctx context.Context, req dto.DeleteUserRequest) error {
+func (us *userService) DeleteUser(ctx context.Context, req entity.DeleteUserRequest) error {
 	const op cerrors.Op = "user/service/deleteUser"
 
 	userID, err := entity.ParseUUID(req.ID)
@@ -86,7 +85,7 @@ func (us *userService) DeleteUser(ctx context.Context, req dto.DeleteUserRequest
 	return nil
 }
 
-func (us *userService) OAuthLoginUser(ctx context.Context, req dto.OAuthLoginUserRequest) (*dto.OAuthLoginUserResponse, error) {
+func (us *userService) OAuthLoginUser(ctx context.Context, req entity.OAuthLoginUserRequest) (*entity.OAuthLoginUserResponse, error) {
 	const op cerrors.Op = "user/service/OAuthLoginUser"
 
 	user, err := us.repository.FindByEmail(ctx, req.Email)
@@ -110,7 +109,7 @@ func (us *userService) OAuthLoginUser(ctx context.Context, req dto.OAuthLoginUse
 		}
 	}
 
-	return &dto.OAuthLoginUserResponse{
+	return &entity.OAuthLoginUserResponse{
 		AccessToken: generateAccessToken(user),
 	}, nil
 }

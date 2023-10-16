@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	dto "pixelix/dto"
+	entity "pixelix/entity"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -23,11 +23,11 @@ func (_m *UserService) EXPECT() *UserService_Expecter {
 }
 
 // DeleteUser provides a mock function with given fields: ctx, req
-func (_m *UserService) DeleteUser(ctx context.Context, req dto.DeleteUserRequest) error {
+func (_m *UserService) DeleteUser(ctx context.Context, req entity.DeleteUserRequest) error {
 	ret := _m.Called(ctx, req)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, dto.DeleteUserRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.DeleteUserRequest) error); ok {
 		r0 = rf(ctx, req)
 	} else {
 		r0 = ret.Error(0)
@@ -43,14 +43,14 @@ type UserService_DeleteUser_Call struct {
 
 // DeleteUser is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req dto.DeleteUserRequest
+//   - req entity.DeleteUserRequest
 func (_e *UserService_Expecter) DeleteUser(ctx interface{}, req interface{}) *UserService_DeleteUser_Call {
 	return &UserService_DeleteUser_Call{Call: _e.mock.On("DeleteUser", ctx, req)}
 }
 
-func (_c *UserService_DeleteUser_Call) Run(run func(ctx context.Context, req dto.DeleteUserRequest)) *UserService_DeleteUser_Call {
+func (_c *UserService_DeleteUser_Call) Run(run func(ctx context.Context, req entity.DeleteUserRequest)) *UserService_DeleteUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dto.DeleteUserRequest))
+		run(args[0].(context.Context), args[1].(entity.DeleteUserRequest))
 	})
 	return _c
 }
@@ -60,29 +60,29 @@ func (_c *UserService_DeleteUser_Call) Return(_a0 error) *UserService_DeleteUser
 	return _c
 }
 
-func (_c *UserService_DeleteUser_Call) RunAndReturn(run func(context.Context, dto.DeleteUserRequest) error) *UserService_DeleteUser_Call {
+func (_c *UserService_DeleteUser_Call) RunAndReturn(run func(context.Context, entity.DeleteUserRequest) error) *UserService_DeleteUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // OAuthLoginUser provides a mock function with given fields: ctx, req
-func (_m *UserService) OAuthLoginUser(ctx context.Context, req dto.OAuthLoginUserRequest) (*dto.OAuthLoginUserResponse, error) {
+func (_m *UserService) OAuthLoginUser(ctx context.Context, req entity.OAuthLoginUserRequest) (*entity.OAuthLoginUserResponse, error) {
 	ret := _m.Called(ctx, req)
 
-	var r0 *dto.OAuthLoginUserResponse
+	var r0 *entity.OAuthLoginUserResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, dto.OAuthLoginUserRequest) (*dto.OAuthLoginUserResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.OAuthLoginUserRequest) (*entity.OAuthLoginUserResponse, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, dto.OAuthLoginUserRequest) *dto.OAuthLoginUserResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.OAuthLoginUserRequest) *entity.OAuthLoginUserResponse); ok {
 		r0 = rf(ctx, req)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*dto.OAuthLoginUserResponse)
+			r0 = ret.Get(0).(*entity.OAuthLoginUserResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, dto.OAuthLoginUserRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, entity.OAuthLoginUserRequest) error); ok {
 		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
@@ -98,46 +98,46 @@ type UserService_OAuthLoginUser_Call struct {
 
 // OAuthLoginUser is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req dto.OAuthLoginUserRequest
+//   - req entity.OAuthLoginUserRequest
 func (_e *UserService_Expecter) OAuthLoginUser(ctx interface{}, req interface{}) *UserService_OAuthLoginUser_Call {
 	return &UserService_OAuthLoginUser_Call{Call: _e.mock.On("OAuthLoginUser", ctx, req)}
 }
 
-func (_c *UserService_OAuthLoginUser_Call) Run(run func(ctx context.Context, req dto.OAuthLoginUserRequest)) *UserService_OAuthLoginUser_Call {
+func (_c *UserService_OAuthLoginUser_Call) Run(run func(ctx context.Context, req entity.OAuthLoginUserRequest)) *UserService_OAuthLoginUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dto.OAuthLoginUserRequest))
+		run(args[0].(context.Context), args[1].(entity.OAuthLoginUserRequest))
 	})
 	return _c
 }
 
-func (_c *UserService_OAuthLoginUser_Call) Return(_a0 *dto.OAuthLoginUserResponse, _a1 error) *UserService_OAuthLoginUser_Call {
+func (_c *UserService_OAuthLoginUser_Call) Return(_a0 *entity.OAuthLoginUserResponse, _a1 error) *UserService_OAuthLoginUser_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *UserService_OAuthLoginUser_Call) RunAndReturn(run func(context.Context, dto.OAuthLoginUserRequest) (*dto.OAuthLoginUserResponse, error)) *UserService_OAuthLoginUser_Call {
+func (_c *UserService_OAuthLoginUser_Call) RunAndReturn(run func(context.Context, entity.OAuthLoginUserRequest) (*entity.OAuthLoginUserResponse, error)) *UserService_OAuthLoginUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // ReadUser provides a mock function with given fields: ctx, req
-func (_m *UserService) ReadUser(ctx context.Context, req dto.ReadUserRequest) (*dto.ReadUserResponse, error) {
+func (_m *UserService) ReadUser(ctx context.Context, req entity.ReadUserRequest) (*entity.ReadUserResponse, error) {
 	ret := _m.Called(ctx, req)
 
-	var r0 *dto.ReadUserResponse
+	var r0 *entity.ReadUserResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, dto.ReadUserRequest) (*dto.ReadUserResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ReadUserRequest) (*entity.ReadUserResponse, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, dto.ReadUserRequest) *dto.ReadUserResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ReadUserRequest) *entity.ReadUserResponse); ok {
 		r0 = rf(ctx, req)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*dto.ReadUserResponse)
+			r0 = ret.Get(0).(*entity.ReadUserResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, dto.ReadUserRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ReadUserRequest) error); ok {
 		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
@@ -153,46 +153,46 @@ type UserService_ReadUser_Call struct {
 
 // ReadUser is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req dto.ReadUserRequest
+//   - req entity.ReadUserRequest
 func (_e *UserService_Expecter) ReadUser(ctx interface{}, req interface{}) *UserService_ReadUser_Call {
 	return &UserService_ReadUser_Call{Call: _e.mock.On("ReadUser", ctx, req)}
 }
 
-func (_c *UserService_ReadUser_Call) Run(run func(ctx context.Context, req dto.ReadUserRequest)) *UserService_ReadUser_Call {
+func (_c *UserService_ReadUser_Call) Run(run func(ctx context.Context, req entity.ReadUserRequest)) *UserService_ReadUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dto.ReadUserRequest))
+		run(args[0].(context.Context), args[1].(entity.ReadUserRequest))
 	})
 	return _c
 }
 
-func (_c *UserService_ReadUser_Call) Return(_a0 *dto.ReadUserResponse, _a1 error) *UserService_ReadUser_Call {
+func (_c *UserService_ReadUser_Call) Return(_a0 *entity.ReadUserResponse, _a1 error) *UserService_ReadUser_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *UserService_ReadUser_Call) RunAndReturn(run func(context.Context, dto.ReadUserRequest) (*dto.ReadUserResponse, error)) *UserService_ReadUser_Call {
+func (_c *UserService_ReadUser_Call) RunAndReturn(run func(context.Context, entity.ReadUserRequest) (*entity.ReadUserResponse, error)) *UserService_ReadUser_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // UpdateUser provides a mock function with given fields: ctx, req
-func (_m *UserService) UpdateUser(ctx context.Context, req dto.UpdateUserRequest) (*dto.UpdateUserResponse, error) {
+func (_m *UserService) UpdateUser(ctx context.Context, req entity.UpdateUserRequest) (*entity.UpdateUserResponse, error) {
 	ret := _m.Called(ctx, req)
 
-	var r0 *dto.UpdateUserResponse
+	var r0 *entity.UpdateUserResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.UpdateUserRequest) (*entity.UpdateUserResponse, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, dto.UpdateUserRequest) *dto.UpdateUserResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.UpdateUserRequest) *entity.UpdateUserResponse); ok {
 		r0 = rf(ctx, req)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*dto.UpdateUserResponse)
+			r0 = ret.Get(0).(*entity.UpdateUserResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, dto.UpdateUserRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, entity.UpdateUserRequest) error); ok {
 		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
@@ -208,24 +208,24 @@ type UserService_UpdateUser_Call struct {
 
 // UpdateUser is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req dto.UpdateUserRequest
+//   - req entity.UpdateUserRequest
 func (_e *UserService_Expecter) UpdateUser(ctx interface{}, req interface{}) *UserService_UpdateUser_Call {
 	return &UserService_UpdateUser_Call{Call: _e.mock.On("UpdateUser", ctx, req)}
 }
 
-func (_c *UserService_UpdateUser_Call) Run(run func(ctx context.Context, req dto.UpdateUserRequest)) *UserService_UpdateUser_Call {
+func (_c *UserService_UpdateUser_Call) Run(run func(ctx context.Context, req entity.UpdateUserRequest)) *UserService_UpdateUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dto.UpdateUserRequest))
+		run(args[0].(context.Context), args[1].(entity.UpdateUserRequest))
 	})
 	return _c
 }
 
-func (_c *UserService_UpdateUser_Call) Return(_a0 *dto.UpdateUserResponse, _a1 error) *UserService_UpdateUser_Call {
+func (_c *UserService_UpdateUser_Call) Return(_a0 *entity.UpdateUserResponse, _a1 error) *UserService_UpdateUser_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *UserService_UpdateUser_Call) RunAndReturn(run func(context.Context, dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)) *UserService_UpdateUser_Call {
+func (_c *UserService_UpdateUser_Call) RunAndReturn(run func(context.Context, entity.UpdateUserRequest) (*entity.UpdateUserResponse, error)) *UserService_UpdateUser_Call {
 	_c.Call.Return(run)
 	return _c
 }

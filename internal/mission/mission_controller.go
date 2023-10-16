@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"pixelix/dto"
 	"pixelix/entity"
 	"pixelix/pkg/cerrors"
 	"pixelix/pkg/logger"
@@ -12,25 +11,27 @@ import (
 )
 
 func RegisterRoutes(e *gin.Engine, controller entity.MissionController) {
-	e.POST("/tasks", controller.CreateMission)
+	e.GET("/mission/:userID", controller.ListMissions)
+	e.POST("/mission", controller.CreateMission)
+	e.PATCH("/mission", controller.PatchMission)
 }
 
-type taskController struct {
+type missionController struct {
 	logger  logger.Logger
 	service entity.MissionService
 }
 
-func NewTaskController(service entity.MissionService, logger logger.Logger) *taskController {
-	return &taskController{
+func NewMissionController(service entity.MissionService, logger logger.Logger) *missionController {
+	return &missionController{
 		logger:  logger,
 		service: service,
 	}
 }
 
-var _ entity.MissionController = (*taskController)(nil)
+var _ entity.MissionController = (*missionController)(nil)
 
-func (tc *taskController) CreateMission(c *gin.Context) {
-	var req dto.CreateMissionRequest
+func (tc *missionController) CreateMission(c *gin.Context) {
+	var req entity.CreateMissionRequest
 
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
@@ -41,6 +42,46 @@ func (tc *taskController) CreateMission(c *gin.Context) {
 	defer cancel()
 
 	res, err := tc.service.CreateMission(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func (tc *missionController) PatchMission(c *gin.Context) {
+	var req entity.PatchMissionRequest
+
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	res, err := tc.service.PatchMission(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func (tc *missionController) ListMissions(c *gin.Context) {
+	var req entity.ListMissionsRequest
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	res, err := tc.service.ListMissions(ctx, req)
 	if err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return

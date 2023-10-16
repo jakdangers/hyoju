@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"pixelix/dto"
 	"pixelix/entity"
 	"pixelix/pkg/cerrors"
 	"pixelix/pkg/logger"
@@ -34,7 +33,7 @@ func NewUserController(service entity.UserService, logger logger.Logger) *userCo
 var _ entity.UserController = (*userController)(nil)
 
 func (uc *userController) ReadUser(c *gin.Context) {
-	var req dto.ReadUserRequest
+	var req entity.ReadUserRequest
 
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
@@ -55,7 +54,7 @@ func (uc *userController) ReadUser(c *gin.Context) {
 }
 
 func (uc *userController) UpdateUser(c *gin.Context) {
-	var req dto.UpdateUserRequest
+	var req entity.UpdateUserRequest
 
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
@@ -80,7 +79,7 @@ func (uc *userController) UpdateUser(c *gin.Context) {
 }
 
 func (uc *userController) DeleteUser(c *gin.Context) {
-	var request dto.DeleteUserRequest
+	var request entity.DeleteUserRequest
 
 	if err := c.ShouldBindUri(&request); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
@@ -99,7 +98,7 @@ func (uc *userController) DeleteUser(c *gin.Context) {
 }
 
 func (uc *userController) OAuthLoginUser(c *gin.Context) {
-	var req dto.OAuthLoginUserRequest
+	var req entity.OAuthLoginUserRequest
 
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))

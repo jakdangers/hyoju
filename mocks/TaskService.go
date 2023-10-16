@@ -4,7 +4,7 @@ package mocks
 
 import (
 	context "context"
-	dto "pixelix/dto"
+	dto "pixelix/entity"
 
 	mock "github.com/stretchr/testify/mock"
 )

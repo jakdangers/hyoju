@@ -6,7 +6,6 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"pixelix/dto"
 	"pixelix/entity"
 	"pixelix/mocks"
 	"testing"
@@ -29,7 +28,7 @@ func setupUserServiceTestSuite(t *testing.T) serviceTestSuite {
 func Test_userService_ReadUser(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req dto.ReadUserRequest
+		req entity.ReadUserRequest
 	}
 
 	us := setupUserServiceTestSuite(t)
@@ -39,14 +38,14 @@ func Test_userService_ReadUser(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *dto.ReadUserResponse
+		want    *entity.ReadUserResponse
 		wantErr bool
 	}{
 		{
 			name: "PASS 존재하는 유저 조회",
 			args: args{
 				ctx: context.Background(),
-				req: dto.ReadUserRequest{
+				req: entity.ReadUserRequest{
 					ID: testUserID.String(),
 				},
 			},
@@ -59,7 +58,7 @@ func Test_userService_ReadUser(t *testing.T) {
 					NickName: "blipix",
 				}, nil).Once()
 			},
-			want: &dto.ReadUserResponse{
+			want: &entity.ReadUserResponse{
 				ID:       testUserID.String(),
 				Email:    "blipix@blipix.com",
 				NickName: "blipix",
@@ -70,7 +69,7 @@ func Test_userService_ReadUser(t *testing.T) {
 			name: "PASS 존재하지 않는 유저 조회",
 			args: args{
 				ctx: context.Background(),
-				req: dto.ReadUserRequest{
+				req: entity.ReadUserRequest{
 					ID: testUserID.String(),
 				},
 			},
@@ -98,7 +97,7 @@ func Test_userService_ReadUser(t *testing.T) {
 func Test_userService_UpdateUser(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req dto.UpdateUserRequest
+		req entity.UpdateUserRequest
 	}
 
 	us := setupUserServiceTestSuite(t)
@@ -108,14 +107,14 @@ func Test_userService_UpdateUser(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *dto.UpdateUserResponse
+		want    *entity.UpdateUserResponse
 		wantErr bool
 	}{
 		{
 			name: "PASS 존재하는 userID 수정",
 			args: args{
 				ctx: context.Background(),
-				req: dto.UpdateUserRequest{
+				req: entity.UpdateUserRequest{
 					ID:       testUserID.String(),
 					NickName: "modified_nickName",
 				},
@@ -148,7 +147,7 @@ func Test_userService_UpdateUser(t *testing.T) {
 					FirebaseUID: "firebaseUID",
 				}, nil).Once()
 			},
-			want: &dto.UpdateUserResponse{
+			want: &entity.UpdateUserResponse{
 				ID:       testUserID.String(),
 				NickName: "modified_nickName",
 				Email:    "blipix@blipix.com",
@@ -159,7 +158,7 @@ func Test_userService_UpdateUser(t *testing.T) {
 			name: "FAIL 존재하지 않는 userID 수정",
 			args: args{
 				ctx: context.Background(),
-				req: dto.UpdateUserRequest{
+				req: entity.UpdateUserRequest{
 					ID:       testUserID.String(),
 					NickName: "modified_nickName",
 				},
@@ -188,7 +187,7 @@ func Test_userService_UpdateUser(t *testing.T) {
 func Test_userService_OAuthLoginUser(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req dto.OAuthLoginUserRequest
+		req entity.OAuthLoginUserRequest
 	}
 
 	us := setupUserServiceTestSuite(t)
@@ -197,14 +196,14 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *dto.OAuthLoginUserResponse
+		want    *entity.OAuthLoginUserResponse
 		wantErr bool
 	}{
 		{
 			name: "PASS 신규 유저 생성 후 토큰 발생",
 			args: args{
 				ctx: context.Background(),
-				req: dto.OAuthLoginUserRequest{
+				req: entity.OAuthLoginUserRequest{
 					Email:       "blipix@blipix.com",
 					FirebaseUID: "firebaseUID",
 					Provider:    "blipix",
@@ -219,7 +218,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 					Provider:    "blipix",
 				}, nil).Once()
 			},
-			want: &dto.OAuthLoginUserResponse{
+			want: &entity.OAuthLoginUserResponse{
 				AccessToken: "test_accessToken",
 			},
 			wantErr: false,
@@ -228,7 +227,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 			name: "PASS 이미 존재하는 유저의 토큰 발생",
 			args: args{
 				ctx: context.Background(),
-				req: dto.OAuthLoginUserRequest{
+				req: entity.OAuthLoginUserRequest{
 					Email:       "blipix@blipix.com",
 					FirebaseUID: "firebaseUID",
 					Provider:    "blipix",
@@ -239,7 +238,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 					Email: "blipix@blipix.com",
 				}, nil).Once()
 			},
-			want: &dto.OAuthLoginUserResponse{
+			want: &entity.OAuthLoginUserResponse{
 				AccessToken: "test_accessToken",
 			},
 			wantErr: false,
@@ -250,7 +249,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			got, err := us.service.OAuthLoginUser(tt.args.ctx, tt.args.req)
-			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(dto.OAuthLoginUserResponse{}, "AccessToken")))
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.OAuthLoginUserResponse{}, "AccessToken")))
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
@@ -261,7 +260,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 func Test_userService_DeleteUser(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req dto.DeleteUserRequest
+		req entity.DeleteUserRequest
 	}
 
 	us := setupUserServiceTestSuite(t)
@@ -277,7 +276,7 @@ func Test_userService_DeleteUser(t *testing.T) {
 			name: "PASS 삭제",
 			args: args{
 				ctx: context.Background(),
-				req: dto.DeleteUserRequest{
+				req: entity.DeleteUserRequest{
 					ID: testUserID.String(),
 				},
 			},

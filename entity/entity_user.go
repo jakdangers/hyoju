@@ -3,7 +3,6 @@ package entity
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"pixelix/dto"
 )
 
 type User struct {
@@ -24,10 +23,10 @@ type UserRepository interface {
 }
 
 type UserService interface {
-	ReadUser(ctx context.Context, req dto.ReadUserRequest) (*dto.ReadUserResponse, error)
-	UpdateUser(ctx context.Context, req dto.UpdateUserRequest) (*dto.UpdateUserResponse, error)
-	DeleteUser(ctx context.Context, req dto.DeleteUserRequest) error
-	OAuthLoginUser(ctx context.Context, req dto.OAuthLoginUserRequest) (*dto.OAuthLoginUserResponse, error)
+	ReadUser(ctx context.Context, req ReadUserRequest) (*ReadUserResponse, error)
+	UpdateUser(ctx context.Context, req UpdateUserRequest) (*UpdateUserResponse, error)
+	DeleteUser(ctx context.Context, req DeleteUserRequest) error
+	OAuthLoginUser(ctx context.Context, req OAuthLoginUserRequest) (*OAuthLoginUserResponse, error)
 }
 
 type UserController interface {
