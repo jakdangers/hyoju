@@ -11,18 +11,19 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"pixelix/entity"
+	"strings"
 	"testing"
 )
 
-type userRepositoryTestSuite struct {
+type repoTestSuite struct {
 	db             *sql.DB
 	gormDB         *gorm.DB
 	sqlMock        sqlmock.Sqlmock
 	userRepository entity.UserRepository
 }
 
-func setupUserRepositoryTestSuite() *userRepositoryTestSuite {
-	var us userRepositoryTestSuite
+func initRepoTestSuite() *repoTestSuite {
+	var us repoTestSuite
 
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
@@ -53,7 +54,7 @@ func Test_userRepository_CreateUser(t *testing.T) {
 		user *entity.User
 	}
 
-	us := setupUserRepositoryTestSuite()
+	us := initRepoTestSuite()
 	testUserID := entity.BinaryUUIDNew()
 
 	tests := []struct {
@@ -126,7 +127,7 @@ func Test_userRepository_UpdateUser(t *testing.T) {
 		user *entity.User
 	}
 
-	us := setupUserRepositoryTestSuite()
+	us := initRepoTestSuite()
 	testUserID := entity.BinaryUUIDNew()
 
 	tests := []struct {
@@ -184,7 +185,7 @@ func Test_userRepository_DeleteUser(t *testing.T) {
 		id  entity.BinaryUUID
 	}
 
-	us := setupUserRepositoryTestSuite()
+	us := initRepoTestSuite()
 
 	tests := []struct {
 		name    string
@@ -199,7 +200,7 @@ func Test_userRepository_DeleteUser(t *testing.T) {
 				id:  entity.BinaryUUIDNew(),
 			},
 			mock: func() {
-				us.sqlMock.ExpectExec("DELETE FROM `users`").WillReturnResult(sqlmock.NewResult(1, 1))
+				us.sqlMock.ExpectExec("UPDATE `users`").WillReturnResult(sqlmock.NewResult(1, 1))
 			},
 			wantErr: false,
 		},
@@ -207,6 +208,7 @@ func Test_userRepository_DeleteUser(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
 			err := us.userRepository.DeleteUser(tt.args.ctx, tt.args.id)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -221,7 +223,7 @@ func Test_userRepository_FindByEmail(t *testing.T) {
 		email string
 	}
 
-	us := setupUserRepositoryTestSuite()
+	us := initRepoTestSuite()
 	testUserID := entity.BinaryUUIDNew()
 
 	tests := []struct {
@@ -239,9 +241,9 @@ func Test_userRepository_FindByEmail(t *testing.T) {
 			},
 			mock: func() {
 				query := "SELECT (.+) FROM `users` (.+)"
-				columns := []string{"id", "nick_name", "email", "provider", "firebase_uid"}
+				columns := []string{"id", "nick_name", "email", "provider", "firebase_uid", "friend_code"}
 				rows := sqlmock.NewRows(columns).AddRow(
-					testUserID, "nick_name", "blipix@blipix.com", "blipix", "firebase_uid",
+					testUserID, "nick_name", "blipix@blipix.com", "blipix", "firebase_uid", "test_friendCode",
 				)
 				us.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
@@ -253,6 +255,7 @@ func Test_userRepository_FindByEmail(t *testing.T) {
 				Email:       "blipix@blipix.com",
 				Provider:    "blipix",
 				FirebaseUID: "firebase_uid",
+				FriendCode:  "test_friendCode",
 			},
 			wantErr: false,
 		},
@@ -289,7 +292,7 @@ func Test_userRepository_FindByID(t *testing.T) {
 		id  entity.BinaryUUID
 	}
 
-	us := setupUserRepositoryTestSuite()
+	us := initRepoTestSuite()
 	testUserID := entity.BinaryUUIDNew()
 
 	tests := []struct {
@@ -343,6 +346,60 @@ func Test_userRepository_FindByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			got, err := us.userRepository.FindByID(tt.args.ctx, tt.args.id)
+			assert.Equal(t, tt.want, got)
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}
+
+func Test_userRepository_FindByFriendCode(t *testing.T) {
+	type args struct {
+		ctx        context.Context
+		friendCode string
+	}
+
+	ts := initRepoTestSuite()
+	testUserID := entity.BinaryUUIDNew()
+	testFriendCode := strings.Split(testUserID.String(), "-")[0]
+
+	tests := []struct {
+		name    string
+		args    args
+		mock    func()
+		want    *entity.User
+		wantErr bool
+	}{
+		{
+			name: "PASS 존재하는 friendCode로 조회",
+			args: args{
+				ctx:        context.Background(),
+				friendCode: testFriendCode,
+			},
+			mock: func() {
+				query := "SELECT (.+) FROM `users`"
+				columns := []string{"id", "nick_name", "email", "provider", "firebase_uid", "friend_code"}
+				rows := sqlmock.NewRows(columns).AddRow(testUserID, "test_nickName", "blipix@blipix.com", "kakao", "test_firebaseUID", testFriendCode)
+				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
+			},
+			want: &entity.User{
+				Base: entity.Base{
+					ID: testUserID,
+				},
+				NickName:    "test_nickName",
+				Email:       "blipix@blipix.com",
+				Provider:    "kakao",
+				FirebaseUID: "test_firebaseUID",
+				FriendCode:  testFriendCode,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := ts.userRepository.FindByFriendCode(tt.args.ctx, tt.args.friendCode)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())

@@ -9,11 +9,14 @@ CREATE TABLE users
     provider     varchar(255),
     firebase_uid varchar(255),
     friend_code  varchar(255)
-)
+);
 
-CREATE TABLE Mission
+CREATE TABLE missions
 (
-    id         BIGINT PRIMARY KEY,
+    id         INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP NULL,
     author_id  BINARY(16),
     title      VARCHAR(255),
     emoji      VARCHAR(255),
@@ -22,5 +25,7 @@ CREATE TABLE Mission
     end_date   DATETIME,
     plan_time  DATETIME,
     alarm      BOOLEAN,
-    days       TINYINT UNSIGNED
+    week_day   TINYINT UNSIGNED,
+    type       VARCHAR(255),
+    status     VARCHAR(255)
 );

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"k8s.io/utils/pointer"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -73,7 +74,7 @@ func Test_missionController_CreateTask(t *testing.T) {
 					WeekDay:  []string{"SUNDAY", "MONDAY"},
 					Type:     entity.Single,
 				}).
-					Return(entity.CreateMissionResponse{}, nil).Once()
+					Return(&entity.CreateMissionResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
@@ -82,7 +83,7 @@ func Test_missionController_CreateTask(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			req, _ := http.NewRequest(http.MethodPost, "/mission", tt.body())
+			req, _ := http.NewRequest(http.MethodPost, "/missions", tt.body())
 			req.Header.Set("Content-Type", "application/json")
 
 			rec := httptest.NewRecorder()
@@ -107,13 +108,13 @@ func Test_missionController_ListMissions(t *testing.T) {
 		{
 			name: "PASS 미션 리스트 조회",
 			url: func() string {
-				path, _ := url.JoinPath("/mission", testUserID)
+				path, _ := url.JoinPath("/missions/user", testUserID)
 				return path
 			},
 			mock: func() {
 				ts.missionService.EXPECT().ListMissions(mock.Anything, entity.ListMissionsRequest{
 					UserID: testUserID,
-				}).Return(entity.ListMissionsResponse{}, nil).Once()
+				}).Return(&entity.ListMissionsResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
@@ -147,13 +148,13 @@ func Test_missionController_PatchMission(t *testing.T) {
 			body: func() *bytes.Reader {
 				req := entity.PatchMissionRequest{
 					ID:       1,
-					Title:    "modified_mission",
-					Emoji:    "modified_emoji",
-					Duration: "DAILY",
-					Alarm:    false,
+					Title:    pointer.String("modified_mission"),
+					Emoji:    pointer.String("modified_emoji"),
+					Duration: pointer.String("DAILY"),
+					Alarm:    pointer.Bool(false),
 					WeekDay:  []string{"MONDAY", "TUESDAY"},
-					Type:     entity.Single,
-					Status:   entity.Active,
+					Type:     pointer.String(entity.Single),
+					Status:   pointer.String(entity.Active),
 				}
 				jb, _ := json.Marshal(req)
 
@@ -162,14 +163,14 @@ func Test_missionController_PatchMission(t *testing.T) {
 			mock: func() {
 				ts.missionService.EXPECT().PatchMission(mock.Anything, entity.PatchMissionRequest{
 					ID:       1,
-					Title:    "modified_mission",
-					Emoji:    "modified_emoji",
-					Duration: "DAILY",
-					Alarm:    false,
+					Title:    pointer.String("modified_mission"),
+					Emoji:    pointer.String("modified_emoji"),
+					Duration: pointer.String("DAILY"),
+					Alarm:    pointer.Bool(false),
 					WeekDay:  []string{"MONDAY", "TUESDAY"},
-					Type:     entity.Single,
-					Status:   entity.Active,
-				}).Return(entity.PatchMissionResponse{}, nil).Once()
+					Type:     pointer.String(entity.Single),
+					Status:   pointer.String(entity.Active),
+				}).Return(&entity.PatchMissionResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
@@ -177,8 +178,46 @@ func Test_missionController_PatchMission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			req, _ := http.NewRequest(http.MethodPatch, "/mission", tt.body())
+			req, _ := http.NewRequest(http.MethodPatch, "/missions", tt.body())
 			req.Header.Set("Content-Type", "application/json")
+
+			rec := httptest.NewRecorder()
+			ts.router.ServeHTTP(rec, req)
+
+			assert.Equal(t, tt.status, rec.Code)
+			ts.missionService.AssertExpectations(t)
+		})
+	}
+}
+
+func Test_missionController_GetMission(t *testing.T) {
+	ts := initControllerTestSuite(t)
+
+	tests := []struct {
+		name   string
+		uri    func() string
+		mock   func()
+		status int
+	}{
+		{
+			name: "PASS 미션 조회",
+			uri: func() string {
+				path, _ := url.JoinPath("/missions", "1")
+				return path
+			},
+			mock: func() {
+				ts.missionService.EXPECT().GetMission(mock.Anything, entity.GetMissionRequest{
+					MissionID: 1,
+				}).Return(&entity.GetMissionResponse{}, nil).Once()
+			},
+			status: http.StatusOK,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			req, _ := http.NewRequest(http.MethodGet, tt.uri(), nil)
 
 			rec := httptest.NewRecorder()
 			ts.router.ServeHTTP(rec, req)

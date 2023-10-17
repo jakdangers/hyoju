@@ -50,7 +50,7 @@ func Test_userController_ReadUser(t *testing.T) {
 			name: "PASS 존재하는 userID 조회",
 			input: func() string {
 				params := url.Values{}
-				params.Add("ID", testUserID)
+				params.Add("MissionID", testUserID)
 				return params.Encode()
 			},
 			mock: func() {
@@ -66,7 +66,7 @@ func Test_userController_ReadUser(t *testing.T) {
 			name: "PASS 존재하지 않는 userID 조회",
 			input: func() string {
 				params := url.Values{}
-				params.Add("ID", testUserID)
+				params.Add("MissionID", testUserID)
 				return params.Encode()
 			},
 			mock: func() {
@@ -207,6 +207,7 @@ func Test_userController_DeleteUser(t *testing.T) {
 
 func Test_userController_OAuthLoginUser(t *testing.T) {
 	us := setupUserControllerTestSuite(t)
+	testUserID := entity.BinaryUUIDNew()
 
 	tests := []struct {
 		name  string
@@ -232,6 +233,10 @@ func Test_userController_OAuthLoginUser(t *testing.T) {
 					FirebaseUID: "firebaseUID",
 					Provider:    "blipix",
 				}).Return(&entity.OAuthLoginUserResponse{
+					ID:          testUserID.String(),
+					NickName:    "test_nickName",
+					Email:       "test_email",
+					FriendCode:  "uuid",
 					AccessToken: "accessToken",
 				}, nil)
 			},

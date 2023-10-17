@@ -53,6 +53,39 @@ func (_c *MissionController_CreateMission_Call) RunAndReturn(run func(*gin.Conte
 	return _c
 }
 
+// GetMission provides a mock function with given fields: c
+func (_m *MissionController) GetMission(c *gin.Context) {
+	_m.Called(c)
+}
+
+// MissionController_GetMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMission'
+type MissionController_GetMission_Call struct {
+	*mock.Call
+}
+
+// GetMission is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *MissionController_Expecter) GetMission(c interface{}) *MissionController_GetMission_Call {
+	return &MissionController_GetMission_Call{Call: _e.mock.On("GetMission", c)}
+}
+
+func (_c *MissionController_GetMission_Call) Run(run func(c *gin.Context)) *MissionController_GetMission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *MissionController_GetMission_Call) Return() *MissionController_GetMission_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MissionController_GetMission_Call) RunAndReturn(run func(*gin.Context)) *MissionController_GetMission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListMissions provides a mock function with given fields: c
 func (_m *MissionController) ListMissions(c *gin.Context) {
 	_m.Called(c)

@@ -95,14 +95,26 @@ func (us *userService) OAuthLoginUser(ctx context.Context, req entity.OAuthLogin
 
 	// 유저가 존재하지 않는 경우 생성
 	if user == nil {
+		userID := entity.BinaryUUIDNew()
+		for {
+			findUser, err := us.repository.FindByFriendCode(ctx, userID.FriendCode())
+			if err != nil {
+				return nil, cerrors.E(op, cerrors.Internal, err)
+			}
+			if findUser == nil {
+				break
+			}
+			userID = entity.BinaryUUIDNew()
+		}
 		user, err = us.repository.CreateUser(ctx, &entity.User{
 			Base: entity.Base{
-				ID: entity.BinaryUUIDNew(),
+				ID: userID,
 			},
-			Email:       req.Email,
 			NickName:    req.Email,
+			Email:       req.Email,
 			Provider:    req.Provider,
 			FirebaseUID: req.FirebaseUID,
+			FriendCode:  userID.FriendCode(),
 		})
 		if err != nil {
 			return nil, cerrors.E(op, cerrors.Internal, err)
@@ -110,6 +122,10 @@ func (us *userService) OAuthLoginUser(ctx context.Context, req entity.OAuthLogin
 	}
 
 	return &entity.OAuthLoginUserResponse{
+		ID:          user.ID.String(),
+		NickName:    user.NickName,
+		Email:       user.Email,
+		FriendCode:  user.FriendCode,
 		AccessToken: generateAccessToken(user),
 	}, nil
 }

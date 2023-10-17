@@ -211,14 +211,17 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 			},
 			mock: func() {
 				us.repository.EXPECT().FindByEmail(mock.Anything, "blipix@blipix.com").Return(nil, nil).Once()
+				us.repository.EXPECT().FindByFriendCode(mock.Anything, mock.Anything).Return(nil, nil).Once()
 				us.repository.EXPECT().CreateUser(mock.Anything, mock.Anything).Return(&entity.User{
-					Email:       "blipix@blipix.com",
 					NickName:    "blipix@blipix.com",
-					FirebaseUID: "firebaseUID",
+					Email:       "blipix@blipix.com",
 					Provider:    "blipix",
+					FirebaseUID: "firebaseUID",
 				}, nil).Once()
 			},
 			want: &entity.OAuthLoginUserResponse{
+				NickName:    "blipix@blipix.com",
+				Email:       "blipix@blipix.com",
 				AccessToken: "test_accessToken",
 			},
 			wantErr: false,
@@ -235,10 +238,13 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 			},
 			mock: func() {
 				us.repository.EXPECT().FindByEmail(mock.Anything, "blipix@blipix.com").Return(&entity.User{
-					Email: "blipix@blipix.com",
+					NickName: "blipix@blipix.com",
+					Email:    "blipix@blipix.com",
 				}, nil).Once()
 			},
 			want: &entity.OAuthLoginUserResponse{
+				NickName:    "blipix@blipix.com",
+				Email:       "blipix@blipix.com",
 				AccessToken: "test_accessToken",
 			},
 			wantErr: false,
@@ -249,7 +255,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			got, err := us.service.OAuthLoginUser(tt.args.ctx, tt.args.req)
-			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.OAuthLoginUserResponse{}, "AccessToken")))
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.OAuthLoginUserResponse{}, "MissionID", "FriendCode", "AccessToken")))
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}

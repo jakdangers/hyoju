@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -54,4 +55,8 @@ func (b *BinaryUUID) Scan(value interface{}) error {
 // Value -> return BinaryUUID to []bytes binary(16)
 func (b BinaryUUID) Value() (driver.Value, error) {
 	return uuid.UUID(b).MarshalBinary()
+}
+
+func (b BinaryUUID) FriendCode() string {
+	return strings.Split(b.String(), "-")[0]
 }

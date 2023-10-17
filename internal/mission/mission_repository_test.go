@@ -71,7 +71,7 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 					AuthorID: testUserID,
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
-					Duration: entity.WeekDay,
+					Duration: entity.Period,
 					Alarm:    false,
 					WeekDay:  3,
 					Type:     entity.Single,
@@ -88,7 +88,7 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 				AuthorID:  testUserID,
 				Title:     "test_mission",
 				Emoji:     "test_emoji",
-				Duration:  entity.WeekDay,
+				Duration:  entity.Period,
 				StartDate: time.Time{},
 				EndDate:   time.Time{},
 				PlanTime:  time.Time{},
@@ -162,6 +162,128 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			got, err := ts.missionRepository.ListMissions(tt.args.ctx, tt.args.userID)
+			assert.Equal(t, tt.want, got)
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}
+
+func Test_missionRepository_PatchMission(t *testing.T) {
+	type args struct {
+		ctx     context.Context
+		mission *entity.Mission
+	}
+
+	ts := initRepoTestSuite()
+	testUserID := entity.BinaryUUIDNew()
+
+	tests := []struct {
+		name    string
+		args    args
+		mock    func()
+		want    *entity.Mission
+		wantErr bool
+	}{
+		{
+			name: "PASS 미션 수정",
+			args: args{
+				ctx: context.Background(),
+				mission: &entity.Mission{
+					Model: gorm.Model{
+						ID: 1,
+					},
+					AuthorID: testUserID,
+					Title:    "modified_mission",
+					Emoji:    "modified_emoji",
+					Duration: entity.Period,
+					Alarm:    false,
+					WeekDay:  7,
+					Type:     entity.Single,
+					Status:   entity.Active,
+				},
+			},
+			mock: func() {
+				query := "UPDATE `missions`"
+				ts.sqlMock.ExpectExec(query).WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+			want: &entity.Mission{
+				Model: gorm.Model{
+					ID: 1,
+				},
+				AuthorID: testUserID,
+				Title:    "modified_mission",
+				Emoji:    "modified_emoji",
+				Duration: entity.Period,
+				Alarm:    false,
+				WeekDay:  7,
+				Type:     entity.Single,
+				Status:   entity.Active,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := ts.missionRepository.PatchMission(tt.args.ctx, tt.args.mission)
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.Mission{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}
+
+func Test_missionRepository_GetMission(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		missionID uint
+	}
+
+	ts := initRepoTestSuite()
+	testUserID := entity.BinaryUUIDNew()
+
+	tests := []struct {
+		name    string
+		args    args
+		mock    func()
+		want    *entity.Mission
+		wantErr bool
+	}{
+		{
+			name: "PASS 미션 조회",
+			args: args{
+				ctx:       context.Background(),
+				missionID: 1,
+			},
+			mock: func() {
+				query := "SELECT (.+) FROM `missions`"
+				columns := []string{"id", "author_id", "title", "emoji", "duration", "alarm", "week_day", "type", "status"}
+				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", true, 3, "SINGLE", "ACTIVE")
+				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
+			},
+			want: &entity.Mission{
+				Model: gorm.Model{
+					ID: 1,
+				},
+				AuthorID: testUserID,
+				Title:    "test_mission",
+				Emoji:    "test_emoji",
+				Duration: "DAILY",
+				Alarm:    true,
+				WeekDay:  3,
+				Type:     "SINGLE",
+				Status:   "ACTIVE",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := ts.missionRepository.GetMission(tt.args.ctx, tt.args.missionID)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())

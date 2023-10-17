@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"gorm.io/gorm"
+	"k8s.io/utils/pointer"
 	"pixelix/entity"
 	"pixelix/mocks"
 	"testing"
@@ -40,7 +41,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    entity.CreateMissionResponse
+		want    *entity.CreateMissionResponse
 		wantErr bool
 	}{
 		{
@@ -95,8 +96,8 @@ func Test_missionService_CreateMission(t *testing.T) {
 					Status:   entity.Active,
 				}, nil).Once()
 			},
-			want: entity.CreateMissionResponse{
-				ID: 1,
+			want: &entity.CreateMissionResponse{
+				MissionID: 1,
 			},
 			wantErr: false,
 		},
@@ -129,7 +130,7 @@ func Test_missionService_ListMissions(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    entity.ListMissionsResponse
+		want    *entity.ListMissionsResponse
 		wantErr bool
 	}{
 		{
@@ -162,7 +163,7 @@ func Test_missionService_ListMissions(t *testing.T) {
 					},
 				}, nil).Once()
 			},
-			want: entity.ListMissionsResponse{
+			want: &entity.ListMissionsResponse{
 				Missions: []entity.MissionDTO{
 					{
 						ID:       1,
@@ -208,7 +209,7 @@ func Test_missionService_PatchMission(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    entity.PatchMissionResponse
+		want    *entity.PatchMissionResponse
 		wantErr bool
 	}{
 		{
@@ -218,13 +219,13 @@ func Test_missionService_PatchMission(t *testing.T) {
 				req: entity.PatchMissionRequest{
 					ID:       1,
 					UserID:   testUserID.String(),
-					Title:    "modified_mission",
-					Emoji:    "modifed_emoji",
-					Duration: entity.Daily,
-					Alarm:    false,
-					WeekDay:  []string{"MONDAY", "TUESDAY"},
-					Type:     entity.Single,
-					Status:   entity.Wait,
+					Title:    pointer.String("modified_mission"),
+					Emoji:    pointer.String("modified_emoji"),
+					Duration: pointer.String(entity.Period),
+					Alarm:    pointer.Bool(false),
+					WeekDay:  []string{"MONDAY", "TUESDAY", "WEDNESDAY"},
+					Type:     pointer.String(entity.Single),
+					Status:   pointer.String(entity.Active),
 				},
 			},
 			mock: func() {
@@ -233,8 +234,58 @@ func Test_missionService_PatchMission(t *testing.T) {
 						ID: testUserID,
 					},
 				}, nil).Once()
+				ts.missionRepo.EXPECT().GetMission(mock.Anything, uint(1)).Return(&entity.Mission{
+					Model: gorm.Model{
+						ID: 1,
+					},
+					AuthorID: testUserID,
+					Title:    "original_mission",
+					Emoji:    "original_emoji",
+					Duration: entity.Daily,
+					Alarm:    true,
+					WeekDay:  3,
+					Type:     entity.Single,
+					Status:   entity.Wait,
+				}, nil).Once()
+				ts.missionRepo.EXPECT().PatchMission(mock.Anything, &entity.Mission{
+					Model: gorm.Model{
+						ID: 1,
+					},
+					AuthorID: testUserID,
+					Title:    "modified_mission",
+					Emoji:    "modified_emoji",
+					Duration: entity.Period,
+					Alarm:    false,
+					WeekDay:  7,
+					Type:     entity.Single,
+					Status:   entity.Active,
+				}).Return(&entity.Mission{
+					Model: gorm.Model{
+						ID: 1,
+					},
+					AuthorID: testUserID,
+					Title:    "modified_mission",
+					Emoji:    "modified_emoji",
+					Duration: entity.Period,
+					Alarm:    false,
+					WeekDay:  7,
+					Type:     entity.Single,
+					Status:   entity.Active,
+				}, nil).Once()
 			},
-			want:    entity.PatchMissionResponse{},
+			want: &entity.PatchMissionResponse{
+				MissionDTO: entity.MissionDTO{
+					ID:       1,
+					AuthorID: testUserID.String(),
+					Title:    "modified_mission",
+					Emoji:    "modified_emoji",
+					Duration: entity.Period,
+					Alarm:    false,
+					WeekDay:  []string{"MONDAY", "TUESDAY", "WEDNESDAY"},
+					Type:     entity.Single,
+					Status:   entity.Active,
+				},
+			},
 			wantErr: false,
 		},
 	}

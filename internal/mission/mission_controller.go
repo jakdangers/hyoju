@@ -11,9 +11,13 @@ import (
 )
 
 func RegisterRoutes(e *gin.Engine, controller entity.MissionController) {
-	e.GET("/mission/:userID", controller.ListMissions)
-	e.POST("/mission", controller.CreateMission)
-	e.PATCH("/mission", controller.PatchMission)
+	missions := e.Group("/missions")
+	{
+		missions.POST("", controller.CreateMission)
+		missions.GET("/user/:userID", controller.ListMissions)
+		missions.GET("/:missionID", controller.GetMission)
+		missions.PATCH("", controller.PatchMission)
+	}
 }
 
 type missionController struct {
@@ -50,10 +54,10 @@ func (tc *missionController) CreateMission(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (tc *missionController) PatchMission(c *gin.Context) {
-	var req entity.PatchMissionRequest
+func (tc *missionController) GetMission(c *gin.Context) {
+	var req entity.GetMissionRequest
 
-	if err := c.ShouldBind(&req); err != nil {
+	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
@@ -61,7 +65,7 @@ func (tc *missionController) PatchMission(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	res, err := tc.service.PatchMission(ctx, req)
+	res, err := tc.service.GetMission(ctx, req)
 	if err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
@@ -82,6 +86,26 @@ func (tc *missionController) ListMissions(c *gin.Context) {
 	defer cancel()
 
 	res, err := tc.service.ListMissions(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func (tc *missionController) PatchMission(c *gin.Context) {
+	var req entity.PatchMissionRequest
+
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	res, err := tc.service.PatchMission(ctx, req)
 	if err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return

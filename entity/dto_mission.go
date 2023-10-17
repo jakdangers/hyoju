@@ -9,16 +9,24 @@ type CreateMissionRequest struct {
 	Title     string    `json:"title"`
 	Emoji     string    `json:"emoji"`
 	Duration  string    `json:"duration"`
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
-	PlanTime  time.Time `json:"plan_time"`
+	StartDate time.Time `json:"startDate"`
+	EndDate   time.Time `json:"endDate"`
+	PlanTime  time.Time `json:"planTime"`
 	Alarm     bool      `json:"alarm"`
 	WeekDay   []string  `json:"weekDay"`
 	Type      string    `json:"type"`
 }
 
 type CreateMissionResponse struct {
-	ID uint `json:"ID"`
+	MissionID uint `json:"missionID"`
+}
+
+type GetMissionRequest struct {
+	MissionID uint `json:"missionID" uri:"missionID"`
+}
+
+type GetMissionResponse struct {
+	Mission MissionDTO `json:"mission"`
 }
 
 type ListMissionsRequest struct {
@@ -30,24 +38,26 @@ type ListMissionsResponse struct {
 }
 
 type PatchMissionRequest struct {
-	ID        uint      `json:"ID"`
-	UserID    string    `json:"userID"`
-	Title     string    `json:"title"`
-	Emoji     string    `json:"emoji"`
-	Duration  string    `json:"duration"`
-	StartDate time.Time `json:"startDate"`
-	EndDate   time.Time `json:"endDate"`
-	PlanTime  time.Time `json:"planTime"`
-	Alarm     bool      `json:"alarm"`
-	WeekDay   []string  `json:"weekDay"`
-	Type      string    `json:"type"`
-	Status    string    `json:"status"`
+	ID        uint       `json:"MissionID"`
+	UserID    string     `json:"userID"`
+	Title     *string    `json:"title"`
+	Emoji     *string    `json:"emoji"`
+	Duration  *string    `json:"duration"`
+	StartDate *time.Time `json:"startDate"`
+	EndDate   *time.Time `json:"endDate"`
+	PlanTime  *time.Time `json:"planTime"`
+	Alarm     *bool      `json:"alarm"`
+	WeekDay   []string   `json:"weekDay"`
+	Type      *string    `json:"type"`
+	Status    *string    `json:"status"`
 }
 
-type PatchMissionResponse struct{}
+type PatchMissionResponse struct {
+	MissionDTO
+}
 
 type MissionDTO struct {
-	ID        uint      `json:"ID"`
+	ID        uint      `json:"MissionID"`
 	AuthorID  string    `json:"authorID"`
 	Title     string    `json:"title"`
 	Emoji     string    `json:"emoji"`

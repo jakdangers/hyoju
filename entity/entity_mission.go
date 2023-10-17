@@ -2,7 +2,6 @@ package entity
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"time"
@@ -24,7 +23,7 @@ const (
 	Active   = "ACTIVE"
 	Wait     = "WAIT"
 	Daily    = "DAILY"
-	WeekDay  = "WEEKDAY"
+	Period   = "PERIOD"
 )
 
 type Mission struct {
@@ -44,23 +43,26 @@ type Mission struct {
 
 type MissionRepository interface {
 	CreateMission(ctx context.Context, mission *Mission) (*Mission, error)
-	ListMissions(ctx context.Context, userID BinaryUUID) ([]Mission, error)
 	GetMission(ctx context.Context, missionID uint) (*Mission, error)
+	ListMissions(ctx context.Context, userID BinaryUUID) ([]Mission, error)
+	PatchMission(ctx context.Context, mission *Mission) (*Mission, error)
 }
 
 type MissionService interface {
-	CreateMission(ctx context.Context, req CreateMissionRequest) (CreateMissionResponse, error)
-	ListMissions(ctx context.Context, req ListMissionsRequest) (ListMissionsResponse, error)
-	PatchMission(ctx context.Context, req PatchMissionRequest) (PatchMissionResponse, error)
+	CreateMission(ctx context.Context, req CreateMissionRequest) (*CreateMissionResponse, error)
+	GetMission(ctx context.Context, req GetMissionRequest) (*GetMissionResponse, error)
+	ListMissions(ctx context.Context, req ListMissionsRequest) (*ListMissionsResponse, error)
+	PatchMission(ctx context.Context, req PatchMissionRequest) (*PatchMissionResponse, error)
 }
 
 type MissionController interface {
 	CreateMission(c *gin.Context)
+	GetMission(c *gin.Context)
 	ListMissions(c *gin.Context)
 	PatchMission(c *gin.Context)
 }
 
-func ConvertDaysOfWeekToInt(daysOfWeek []string) (int, error) {
+func ConvertDaysOfWeekToInt(daysOfWeek []string) int {
 	var result int
 
 	for _, day := range daysOfWeek {
@@ -79,12 +81,10 @@ func ConvertDaysOfWeekToInt(daysOfWeek []string) (int, error) {
 			result |= Friday
 		case "SATURDAY":
 			result |= Saturday
-		default:
-			return 0, fmt.Errorf("Invalid day of week: %s", day)
 		}
 	}
 
-	return result, nil
+	return result
 }
 
 func ConvertIntToDaysOfWeek(days int) []string {

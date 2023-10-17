@@ -175,6 +175,61 @@ func (_c *UserRepository_FindByEmail_Call) RunAndReturn(run func(context.Context
 	return _c
 }
 
+// FindByFriendCode provides a mock function with given fields: ctx, friendCode
+func (_m *UserRepository) FindByFriendCode(ctx context.Context, friendCode string) (*entity.User, error) {
+	ret := _m.Called(ctx, friendCode)
+
+	var r0 *entity.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*entity.User, error)); ok {
+		return rf(ctx, friendCode)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *entity.User); ok {
+		r0 = rf(ctx, friendCode)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, friendCode)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UserRepository_FindByFriendCode_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindByFriendCode'
+type UserRepository_FindByFriendCode_Call struct {
+	*mock.Call
+}
+
+// FindByFriendCode is a helper method to define mock.On call
+//   - ctx context.Context
+//   - friendCode string
+func (_e *UserRepository_Expecter) FindByFriendCode(ctx interface{}, friendCode interface{}) *UserRepository_FindByFriendCode_Call {
+	return &UserRepository_FindByFriendCode_Call{Call: _e.mock.On("FindByFriendCode", ctx, friendCode)}
+}
+
+func (_c *UserRepository_FindByFriendCode_Call) Run(run func(ctx context.Context, friendCode string)) *UserRepository_FindByFriendCode_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *UserRepository_FindByFriendCode_Call) Return(_a0 *entity.User, _a1 error) *UserRepository_FindByFriendCode_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *UserRepository_FindByFriendCode_Call) RunAndReturn(run func(context.Context, string) (*entity.User, error)) *UserRepository_FindByFriendCode_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // FindByID provides a mock function with given fields: ctx, id
 func (_m *UserRepository) FindByID(ctx context.Context, id entity.BinaryUUID) (*entity.User, error) {
 	ret := _m.Called(ctx, id)

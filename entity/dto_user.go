@@ -6,7 +6,7 @@ import (
 )
 
 type UserDTO struct {
-	ID     uuid.UUID `json:"ID"`
+	ID     uuid.UUID `json:"MissionID"`
 	Name   string    `json:"name"`
 	Email  string    `json:"email"`
 	UserID string    `json:"userID"`
@@ -20,7 +20,7 @@ type CreateUserRequest struct {
 }
 
 type CreateUserResponse struct {
-	ID          string `json:"ID"`
+	ID          string `json:"MissionID"`
 	Email       string `json:"email"`
 	FirebaseUID string `json:"firebaseUID"`
 	Provider    string `json:"provider"`
@@ -28,17 +28,17 @@ type CreateUserResponse struct {
 }
 
 type ReadUserRequest struct {
-	ID string `form:"ID"`
+	ID string `form:"MissionID"`
 }
 
 type ReadUserResponse struct {
-	ID       string `form:"ID"`
+	ID       string `form:"MissionID"`
 	Email    string `json:"email"`
 	NickName string `json:"nickName"`
 }
 
 type UpdateUserRequest struct {
-	ID       string `json:"ID"`
+	ID       string `json:"MissionID"`
 	NickName string `json:"nickName"`
 }
 
@@ -53,13 +53,13 @@ func (ur UpdateUserRequest) Valid() error {
 }
 
 type UpdateUserResponse struct {
-	ID       string `json:"ID"`
+	ID       string `json:"MissionID"`
 	Email    string `json:"email"`
 	NickName string `json:"nickName"`
 }
 
 type DeleteUserRequest struct {
-	ID string `json:"ID" uri:"ID"`
+	ID string `json:"MissionID" uri:"MissionID"`
 }
 
 type OAuthLoginUserRequest struct {
@@ -69,6 +69,9 @@ type OAuthLoginUserRequest struct {
 }
 
 type OAuthLoginUserResponse struct {
+	ID          string `json:"MissionID"`
+	NickName    string `json:"nickName"`
+	Email       string `json:"email"`
+	FriendCode  string `json:"friendCode"`
 	AccessToken string `json:"accessToken"`
-	// TODO refreshToken 추가
 }

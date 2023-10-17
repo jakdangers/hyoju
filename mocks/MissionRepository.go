@@ -77,6 +77,61 @@ func (_c *MissionRepository_CreateMission_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
+// GetMission provides a mock function with given fields: ctx, missionID
+func (_m *MissionRepository) GetMission(ctx context.Context, missionID uint) (*entity.Mission, error) {
+	ret := _m.Called(ctx, missionID)
+
+	var r0 *entity.Mission
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, uint) (*entity.Mission, error)); ok {
+		return rf(ctx, missionID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, uint) *entity.Mission); ok {
+		r0 = rf(ctx, missionID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.Mission)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, uint) error); ok {
+		r1 = rf(ctx, missionID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MissionRepository_GetMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMission'
+type MissionRepository_GetMission_Call struct {
+	*mock.Call
+}
+
+// GetMission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - missionID uint
+func (_e *MissionRepository_Expecter) GetMission(ctx interface{}, missionID interface{}) *MissionRepository_GetMission_Call {
+	return &MissionRepository_GetMission_Call{Call: _e.mock.On("GetMission", ctx, missionID)}
+}
+
+func (_c *MissionRepository_GetMission_Call) Run(run func(ctx context.Context, missionID uint)) *MissionRepository_GetMission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uint))
+	})
+	return _c
+}
+
+func (_c *MissionRepository_GetMission_Call) Return(_a0 *entity.Mission, _a1 error) *MissionRepository_GetMission_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MissionRepository_GetMission_Call) RunAndReturn(run func(context.Context, uint) (*entity.Mission, error)) *MissionRepository_GetMission_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListMissions provides a mock function with given fields: ctx, userID
 func (_m *MissionRepository) ListMissions(ctx context.Context, userID entity.BinaryUUID) ([]entity.Mission, error) {
 	ret := _m.Called(ctx, userID)
@@ -128,6 +183,61 @@ func (_c *MissionRepository_ListMissions_Call) Return(_a0 []entity.Mission, _a1 
 }
 
 func (_c *MissionRepository_ListMissions_Call) RunAndReturn(run func(context.Context, entity.BinaryUUID) ([]entity.Mission, error)) *MissionRepository_ListMissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PatchMission provides a mock function with given fields: ctx, mission
+func (_m *MissionRepository) PatchMission(ctx context.Context, mission *entity.Mission) (*entity.Mission, error) {
+	ret := _m.Called(ctx, mission)
+
+	var r0 *entity.Mission
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *entity.Mission) (*entity.Mission, error)); ok {
+		return rf(ctx, mission)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *entity.Mission) *entity.Mission); ok {
+		r0 = rf(ctx, mission)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.Mission)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *entity.Mission) error); ok {
+		r1 = rf(ctx, mission)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MissionRepository_PatchMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchMission'
+type MissionRepository_PatchMission_Call struct {
+	*mock.Call
+}
+
+// PatchMission is a helper method to define mock.On call
+//   - ctx context.Context
+//   - mission *entity.Mission
+func (_e *MissionRepository_Expecter) PatchMission(ctx interface{}, mission interface{}) *MissionRepository_PatchMission_Call {
+	return &MissionRepository_PatchMission_Call{Call: _e.mock.On("PatchMission", ctx, mission)}
+}
+
+func (_c *MissionRepository_PatchMission_Call) Run(run func(ctx context.Context, mission *entity.Mission)) *MissionRepository_PatchMission_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*entity.Mission))
+	})
+	return _c
+}
+
+func (_c *MissionRepository_PatchMission_Call) Return(_a0 *entity.Mission, _a1 error) *MissionRepository_PatchMission_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MissionRepository_PatchMission_Call) RunAndReturn(run func(context.Context, *entity.Mission) (*entity.Mission, error)) *MissionRepository_PatchMission_Call {
 	_c.Call.Return(run)
 	return _c
 }
