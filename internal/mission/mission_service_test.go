@@ -13,17 +13,19 @@ import (
 )
 
 type serviceTestSuite struct {
-	missionRepo *mocks.MissionRepository
-	userRepo    *mocks.UserRepository
-	service     entity.MissionService
+	missionRepo            *mocks.MissionRepository
+	missionParticipantRepo *mocks.MissionParticipantRepository
+	userRepo               *mocks.UserRepository
+	service                entity.MissionService
 }
 
 func initServiceTestSuite(t *testing.T) serviceTestSuite {
 	var ts serviceTestSuite
 
 	ts.missionRepo = mocks.NewMissionRepository(t)
+	ts.missionParticipantRepo = mocks.NewMissionParticipantRepository(t)
 	ts.userRepo = mocks.NewUserRepository(t)
-	ts.service = NewMissionService(ts.missionRepo, ts.userRepo)
+	ts.service = NewMissionService(ts.missionRepo, ts.missionParticipantRepo, ts.userRepo)
 
 	return ts
 }
@@ -94,6 +96,13 @@ func Test_missionService_CreateMission(t *testing.T) {
 					WeekDay:  3,
 					Type:     "SINGLE",
 					Status:   entity.Active,
+				}, nil).Once()
+				ts.missionParticipantRepo.EXPECT().CreateMissionParticipant(mock.Anything, &entity.MissionParticipant{
+					UserID:    testUserID,
+					MissionID: 1,
+				}).Return(&entity.MissionParticipant{
+					UserID:    testUserID,
+					MissionID: 1,
 				}, nil).Once()
 			},
 			want: &entity.CreateMissionResponse{

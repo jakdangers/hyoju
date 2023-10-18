@@ -4,6 +4,7 @@ import (
 	"go.uber.org/fx"
 	"pixelix/config"
 	"pixelix/internal/mission"
+	"pixelix/internal/mission_participant"
 	"pixelix/internal/user"
 	"pixelix/pkg/db"
 	"pixelix/pkg/handler"
@@ -23,6 +24,7 @@ func main() {
 		// service module
 		user.Module,
 		mission.Module,
+		mission_participant.Module,
 
 		// invoke
 		fx.Invoke(

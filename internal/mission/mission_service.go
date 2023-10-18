@@ -7,14 +7,16 @@ import (
 )
 
 type missionService struct {
-	missionRepo entity.MissionRepository
-	userRepo    entity.UserRepository
+	missionRepo            entity.MissionRepository
+	missionParticipantRepo entity.MissionParticipantRepository
+	userRepo               entity.UserRepository
 }
 
-func NewMissionService(missionRepo entity.MissionRepository, userRepo entity.UserRepository) *missionService {
+func NewMissionService(missionRepo entity.MissionRepository, missionParticipantRepo entity.MissionParticipantRepository, userRepo entity.UserRepository) *missionService {
 	return &missionService{
-		missionRepo: missionRepo,
-		userRepo:    userRepo,
+		missionRepo:            missionRepo,
+		missionParticipantRepo: missionParticipantRepo,
+		userRepo:               userRepo,
 	}
 }
 
@@ -48,6 +50,14 @@ func (m missionService) CreateMission(ctx context.Context, req entity.CreateMiss
 		WeekDay:   entity.ConvertDaysOfWeekToInt(req.WeekDay),
 		Type:      entity.Single,
 		Status:    entity.Active,
+	})
+	if err != nil {
+		return nil, cerrors.E(op, cerrors.Internal, err)
+	}
+
+	_, err = m.missionParticipantRepo.CreateMissionParticipant(ctx, &entity.MissionParticipant{
+		UserID:    userID,
+		MissionID: mission.ID,
 	})
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)

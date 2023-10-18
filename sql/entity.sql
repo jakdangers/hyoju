@@ -29,3 +29,13 @@ CREATE TABLE missions
     type       VARCHAR(255),
     status     VARCHAR(255)
 );
+
+CREATE TABLE mission_participants
+(
+    id         INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP NULL,
+    mission_id INT UNSIGNED,
+    user_id    BINARY(16)
+)

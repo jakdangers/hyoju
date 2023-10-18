@@ -291,3 +291,45 @@ func Test_missionRepository_GetMission(t *testing.T) {
 		})
 	}
 }
+
+func Test_missionRepository_ListActiveSingleMissionIDs(t *testing.T) {
+	type args struct {
+		ctx context.Context
+	}
+
+	ts := initRepoTestSuite()
+
+	tests := []struct {
+		name    string
+		args    args
+		mock    func()
+		want    []uint
+		wantErr bool
+	}{
+		{
+			name: "PASS missionID 리스트 조회",
+			args: args{
+				ctx: context.Background(),
+			},
+			mock: func() {
+				query := "SELECT (.+) FROM `missions`"
+				columns := []string{"id"}
+				rows := sqlmock.NewRows(columns).AddRow(1).AddRow(2).AddRow(3)
+				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
+			},
+			want:    []uint{1, 2, 3},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := ts.missionRepository.ListActiveSingleMissionIDs(tt.args.ctx)
+			assert.Equal(t, tt.want, got)
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}

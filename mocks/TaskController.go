@@ -21,7 +21,7 @@ func (_m *TaskController) EXPECT() *TaskController_Expecter {
 }
 
 // CreateTask provides a mock function with given fields: c
-func (_m *TaskController) CreateMission(c *gin.Context) {
+func (_m *TaskController) CreateMissionHistory(c *gin.Context) {
 	_m.Called(c)
 }
 

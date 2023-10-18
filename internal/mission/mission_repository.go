@@ -58,6 +58,27 @@ func (m missionRepository) ListMissions(ctx context.Context, userID entity.Binar
 	return missions, nil
 }
 
+func (m missionRepository) ListActiveSingleMissionIDs(ctx context.Context) ([]uint, error) {
+	const op cerrors.Op = "mission/repository/listActiveSingleMissionIDs"
+
+	rows, err := m.gormDB.WithContext(ctx).Table("missions").Select("id").Where("type = ? AND status = ?", entity.Single, entity.Active).Rows()
+	if err != nil {
+		return nil, cerrors.E(op, cerrors.Internal, err)
+	}
+
+	var missionIDs []uint
+	for rows.Next() {
+		var id uint
+		err := rows.Scan(&id)
+		if err != nil {
+			return nil, cerrors.E(op, cerrors.Internal, err)
+		}
+		missionIDs = append(missionIDs, id)
+	}
+
+	return missionIDs, nil
+}
+
 func (m missionRepository) PatchMission(ctx context.Context, mission *entity.Mission) (*entity.Mission, error) {
 	const op cerrors.Op = "mission/repository/patchMission"
 

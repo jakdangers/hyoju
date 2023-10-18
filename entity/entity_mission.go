@@ -46,6 +46,7 @@ type MissionRepository interface {
 	GetMission(ctx context.Context, missionID uint) (*Mission, error)
 	ListMissions(ctx context.Context, userID BinaryUUID) ([]Mission, error)
 	PatchMission(ctx context.Context, mission *Mission) (*Mission, error)
+	ListActiveSingleMissionIDs(ctx context.Context) ([]uint, error)
 }
 
 type MissionService interface {

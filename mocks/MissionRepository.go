@@ -132,6 +132,60 @@ func (_c *MissionRepository_GetMission_Call) RunAndReturn(run func(context.Conte
 	return _c
 }
 
+// ListActiveSingleMissionIDs provides a mock function with given fields: ctx
+func (_m *MissionRepository) ListActiveSingleMissionIDs(ctx context.Context) ([]uint, error) {
+	ret := _m.Called(ctx)
+
+	var r0 []uint
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context) ([]uint, error)); ok {
+		return rf(ctx)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) []uint); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]uint)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MissionRepository_ListActiveSingleMissionIDs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListActiveSingleMissionIDs'
+type MissionRepository_ListActiveSingleMissionIDs_Call struct {
+	*mock.Call
+}
+
+// ListActiveSingleMissionIDs is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MissionRepository_Expecter) ListActiveSingleMissionIDs(ctx interface{}) *MissionRepository_ListActiveSingleMissionIDs_Call {
+	return &MissionRepository_ListActiveSingleMissionIDs_Call{Call: _e.mock.On("ListActiveSingleMissionIDs", ctx)}
+}
+
+func (_c *MissionRepository_ListActiveSingleMissionIDs_Call) Run(run func(ctx context.Context)) *MissionRepository_ListActiveSingleMissionIDs_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MissionRepository_ListActiveSingleMissionIDs_Call) Return(_a0 []uint, _a1 error) *MissionRepository_ListActiveSingleMissionIDs_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MissionRepository_ListActiveSingleMissionIDs_Call) RunAndReturn(run func(context.Context) ([]uint, error)) *MissionRepository_ListActiveSingleMissionIDs_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListMissions provides a mock function with given fields: ctx, userID
 func (_m *MissionRepository) ListMissions(ctx context.Context, userID entity.BinaryUUID) ([]entity.Mission, error) {
 	ret := _m.Called(ctx, userID)
