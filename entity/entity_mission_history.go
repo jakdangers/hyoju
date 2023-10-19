@@ -28,12 +28,20 @@ type MissionHistory struct {
 
 type MissionHistoryRepository interface {
 	CreateMissionHistory(ctx context.Context, missionHistory *MissionHistory) (*MissionHistory, error)
+	ListMultipleModeMissionHistories(ctx context.Context, params ListMultipleMissionHistoriesParams) ([]MissionHistory, error)
 }
 
 type MissionHistoryService interface {
 	CreateMissionHistory(ctx context.Context, req CreateMissionHistoryRequest) (*CreateMissionHistoryResponse, error)
+	ListMultipleMissionHistories(ctx context.Context, req ListMissionHistoriesRequest) (*ListMissionHistoriesResponse, error)
 }
 
 type MissionHistoryController interface {
 	CreateMissionHistory(c *gin.Context)
+	ListMissionHistories(c *gin.Context)
+}
+
+type ListMultipleMissionHistoriesParams struct {
+	UserID     BinaryUUID
+	MissionIDs []uint
 }

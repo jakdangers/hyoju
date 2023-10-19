@@ -333,3 +333,64 @@ func Test_missionRepository_ListActiveSingleMissionIDs(t *testing.T) {
 		})
 	}
 }
+
+func Test_missionRepository_ListMultipleModeMissions(t *testing.T) {
+	type args struct {
+		ctx    context.Context
+		userID entity.BinaryUUID
+	}
+
+	ts := initRepoTestSuite()
+	testUserID := entity.BinaryUUIDNew()
+
+	tests := []struct {
+		name    string
+		args    args
+		mock    func()
+		want    []entity.Mission
+		wantErr bool
+	}{
+		{
+			name: "PASS 미션 목록 조회",
+			args: args{
+				ctx:    context.Background(),
+				userID: testUserID,
+			},
+			mock: func() {
+				query := "SELECT (.+) FROM `missions`"
+				columns := []string{"missions.id", "missions.author_id", "missions.title", "missions.emoji", "missions.duration", "missions.start_date", "missions.end_date", "missions.plan_date", "missions.alarm", "missions.week_day", "missions.type", "missions_status"}
+				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", time.Time{}, time.Time{}, time.Time{}, true, 3, "SINGLE", "ACTIVE")
+				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
+			},
+			want: []entity.Mission{
+				{
+					Model: gorm.Model{
+						ID: 1,
+					},
+					AuthorID:  testUserID,
+					Title:     "test_mission",
+					Emoji:     "test_emoji",
+					Duration:  "DAILY",
+					StartDate: time.Time{},
+					EndDate:   time.Time{},
+					PlanTime:  time.Time{},
+					Alarm:     true,
+					WeekDay:   3,
+					Type:      "SINGLE",
+					Status:    "ACTIVE",
+				},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := ts.missionRepository.ListMultipleModeMissions(tt.args.ctx, tt.args.userID)
+			assert.Equal(t, tt.want, got)
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}

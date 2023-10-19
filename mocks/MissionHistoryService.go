@@ -77,6 +77,61 @@ func (_c *MissionHistoryService_CreateMissionHistory_Call) RunAndReturn(run func
 	return _c
 }
 
+// ListMultipleMissionHistories provides a mock function with given fields: ctx, req
+func (_m *MissionHistoryService) ListMultipleMissionHistories(ctx context.Context, req entity.ListMissionHistoriesRequest) (*entity.ListMissionHistoriesResponse, error) {
+	ret := _m.Called(ctx, req)
+
+	var r0 *entity.ListMissionHistoriesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMissionHistoriesRequest) (*entity.ListMissionHistoriesResponse, error)); ok {
+		return rf(ctx, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMissionHistoriesRequest) *entity.ListMissionHistoriesResponse); ok {
+		r0 = rf(ctx, req)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.ListMissionHistoriesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ListMissionHistoriesRequest) error); ok {
+		r1 = rf(ctx, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MissionHistoryService_ListMultipleMissionHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultipleMissionHistories'
+type MissionHistoryService_ListMultipleMissionHistories_Call struct {
+	*mock.Call
+}
+
+// ListMultipleMissionHistories is a helper method to define mock.On call
+//   - ctx context.Context
+//   - req entity.ListMissionHistoriesRequest
+func (_e *MissionHistoryService_Expecter) ListMultipleMissionHistories(ctx interface{}, req interface{}) *MissionHistoryService_ListMultipleMissionHistories_Call {
+	return &MissionHistoryService_ListMultipleMissionHistories_Call{Call: _e.mock.On("ListMultipleMissionHistories", ctx, req)}
+}
+
+func (_c *MissionHistoryService_ListMultipleMissionHistories_Call) Run(run func(ctx context.Context, req entity.ListMissionHistoriesRequest)) *MissionHistoryService_ListMultipleMissionHistories_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.ListMissionHistoriesRequest))
+	})
+	return _c
+}
+
+func (_c *MissionHistoryService_ListMultipleMissionHistories_Call) Return(_a0 *entity.ListMissionHistoriesResponse, _a1 error) *MissionHistoryService_ListMultipleMissionHistories_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MissionHistoryService_ListMultipleMissionHistories_Call) RunAndReturn(run func(context.Context, entity.ListMissionHistoriesRequest) (*entity.ListMissionHistoriesResponse, error)) *MissionHistoryService_ListMultipleMissionHistories_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMissionHistoryService creates a new instance of MissionHistoryService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMissionHistoryService(t interface {

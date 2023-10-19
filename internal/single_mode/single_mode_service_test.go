@@ -3,7 +3,6 @@ package single_mode
 import (
 	"context"
 	"github.com/stretchr/testify/mock"
-	"gorm.io/gorm"
 	"pixelix/entity"
 	"pixelix/mocks"
 	"testing"
@@ -13,7 +12,6 @@ type serviceTestSuite struct {
 	missionRepo            *mocks.MissionRepository
 	missionParticipantRepo *mocks.MissionParticipantRepository
 	missionHistoryRepo     *mocks.MissionHistoryRepository
-	userRepo               *mocks.UserRepository
 	service                entity.SingleModeService
 }
 
@@ -23,18 +21,17 @@ func initServiceTestSuite(t *testing.T) serviceTestSuite {
 	ts.missionRepo = mocks.NewMissionRepository(t)
 	ts.missionParticipantRepo = mocks.NewMissionParticipantRepository(t)
 	ts.missionHistoryRepo = mocks.NewMissionHistoryRepository(t)
-	ts.userRepo = mocks.NewUserRepository(t)
-	ts.service = NewSingleModeService(ts.missionRepo, ts.missionParticipantRepo, ts.missionHistoryRepo, ts.userRepo)
+	ts.service = NewSingleModeService(ts.missionRepo, ts.missionParticipantRepo, ts.missionHistoryRepo)
+
 	return ts
 }
 
-func Test_singleModeService_CreateMissionHistories(t *testing.T) {
+func Test_singleModeService_CreateSingleModeMissionHistories(t *testing.T) {
 	type args struct {
 		ctx context.Context
 	}
-	ts := initServiceTestSuite(t)
-	testUserID := entity.BinaryUUIDNew()
 
+	ts := initServiceTestSuite(t)
 	tests := []struct {
 		name    string
 		args    args
@@ -42,35 +39,24 @@ func Test_singleModeService_CreateMissionHistories(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS mission history 생성",
+			name: "PASS single mode mission history 생성",
 			args: args{
 				ctx: context.Background(),
 			},
 			mock: func() {
-				ts.missionRepo.EXPECT().ListActiveSingleMissionIDs(mock.Anything).Return([]uint{1}, nil).Once()
-				ts.missionParticipantRepo.EXPECT().ListMissionParticipants(mock.Anything, uint(1)).
-					Return([]entity.MissionParticipant{
-						{
-							Model: gorm.Model{
-								ID: 1,
-							},
-							UserID:    testUserID,
-							MissionID: 1,
-						},
-					}, nil).Once()
-				//ts.missionHistoryRepo.EXPECT()
+				// 생성 해야할 미션을 찾는다?
+				ts.missionRepo.EXPECT().ListActiveSingleMissionIDs(mock.Anything).
+					Return([]entity.Mission{}, nil).Once()
 			},
 			wantErr: false,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			if err := ts.service.CreateMissionHistories(tt.args.ctx); (err != nil) != tt.wantErr {
-				t.Errorf("CreateMissionHistories() error = %v, wantErr %v", err, tt.wantErr)
+			if err := ts.service.CreateSingleModeMissionHistories(tt.args.ctx); (err != nil) != tt.wantErr {
+				t.Errorf("CreateSingleModeMissionHistories() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			ts.missionRepo.AssertExpectations(t)
 		})
 	}
 }

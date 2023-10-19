@@ -58,6 +58,43 @@ func (m missionRepository) ListMissions(ctx context.Context, userID entity.Binar
 	return missions, nil
 }
 
+func (m missionRepository) ListMultipleModeMissions(ctx context.Context, userID entity.BinaryUUID) ([]entity.Mission, error) {
+	const op cerrors.Op = "mission/repository/listMultipleModeMissions"
+
+	// TODO 시간 그리고 정렬
+	rows, err := m.gormDB.WithContext(ctx).Table("missions").Select(
+		"missions.id, missions.author_id, missions.title, missions.emoji, missions.duration, missions.start_date, missions.end_date, missions.plan_date, missions.alarm, missions.week_day, missions.type, missions_status").
+		Joins("inner join mission_participants on mission_participants.mission_id = missions.id").
+		Where("missions.status = ? AND mission_participants.user_id = ?", entity.Active, userID).Rows()
+	if err != nil {
+		return nil, cerrors.E(op, cerrors.Internal, err)
+	}
+
+	var missions []entity.Mission
+	for rows.Next() {
+		var mission entity.Mission
+		if err := rows.Scan(
+			&mission.ID,
+			&mission.AuthorID,
+			&mission.Title,
+			&mission.Emoji,
+			&mission.Duration,
+			&mission.StartDate,
+			&mission.EndDate,
+			&mission.PlanTime,
+			&mission.Alarm,
+			&mission.WeekDay,
+			&mission.Type,
+			&mission.Status,
+		); err != nil {
+			return nil, cerrors.E(op, cerrors.Internal, err)
+		}
+		missions = append(missions, mission)
+	}
+
+	return missions, nil
+}
+
 func (m missionRepository) ListActiveSingleMissionIDs(ctx context.Context) ([]uint, error) {
 	const op cerrors.Op = "mission/repository/listActiveSingleMissionIDs"
 

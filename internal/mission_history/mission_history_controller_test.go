@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"pixelix/entity"
 	"pixelix/mocks"
 	"pixelix/pkg/logger"
@@ -54,6 +55,46 @@ func Test_missionHistoryController_CreateMissionHistory(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			req, _ := http.NewRequest(http.MethodPost, "/mission-histories", nil)
+
+			rec := httptest.NewRecorder()
+			ts.router.ServeHTTP(rec, req)
+
+			assert.Equal(t, tt.status, rec.Code)
+			ts.missionHistoryService.AssertExpectations(t)
+		})
+	}
+}
+
+func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
+	ts := initControllerTestSuite(t)
+	testUserID := entity.BinaryUUIDNew().String()
+
+	tests := []struct {
+		name   string
+		mock   func()
+		uri    func() string
+		status int
+	}{
+		{
+			name: "PASS mission 히스토리 조회",
+			mock: func() {
+				ts.missionHistoryService.EXPECT().
+					ListMultipleMissionHistories(mock.Anything, entity.ListMissionHistoriesRequest{
+						UserID: testUserID,
+					}).Return(&entity.ListMissionHistoriesResponse{}, nil).Once()
+			},
+			uri: func() string {
+				path, _ := url.JoinPath("/mission-histories", testUserID)
+				return path
+			},
+			status: http.StatusOK,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			req, _ := http.NewRequest(http.MethodGet, tt.uri(), nil)
 
 			rec := httptest.NewRecorder()
 			ts.router.ServeHTTP(rec, req)

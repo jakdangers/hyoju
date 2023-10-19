@@ -241,6 +241,61 @@ func (_c *MissionRepository_ListMissions_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
+// ListMultipleModeMissions provides a mock function with given fields: ctx, userID
+func (_m *MissionRepository) ListMultipleModeMissions(ctx context.Context, userID entity.BinaryUUID) ([]entity.Mission, error) {
+	ret := _m.Called(ctx, userID)
+
+	var r0 []entity.Mission
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.BinaryUUID) ([]entity.Mission, error)); ok {
+		return rf(ctx, userID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.BinaryUUID) []entity.Mission); ok {
+		r0 = rf(ctx, userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]entity.Mission)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.BinaryUUID) error); ok {
+		r1 = rf(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MissionRepository_ListMultipleModeMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultipleModeMissions'
+type MissionRepository_ListMultipleModeMissions_Call struct {
+	*mock.Call
+}
+
+// ListMultipleModeMissions is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userID entity.BinaryUUID
+func (_e *MissionRepository_Expecter) ListMultipleModeMissions(ctx interface{}, userID interface{}) *MissionRepository_ListMultipleModeMissions_Call {
+	return &MissionRepository_ListMultipleModeMissions_Call{Call: _e.mock.On("ListMultipleModeMissions", ctx, userID)}
+}
+
+func (_c *MissionRepository_ListMultipleModeMissions_Call) Run(run func(ctx context.Context, userID entity.BinaryUUID)) *MissionRepository_ListMultipleModeMissions_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.BinaryUUID))
+	})
+	return _c
+}
+
+func (_c *MissionRepository_ListMultipleModeMissions_Call) Return(_a0 []entity.Mission, _a1 error) *MissionRepository_ListMultipleModeMissions_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MissionRepository_ListMultipleModeMissions_Call) RunAndReturn(run func(context.Context, entity.BinaryUUID) ([]entity.Mission, error)) *MissionRepository_ListMultipleModeMissions_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // PatchMission provides a mock function with given fields: ctx, mission
 func (_m *MissionRepository) PatchMission(ctx context.Context, mission *entity.Mission) (*entity.Mission, error) {
 	ret := _m.Called(ctx, mission)
