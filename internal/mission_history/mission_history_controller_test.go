@@ -73,19 +73,26 @@ func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
 		name   string
 		mock   func()
 		uri    func() string
+		query  func() string
 		status int
 	}{
 		{
 			name: "PASS mission 히스토리 조회",
 			mock: func() {
 				ts.missionHistoryService.EXPECT().
-					ListMultipleMissionHistories(mock.Anything, entity.ListMissionHistoriesRequest{
+					ListMultiModeMissionHistories(mock.Anything, entity.ListMultiModeMissionHistoriesRequest{
 						UserID: testUserID,
-					}).Return(&entity.ListMissionHistoriesResponse{}, nil).Once()
+						Date:   "2023-10-10",
+					}).Return(&entity.ListMultiModeMissionHistoriesResponse{}, nil).Once()
 			},
 			uri: func() string {
-				path, _ := url.JoinPath("/mission-histories", testUserID)
+				path, _ := url.JoinPath("/mission-histories/multi", testUserID)
 				return path
+			},
+			query: func() string {
+				params := url.Values{}
+				params.Add("date", "2023-10-10")
+				return params.Encode()
 			},
 			status: http.StatusOK,
 		},
@@ -95,6 +102,7 @@ func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			req, _ := http.NewRequest(http.MethodGet, tt.uri(), nil)
+			req.URL.RawQuery = tt.query()
 
 			rec := httptest.NewRecorder()
 			ts.router.ServeHTTP(rec, req)

@@ -73,7 +73,7 @@ func Test_missionHistoryService_CreateMissionHistory(t *testing.T) {
 func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req entity.ListMissionHistoriesRequest
+		req entity.ListMultiModeMissionHistoriesRequest
 	}
 
 	ts := initServiceTestSuite(t)
@@ -83,14 +83,14 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.ListMissionHistoriesResponse
+		want    *entity.ListMultiModeMissionHistoriesResponse
 		wantErr bool
 	}{
 		{
 			name: "PASS mission history 조회",
 			args: args{
 				ctx: context.Background(),
-				req: entity.ListMissionHistoriesRequest{
+				req: entity.ListMultiModeMissionHistoriesRequest{
 					UserID: testUserID.String(),
 				},
 			},
@@ -100,7 +100,10 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 						ID: testUserID,
 					},
 				}, nil).Once()
-				ts.missionRepo.EXPECT().ListMultipleModeMissions(mock.Anything, testUserID).
+				ts.missionRepo.EXPECT().ListMultiModeMissions(mock.Anything, entity.ListMultiModeMissionsParams{
+					UserID: testUserID,
+					Date:   time.Time{},
+				}).
 					Return([]entity.Mission{
 						{
 							Model: gorm.Model{
@@ -121,7 +124,7 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 					}, nil).Once()
 				ts.missionHistoryRepo.EXPECT().ListMultipleModeMissionHistories(mock.Anything, entity.ListMultipleMissionHistoriesParams{
 					UserID:     testUserID,
-					MissionIDs: []uint{1, 2, 3},
+					MissionIDs: []uint{1},
 				}).
 					Return([]entity.MissionHistory{
 						{
@@ -130,15 +133,26 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 							},
 							UserID:     testUserID,
 							MissionID:  1,
-							Status:     entity.Active,
-							Date:       time.Date(2023, 10, 10, 00, 00, 00, 00, time.UTC),
+							Status:     entity.MissionHistoryStatusInit,
 							PlanTime:   time.Date(2023, 10, 10, 10, 00, 10, 00, time.UTC),
 							FrontImage: "front_image",
 							BackImage:  "back_image",
 						},
 					}, nil).Once()
 			},
-			want:    &entity.ListMissionHistoriesResponse{},
+			want: &entity.ListMultiModeMissionHistoriesResponse{
+				MissionHistories: []entity.MissionHistoryDTO{
+					{
+						ID:         1,
+						UserID:     testUserID.String(),
+						MissionID:  1,
+						Status:     entity.MissionHistoryStatusInit,
+						PlanTime:   time.Date(2023, 10, 10, 10, 00, 10, 00, time.UTC),
+						FrontImage: "front_image",
+						BackImage:  "back_image",
+					},
+				},
+			},
 			wantErr: false,
 		},
 	}
@@ -146,7 +160,7 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.service.ListMultipleMissionHistories(tt.args.ctx, tt.args.req)
+			got, err := ts.service.ListMultiModeMissionHistories(tt.args.ctx, tt.args.req)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err, err.Error())

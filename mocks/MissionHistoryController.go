@@ -53,35 +53,35 @@ func (_c *MissionHistoryController_CreateMissionHistory_Call) RunAndReturn(run f
 	return _c
 }
 
-// ListMissionHistories provides a mock function with given fields: c
-func (_m *MissionHistoryController) ListMissionHistories(c *gin.Context) {
+// ListMultiModeMissionHistories provides a mock function with given fields: c
+func (_m *MissionHistoryController) ListMultiModeMissionHistories(c *gin.Context) {
 	_m.Called(c)
 }
 
-// MissionHistoryController_ListMissionHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMissionHistories'
-type MissionHistoryController_ListMissionHistories_Call struct {
+// MissionHistoryController_ListMultiModeMissionHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultiModeMissionHistories'
+type MissionHistoryController_ListMultiModeMissionHistories_Call struct {
 	*mock.Call
 }
 
-// ListMissionHistories is a helper method to define mock.On call
+// ListMultiModeMissionHistories is a helper method to define mock.On call
 //   - c *gin.Context
-func (_e *MissionHistoryController_Expecter) ListMissionHistories(c interface{}) *MissionHistoryController_ListMissionHistories_Call {
-	return &MissionHistoryController_ListMissionHistories_Call{Call: _e.mock.On("ListMissionHistories", c)}
+func (_e *MissionHistoryController_Expecter) ListMultiModeMissionHistories(c interface{}) *MissionHistoryController_ListMultiModeMissionHistories_Call {
+	return &MissionHistoryController_ListMultiModeMissionHistories_Call{Call: _e.mock.On("ListMultiModeMissionHistories", c)}
 }
 
-func (_c *MissionHistoryController_ListMissionHistories_Call) Run(run func(c *gin.Context)) *MissionHistoryController_ListMissionHistories_Call {
+func (_c *MissionHistoryController_ListMultiModeMissionHistories_Call) Run(run func(c *gin.Context)) *MissionHistoryController_ListMultiModeMissionHistories_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(*gin.Context))
 	})
 	return _c
 }
 
-func (_c *MissionHistoryController_ListMissionHistories_Call) Return() *MissionHistoryController_ListMissionHistories_Call {
+func (_c *MissionHistoryController_ListMultiModeMissionHistories_Call) Return() *MissionHistoryController_ListMultiModeMissionHistories_Call {
 	_c.Call.Return()
 	return _c
 }
 
-func (_c *MissionHistoryController_ListMissionHistories_Call) RunAndReturn(run func(*gin.Context)) *MissionHistoryController_ListMissionHistories_Call {
+func (_c *MissionHistoryController_ListMultiModeMissionHistories_Call) RunAndReturn(run func(*gin.Context)) *MissionHistoryController_ListMultiModeMissionHistories_Call {
 	_c.Call.Return(run)
 	return _c
 }

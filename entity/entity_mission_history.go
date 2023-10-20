@@ -9,7 +9,6 @@ import (
 
 const (
 	MissionHistoryStatusInit MissionHistoryStatus = "INIT"
-	MissionHistoryStatusFail MissionHistoryStatus = "FAIL"
 	MissionHistoryStatusDone MissionHistoryStatus = "DONE"
 )
 
@@ -20,10 +19,13 @@ type MissionHistory struct {
 	UserID     BinaryUUID
 	MissionID  uint
 	Status     MissionHistoryStatus
-	Date       time.Time
 	PlanTime   time.Time
 	FrontImage string
 	BackImage  string
+}
+
+func (MissionHistory) TableName() string {
+	return "mission_histories"
 }
 
 type MissionHistoryRepository interface {
@@ -33,12 +35,12 @@ type MissionHistoryRepository interface {
 
 type MissionHistoryService interface {
 	CreateMissionHistory(ctx context.Context, req CreateMissionHistoryRequest) (*CreateMissionHistoryResponse, error)
-	ListMultipleMissionHistories(ctx context.Context, req ListMissionHistoriesRequest) (*ListMissionHistoriesResponse, error)
+	ListMultiModeMissionHistories(ctx context.Context, req ListMultiModeMissionHistoriesRequest) (*ListMultiModeMissionHistoriesResponse, error)
 }
 
 type MissionHistoryController interface {
 	CreateMissionHistory(c *gin.Context)
-	ListMissionHistories(c *gin.Context)
+	ListMultiModeMissionHistories(c *gin.Context)
 }
 
 type ListMultipleMissionHistoriesParams struct {

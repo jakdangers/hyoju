@@ -334,10 +334,10 @@ func Test_missionRepository_ListActiveSingleMissionIDs(t *testing.T) {
 	}
 }
 
-func Test_missionRepository_ListMultipleModeMissions(t *testing.T) {
+func Test_missionRepository_ListMultiModeMissions(t *testing.T) {
 	type args struct {
 		ctx    context.Context
-		userID entity.BinaryUUID
+		params entity.ListMultiModeMissionsParams
 	}
 
 	ts := initRepoTestSuite()
@@ -353,8 +353,11 @@ func Test_missionRepository_ListMultipleModeMissions(t *testing.T) {
 		{
 			name: "PASS 미션 목록 조회",
 			args: args{
-				ctx:    context.Background(),
-				userID: testUserID,
+				ctx: context.Background(),
+				params: entity.ListMultiModeMissionsParams{
+					UserID: testUserID,
+					Date:   time.Time{},
+				},
 			},
 			mock: func() {
 				query := "SELECT (.+) FROM `missions`"
@@ -386,7 +389,7 @@ func Test_missionRepository_ListMultipleModeMissions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionRepository.ListMultipleModeMissions(tt.args.ctx, tt.args.userID)
+			got, err := ts.missionRepository.ListMultiModeMissions(tt.args.ctx, tt.args.params)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())

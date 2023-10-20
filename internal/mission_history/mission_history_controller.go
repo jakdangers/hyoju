@@ -11,10 +11,10 @@ import (
 )
 
 func RegisterRoutes(e *gin.Engine, controller entity.MissionHistoryController) {
-	missionHistories := e.Group("/mission-histories")
+	missionHistories := e.Group("mission-histories")
 	{
 		missionHistories.POST("", controller.CreateMissionHistory)
-		missionHistories.GET("/:userID", controller.ListMissionHistories)
+		missionHistories.GET("/multi/:userID", controller.ListMultiModeMissionHistories)
 	}
 }
 
@@ -44,18 +44,22 @@ func (m missionHistoryController) CreateMissionHistory(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (m missionHistoryController) ListMissionHistories(c *gin.Context) {
-	var req entity.ListMissionHistoriesRequest
+func (m missionHistoryController) ListMultiModeMissionHistories(c *gin.Context) {
+	var req entity.ListMultiModeMissionHistoriesRequest
 
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return
 	}
 
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+	}
+
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	res, err := m.service.ListMultipleMissionHistories(ctx, req)
+	res, err := m.service.ListMultiModeMissionHistories(ctx, req)
 	if err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return

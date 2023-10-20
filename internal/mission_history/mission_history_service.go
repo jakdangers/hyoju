@@ -2,9 +2,10 @@ package mission_history
 
 import (
 	"context"
-	"fmt"
+	"github.com/samber/lo"
 	"pixelix/entity"
 	"pixelix/pkg/cerrors"
+	"time"
 )
 
 type missionHistoryService struct {
@@ -30,20 +31,39 @@ func (m missionHistoryService) CreateMissionHistory(ctx context.Context, req ent
 	panic("implement me")
 }
 
-func (m missionHistoryService) ListMultipleMissionHistories(ctx context.Context, req entity.ListMissionHistoriesRequest) (*entity.ListMissionHistoriesResponse, error) {
+func (m missionHistoryService) ListMultiModeMissionHistories(ctx context.Context, req entity.ListMultiModeMissionHistoriesRequest) (*entity.ListMultiModeMissionHistoriesResponse, error) {
 	const op cerrors.Op = "missionHistory/service/ListMultipleModeMissionHistories"
 
+	// 유저 아이디 파싱
 	userID, err := entity.ParseUUID(req.UserID)
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Invalid, err)
 	}
 
+	// 유저 검증
 	_, err = m.userRepo.FindByID(ctx, userID)
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	missions, err := m.missionRepo.ListMultipleModeMissions(ctx, userID)
+	// 입력 날짜를 파싱합니다.
+	date, err := time.Parse("2006-01-02", req.Date)
+	if err != nil {
+		return nil, cerrors.E(op, cerrors.Internal, err)
+	}
+	// 한국 시간대 (KST) 로드
+	loc, err := time.LoadLocation("Asia/Seoul")
+	if err != nil {
+		return nil, cerrors.E(op, cerrors.Internal, err)
+	}
+	kstTime := date.In(loc)
+	utcTime := kstTime.UTC()
+
+	// 멀티 플레이 미션 목록 조회
+	missions, err := m.missionRepo.ListMultiModeMissions(ctx, entity.ListMultiModeMissionsParams{
+		UserID: userID,
+		Date:   utcTime,
+	})
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
@@ -58,16 +78,42 @@ func (m missionHistoryService) ListMultipleMissionHistories(ctx context.Context,
 		MissionIDs: missionIDs,
 	})
 
-	var historyIDs []uint
-	for _, history := range histories {
-		historyIDs = append(historyIDs, history.ID)
-	}
-
+	var missionHistoryDTOs []entity.MissionHistoryDTO
 	for _, mission := range missions {
+		var historyDTO entity.MissionHistoryDTO
+		history, ok := lo.Find(histories, func(item entity.MissionHistory) bool {
+			return item.MissionID == mission.ID
+		})
 
+		historyDTO = entity.MissionHistoryDTO{
+			ID:         history.ID,
+			UserID:     history.UserID.String(),
+			MissionID:  history.MissionID,
+			Title:      mission.Title,
+			Emoji:      mission.Emoji,
+			Status:     history.Status,
+			PlanTime:   history.PlanTime,
+			FrontImage: history.FrontImage,
+			BackImage:  history.BackImage,
+		}
+
+		if !ok {
+			historyDTO = entity.MissionHistoryDTO{
+				UserID:     userID.String(),
+				MissionID:  mission.ID,
+				Title:      mission.Title,
+				Emoji:      mission.Emoji,
+				Status:     entity.MissionHistoryStatusInit,
+				PlanTime:   mission.PlanTime,
+				FrontImage: "",
+				BackImage:  "",
+			}
+		}
+
+		missionHistoryDTOs = append(missionHistoryDTOs, historyDTO)
 	}
 
-	fmt.Println(histories)
-
-	return nil, nil
+	return &entity.ListMultiModeMissionHistoriesResponse{
+		MissionHistories: missionHistoryDTOs,
+	}, nil
 }

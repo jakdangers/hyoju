@@ -86,7 +86,6 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 					UserID:     testUserID,
 					MissionID:  1,
 					Status:     "INIT",
-					Date:       testTimeStamp,
 					PlanTime:   testTimeStamp,
 					FrontImage: "",
 					BackImage:  "",

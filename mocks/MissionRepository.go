@@ -241,25 +241,25 @@ func (_c *MissionRepository_ListMissions_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
-// ListMultipleModeMissions provides a mock function with given fields: ctx, userID
-func (_m *MissionRepository) ListMultipleModeMissions(ctx context.Context, userID entity.BinaryUUID) ([]entity.Mission, error) {
-	ret := _m.Called(ctx, userID)
+// ListMultiModeMissions provides a mock function with given fields: ctx, params
+func (_m *MissionRepository) ListMultiModeMissions(ctx context.Context, params entity.ListMultiModeMissionsParams) ([]entity.Mission, error) {
+	ret := _m.Called(ctx, params)
 
 	var r0 []entity.Mission
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.BinaryUUID) ([]entity.Mission, error)); ok {
-		return rf(ctx, userID)
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMultiModeMissionsParams) ([]entity.Mission, error)); ok {
+		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.BinaryUUID) []entity.Mission); ok {
-		r0 = rf(ctx, userID)
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMultiModeMissionsParams) []entity.Mission); ok {
+		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]entity.Mission)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, entity.BinaryUUID) error); ok {
-		r1 = rf(ctx, userID)
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ListMultiModeMissionsParams) error); ok {
+		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -267,31 +267,31 @@ func (_m *MissionRepository) ListMultipleModeMissions(ctx context.Context, userI
 	return r0, r1
 }
 
-// MissionRepository_ListMultipleModeMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultipleModeMissions'
-type MissionRepository_ListMultipleModeMissions_Call struct {
+// MissionRepository_ListMultiModeMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultiModeMissions'
+type MissionRepository_ListMultiModeMissions_Call struct {
 	*mock.Call
 }
 
-// ListMultipleModeMissions is a helper method to define mock.On call
+// ListMultiModeMissions is a helper method to define mock.On call
 //   - ctx context.Context
-//   - userID entity.BinaryUUID
-func (_e *MissionRepository_Expecter) ListMultipleModeMissions(ctx interface{}, userID interface{}) *MissionRepository_ListMultipleModeMissions_Call {
-	return &MissionRepository_ListMultipleModeMissions_Call{Call: _e.mock.On("ListMultipleModeMissions", ctx, userID)}
+//   - params entity.ListMultiModeMissionsParams
+func (_e *MissionRepository_Expecter) ListMultiModeMissions(ctx interface{}, params interface{}) *MissionRepository_ListMultiModeMissions_Call {
+	return &MissionRepository_ListMultiModeMissions_Call{Call: _e.mock.On("ListMultiModeMissions", ctx, params)}
 }
 
-func (_c *MissionRepository_ListMultipleModeMissions_Call) Run(run func(ctx context.Context, userID entity.BinaryUUID)) *MissionRepository_ListMultipleModeMissions_Call {
+func (_c *MissionRepository_ListMultiModeMissions_Call) Run(run func(ctx context.Context, params entity.ListMultiModeMissionsParams)) *MissionRepository_ListMultiModeMissions_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(entity.BinaryUUID))
+		run(args[0].(context.Context), args[1].(entity.ListMultiModeMissionsParams))
 	})
 	return _c
 }
 
-func (_c *MissionRepository_ListMultipleModeMissions_Call) Return(_a0 []entity.Mission, _a1 error) *MissionRepository_ListMultipleModeMissions_Call {
+func (_c *MissionRepository_ListMultiModeMissions_Call) Return(_a0 []entity.Mission, _a1 error) *MissionRepository_ListMultiModeMissions_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MissionRepository_ListMultipleModeMissions_Call) RunAndReturn(run func(context.Context, entity.BinaryUUID) ([]entity.Mission, error)) *MissionRepository_ListMultipleModeMissions_Call {
+func (_c *MissionRepository_ListMultiModeMissions_Call) RunAndReturn(run func(context.Context, entity.ListMultiModeMissionsParams) ([]entity.Mission, error)) *MissionRepository_ListMultiModeMissions_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -32,9 +32,9 @@ type Mission struct {
 	Title     string     `db:"title"`
 	Emoji     string     `db:"emoji"`
 	Duration  string     `db:"duration"`
-	StartDate time.Time  `db:"start_date"`
-	EndDate   time.Time  `db:"end_date"`
-	PlanTime  time.Time  `db:"plan_time"`
+	StartDate time.Time  `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`
+	EndDate   time.Time  `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`
+	PlanTime  time.Time  `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`
 	Alarm     bool       `db:"alarm"`
 	WeekDay   int        `db:"week_day"`
 	Type      string     `db:"type"`
@@ -47,7 +47,7 @@ type MissionRepository interface {
 	ListMissions(ctx context.Context, userID BinaryUUID) ([]Mission, error)
 	PatchMission(ctx context.Context, mission *Mission) (*Mission, error)
 	ListActiveSingleMissionIDs(ctx context.Context) ([]uint, error)
-	ListMultipleModeMissions(ctx context.Context, userID BinaryUUID) ([]Mission, error)
+	ListMultiModeMissions(ctx context.Context, params ListMultiModeMissionsParams) ([]Mission, error)
 }
 
 type MissionService interface {
@@ -102,4 +102,9 @@ func ConvertIntToDaysOfWeek(days int) []string {
 	}
 
 	return selectedDays
+}
+
+type ListMultiModeMissionsParams struct {
+	UserID BinaryUUID
+	Date   time.Time
 }

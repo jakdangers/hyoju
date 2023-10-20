@@ -77,24 +77,24 @@ func (_c *MissionHistoryService_CreateMissionHistory_Call) RunAndReturn(run func
 	return _c
 }
 
-// ListMultipleMissionHistories provides a mock function with given fields: ctx, req
-func (_m *MissionHistoryService) ListMultipleMissionHistories(ctx context.Context, req entity.ListMissionHistoriesRequest) (*entity.ListMissionHistoriesResponse, error) {
+// ListMultiModeMissionHistories provides a mock function with given fields: ctx, req
+func (_m *MissionHistoryService) ListMultiModeMissionHistories(ctx context.Context, req entity.ListMultiModeMissionHistoriesRequest) (*entity.ListMultiModeMissionHistoriesResponse, error) {
 	ret := _m.Called(ctx, req)
 
-	var r0 *entity.ListMissionHistoriesResponse
+	var r0 *entity.ListMultiModeMissionHistoriesResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMissionHistoriesRequest) (*entity.ListMissionHistoriesResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMultiModeMissionHistoriesRequest) (*entity.ListMultiModeMissionHistoriesResponse, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMissionHistoriesRequest) *entity.ListMissionHistoriesResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMultiModeMissionHistoriesRequest) *entity.ListMultiModeMissionHistoriesResponse); ok {
 		r0 = rf(ctx, req)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entity.ListMissionHistoriesResponse)
+			r0 = ret.Get(0).(*entity.ListMultiModeMissionHistoriesResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, entity.ListMissionHistoriesRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ListMultiModeMissionHistoriesRequest) error); ok {
 		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
@@ -103,31 +103,31 @@ func (_m *MissionHistoryService) ListMultipleMissionHistories(ctx context.Contex
 	return r0, r1
 }
 
-// MissionHistoryService_ListMultipleMissionHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultipleMissionHistories'
-type MissionHistoryService_ListMultipleMissionHistories_Call struct {
+// MissionHistoryService_ListMultiModeMissionHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultiModeMissionHistories'
+type MissionHistoryService_ListMultiModeMissionHistories_Call struct {
 	*mock.Call
 }
 
-// ListMultipleMissionHistories is a helper method to define mock.On call
+// ListMultiModeMissionHistories is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req entity.ListMissionHistoriesRequest
-func (_e *MissionHistoryService_Expecter) ListMultipleMissionHistories(ctx interface{}, req interface{}) *MissionHistoryService_ListMultipleMissionHistories_Call {
-	return &MissionHistoryService_ListMultipleMissionHistories_Call{Call: _e.mock.On("ListMultipleMissionHistories", ctx, req)}
+//   - req entity.ListMultiModeMissionHistoriesRequest
+func (_e *MissionHistoryService_Expecter) ListMultiModeMissionHistories(ctx interface{}, req interface{}) *MissionHistoryService_ListMultiModeMissionHistories_Call {
+	return &MissionHistoryService_ListMultiModeMissionHistories_Call{Call: _e.mock.On("ListMultiModeMissionHistories", ctx, req)}
 }
 
-func (_c *MissionHistoryService_ListMultipleMissionHistories_Call) Run(run func(ctx context.Context, req entity.ListMissionHistoriesRequest)) *MissionHistoryService_ListMultipleMissionHistories_Call {
+func (_c *MissionHistoryService_ListMultiModeMissionHistories_Call) Run(run func(ctx context.Context, req entity.ListMultiModeMissionHistoriesRequest)) *MissionHistoryService_ListMultiModeMissionHistories_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(entity.ListMissionHistoriesRequest))
+		run(args[0].(context.Context), args[1].(entity.ListMultiModeMissionHistoriesRequest))
 	})
 	return _c
 }
 
-func (_c *MissionHistoryService_ListMultipleMissionHistories_Call) Return(_a0 *entity.ListMissionHistoriesResponse, _a1 error) *MissionHistoryService_ListMultipleMissionHistories_Call {
+func (_c *MissionHistoryService_ListMultiModeMissionHistories_Call) Return(_a0 *entity.ListMultiModeMissionHistoriesResponse, _a1 error) *MissionHistoryService_ListMultiModeMissionHistories_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MissionHistoryService_ListMultipleMissionHistories_Call) RunAndReturn(run func(context.Context, entity.ListMissionHistoriesRequest) (*entity.ListMissionHistoriesResponse, error)) *MissionHistoryService_ListMultipleMissionHistories_Call {
+func (_c *MissionHistoryService_ListMultiModeMissionHistories_Call) RunAndReturn(run func(context.Context, entity.ListMultiModeMissionHistoriesRequest) (*entity.ListMultiModeMissionHistoriesResponse, error)) *MissionHistoryService_ListMultiModeMissionHistories_Call {
 	_c.Call.Return(run)
 	return _c
 }
