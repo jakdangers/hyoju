@@ -5,9 +5,9 @@ import (
 	"go.uber.org/fx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"pixelix/config"
-	"time"
 )
 
 var GormModule = fx.Module("gorm", fx.Provide(NewGorm))
@@ -24,9 +24,7 @@ func NewGorm(cfg *config.Config) (*gorm.DB, error) {
 		DontSupportRenameColumn:   true,               // use change when rename column, rename rename not supported before MySQL 8, MariaDB
 		SkipInitializeWithVersion: false,              // smart configure based on used version
 	}), &gorm.Config{
-		NowFunc: func() time.Time {
-			return time.Now().UTC()
-		},
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 
 	if err != nil {

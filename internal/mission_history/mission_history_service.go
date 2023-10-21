@@ -2,6 +2,7 @@ package mission_history
 
 import (
 	"context"
+	"fmt"
 	"github.com/samber/lo"
 	"pixelix/entity"
 	"pixelix/pkg/cerrors"
@@ -51,20 +52,15 @@ func (m missionHistoryService) ListMultiModeMissionHistories(ctx context.Context
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
-	// 한국 시간대 (KST) 로드
-	loc, err := time.LoadLocation("Asia/Seoul")
-	if err != nil {
-		return nil, cerrors.E(op, cerrors.Internal, err)
-	}
-	kstTime := date.In(loc)
-	utcTime := kstTime.UTC()
+	utcKst := date.Add(-time.Hour * 9)
 
 	// 멀티 플레이 미션 목록 조회
 	missions, err := m.missionRepo.ListMultiModeMissions(ctx, entity.ListMultiModeMissionsParams{
 		UserID: userID,
-		Date:   utcTime,
+		Date:   utcKst,
 	})
 	if err != nil {
+		fmt.Println(err)
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
@@ -99,12 +95,13 @@ func (m missionHistoryService) ListMultiModeMissionHistories(ctx context.Context
 
 		if !ok {
 			historyDTO = entity.MissionHistoryDTO{
-				UserID:     userID.String(),
-				MissionID:  mission.ID,
-				Title:      mission.Title,
-				Emoji:      mission.Emoji,
-				Status:     entity.MissionHistoryStatusInit,
-				PlanTime:   mission.PlanTime,
+				UserID:    userID.String(),
+				MissionID: mission.ID,
+				Title:     mission.Title,
+				Emoji:     mission.Emoji,
+				Status:    entity.MissionHistoryStatusInit,
+				PlanTime:  mission.PlanTime,
+				//PlanTime:   time.Time{}.Add(mission.PlanTime),
 				FrontImage: "",
 				BackImage:  "",
 			}

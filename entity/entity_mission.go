@@ -32,9 +32,9 @@ type Mission struct {
 	Title     string     `db:"title"`
 	Emoji     string     `db:"emoji"`
 	Duration  string     `db:"duration"`
-	StartDate time.Time  `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`
-	EndDate   time.Time  `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`
-	PlanTime  time.Time  `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`
+	StartDate time.Time  `gorm:"type:timestamp"`
+	EndDate   time.Time  `gorm:"type:timestamp"`
+	PlanTime  time.Time  `gorm:"type:timestamp"`
 	Alarm     bool       `db:"alarm"`
 	WeekDay   int        `db:"week_day"`
 	Type      string     `db:"type"`

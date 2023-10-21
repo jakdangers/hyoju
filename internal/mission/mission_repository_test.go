@@ -85,17 +85,14 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 				Model: gorm.Model{
 					ID: 1,
 				},
-				AuthorID:  testUserID,
-				Title:     "test_mission",
-				Emoji:     "test_emoji",
-				Duration:  entity.Period,
-				StartDate: time.Time{},
-				EndDate:   time.Time{},
-				PlanTime:  time.Time{},
-				Alarm:     false,
-				WeekDay:   3,
-				Type:      entity.Single,
-				Status:    entity.Active,
+				AuthorID: testUserID,
+				Title:    "test_mission",
+				Emoji:    "test_emoji",
+				Duration: entity.Period,
+				Alarm:    false,
+				WeekDay:  3,
+				Type:     entity.Single,
+				Status:   entity.Active,
 			},
 			wantErr: false,
 		},
@@ -362,7 +359,7 @@ func Test_missionRepository_ListMultiModeMissions(t *testing.T) {
 			mock: func() {
 				query := "SELECT (.+) FROM `missions`"
 				columns := []string{"missions.id", "missions.author_id", "missions.title", "missions.emoji", "missions.duration", "missions.start_date", "missions.end_date", "missions.plan_date", "missions.alarm", "missions.week_day", "missions.type", "missions_status"}
-				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", time.Time{}, time.Time{}, time.Time{}, true, 3, "SINGLE", "ACTIVE")
+				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", time.Time{}, time.Time{}, 0, true, 3, "SINGLE", "ACTIVE")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
 			want: []entity.Mission{
@@ -370,17 +367,14 @@ func Test_missionRepository_ListMultiModeMissions(t *testing.T) {
 					Model: gorm.Model{
 						ID: 1,
 					},
-					AuthorID:  testUserID,
-					Title:     "test_mission",
-					Emoji:     "test_emoji",
-					Duration:  "DAILY",
-					StartDate: time.Time{},
-					EndDate:   time.Time{},
-					PlanTime:  time.Time{},
-					Alarm:     true,
-					WeekDay:   3,
-					Type:      "SINGLE",
-					Status:    "ACTIVE",
+					AuthorID: testUserID,
+					Title:    "test_mission",
+					Emoji:    "test_emoji",
+					Duration: "DAILY",
+					Alarm:    true,
+					WeekDay:  3,
+					Type:     "SINGLE",
+					Status:   "ACTIVE",
 				},
 			},
 			wantErr: false,

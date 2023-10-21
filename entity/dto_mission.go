@@ -72,6 +72,7 @@ type MissionDTO struct {
 }
 
 func MissionDTOFrom(mission Mission) MissionDTO {
+
 	return MissionDTO{
 		ID:        mission.ID,
 		AuthorID:  mission.AuthorID.String(),

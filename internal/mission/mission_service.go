@@ -2,7 +2,6 @@ package mission
 
 import (
 	"context"
-	"fmt"
 	"pixelix/entity"
 	"pixelix/pkg/cerrors"
 )
@@ -39,17 +38,16 @@ func (m missionService) CreateMission(ctx context.Context, req entity.CreateMiss
 		return nil, cerrors.E(op, cerrors.Invalid, "user not exist")
 	}
 
-	fmt.Println(req.StartDate.UTC())
-	fmt.Println(req.EndDate.UTC())
+	//planTime := time.Duration(req.PlanTime.Hour())*time.Hour + time.Duration(req.PlanTime.Minute())*time.Minute
 
 	mission, err := m.missionRepo.CreateMission(ctx, &entity.Mission{
 		AuthorID:  userID,
 		Title:     req.Title,
 		Emoji:     req.Emoji,
 		Duration:  req.Duration,
-		StartDate: req.StartDate.UTC(),
-		EndDate:   req.EndDate.UTC(),
-		PlanTime:  req.PlanTime.UTC(),
+		StartDate: req.StartDate,
+		EndDate:   req.EndDate,
+		PlanTime:  req.PlanTime,
 		Alarm:     req.Alarm,
 		WeekDay:   entity.ConvertDaysOfWeekToInt(req.WeekDay),
 		Type:      entity.Single,
@@ -145,6 +143,7 @@ func (m missionService) PatchMission(ctx context.Context, req entity.PatchMissio
 		mission.EndDate = *req.EndDate
 	}
 	if req.PlanTime != nil {
+		//duration := time.Duration(req.PlanTime.Hour())*time.Hour + time.Duration(req.PlanTime.Minute())*time.Minute
 		mission.PlanTime = *req.PlanTime
 	}
 	if req.Alarm != nil {
