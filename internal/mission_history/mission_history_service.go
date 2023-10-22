@@ -100,7 +100,7 @@ func (m missionHistoryService) ListMultiModeMissionHistories(ctx context.Context
 				Title:     mission.Title,
 				Emoji:     mission.Emoji,
 				Status:    entity.MissionHistoryStatusInit,
-				PlanTime:  mission.PlanTime,
+				PlanTime:  mission.PlanTime.Add(-time.Hour * 9),
 				//PlanTime:   time.Time{}.Add(mission.PlanTime),
 				FrontImage: "",
 				BackImage:  "",

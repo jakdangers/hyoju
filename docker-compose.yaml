@@ -12,3 +12,5 @@ services:
       MYSQL_PASSWORD: blipix
     ports:
       - "3306:3306"
+    volumes:
+      - ./docker:/etc/mysql/conf.d

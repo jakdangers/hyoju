@@ -14,7 +14,7 @@ var GormModule = fx.Module("gorm", fx.Provide(NewGorm))
 
 func NewGorm(cfg *config.Config) (*gorm.DB, error) {
 	datetimePrecision := 2
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=UTC", cfg.Mysql.User, cfg.Mysql.Password, cfg.Mysql.Host, cfg.Mysql.Port, cfg.Mysql.DbName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=UTC", cfg.Mysql.User, cfg.Mysql.Password, cfg.Mysql.Host, cfg.Mysql.Port, cfg.Mysql.DbName)
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       dsn,                // data source name, refer https://github.com/go-sql-driver/mysql#dsn-data-source-name
 		DefaultStringSize:         256,                // add default size for string fields, by default, will use sqlx type `longtext` for fields without size, not a primary key, no index defined and don't have default values
