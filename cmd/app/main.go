@@ -3,6 +3,7 @@ package main
 import (
 	"go.uber.org/fx"
 	"pixelix/config"
+	"pixelix/internal/challenge"
 	"pixelix/internal/mission"
 	"pixelix/internal/mission_history"
 	"pixelix/internal/mission_participant"
@@ -27,6 +28,7 @@ func main() {
 		mission.Module,
 		mission_participant.Module,
 		mission_history.Module,
+		challenge.Module,
 
 		// invoke
 		fx.Invoke(
@@ -34,6 +36,7 @@ func main() {
 			user.RegisterRoutes,
 			mission.RegisterRoutes,
 			mission_history.RegisterRoutes,
+			challenge.RegisterRoutes,
 			// Infra Invoke
 			server.NewHTTPServer,
 		),
