@@ -46,7 +46,7 @@ func (_m *TaskService) CreateMission(ctx context.Context, req dto.CreateMissionR
 	return r0, r1
 }
 
-// TaskService_CreateTask_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMission'
+// TaskService_CreateTask_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateChallenge'
 type TaskService_CreateTask_Call struct {
 	*mock.Call
 }
@@ -55,7 +55,7 @@ type TaskService_CreateTask_Call struct {
 //   - ctx context.Context
 //   - req dto.CreateMissionRequest
 func (_e *TaskService_Expecter) CreateTask(ctx interface{}, req interface{}) *TaskService_CreateTask_Call {
-	return &TaskService_CreateTask_Call{Call: _e.mock.On("CreateMission", ctx, req)}
+	return &TaskService_CreateTask_Call{Call: _e.mock.On("CreateChallenge", ctx, req)}
 }
 
 func (_c *TaskService_CreateTask_Call) Run(run func(ctx context.Context, req dto.CreateMissionRequest)) *TaskService_CreateTask_Call {

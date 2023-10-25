@@ -25,7 +25,7 @@ func (_m *TaskController) CreateMissionHistory(c *gin.Context) {
 	_m.Called(c)
 }
 
-// TaskController_CreateTask_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMission'
+// TaskController_CreateTask_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateChallenge'
 type TaskController_CreateTask_Call struct {
 	*mock.Call
 }
@@ -33,7 +33,7 @@ type TaskController_CreateTask_Call struct {
 // CreateTask is a helper method to define mock.On call
 //   - c *gin.Context
 func (_e *TaskController_Expecter) CreateTask(c interface{}) *TaskController_CreateTask_Call {
-	return &TaskController_CreateTask_Call{Call: _e.mock.On("CreateMission", c)}
+	return &TaskController_CreateTask_Call{Call: _e.mock.On("CreateChallenge", c)}
 }
 
 func (_c *TaskController_CreateTask_Call) Run(run func(c *gin.Context)) *TaskController_CreateTask_Call {

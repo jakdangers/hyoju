@@ -10,13 +10,13 @@ import (
 )
 
 type missionHistoryService struct {
-	missionRepo            entity.MissionRepository
+	missionRepo            entity.ChallengeRepository
 	missionParticipantRepo entity.MissionParticipantRepository
 	missionHistoryRepo     entity.MissionHistoryRepository
 	userRepo               entity.UserRepository
 }
 
-func NewMissionHistoryService(missionRepo entity.MissionRepository, missionParticipantRepo entity.MissionParticipantRepository, missionHistoryRepo entity.MissionHistoryRepository, userRepo entity.UserRepository) *missionHistoryService {
+func NewMissionHistoryService(missionRepo entity.ChallengeRepository, missionParticipantRepo entity.MissionParticipantRepository, missionHistoryRepo entity.MissionHistoryRepository, userRepo entity.UserRepository) *missionHistoryService {
 	return &missionHistoryService{
 		missionRepo:            missionRepo,
 		missionParticipantRepo: missionParticipantRepo,
@@ -101,7 +101,7 @@ func (m missionHistoryService) ListMultiModeMissionHistories(ctx context.Context
 				Emoji:     mission.Emoji,
 				Status:    entity.MissionHistoryStatusInit,
 				PlanTime:  mission.PlanTime.Add(-time.Hour * 9),
-				//PlanTime:   time.Time{}.Add(mission.PlanTime),
+				//PlanTime:   time.Time{}.Add(challenge.PlanTime),
 				FrontImage: "",
 				BackImage:  "",
 			}

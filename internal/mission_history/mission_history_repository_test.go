@@ -63,7 +63,7 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 		wantErr bool
 	}{
 		{
-			name: "PASS mission history 리스트 조회",
+			name: "PASS challenge history 리스트 조회",
 			args: args{
 				ctx: context.Background(),
 				params: entity.ListMultipleMissionHistoriesParams{

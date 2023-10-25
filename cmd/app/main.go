@@ -4,7 +4,6 @@ import (
 	"go.uber.org/fx"
 	"pixelix/config"
 	"pixelix/internal/challenge"
-	"pixelix/internal/mission"
 	"pixelix/internal/mission_history"
 	"pixelix/internal/mission_participant"
 	"pixelix/internal/user"
@@ -25,7 +24,7 @@ func main() {
 
 		// service module
 		user.Module,
-		mission.Module,
+		challenge.Module,
 		mission_participant.Module,
 		mission_history.Module,
 		challenge.Module,
@@ -34,7 +33,7 @@ func main() {
 		fx.Invoke(
 			// service Invoke
 			user.RegisterRoutes,
-			mission.RegisterRoutes,
+			challenge.RegisterRoutes,
 			mission_history.RegisterRoutes,
 			challenge.RegisterRoutes,
 			// Infra Invoke

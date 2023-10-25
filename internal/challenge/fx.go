@@ -6,9 +6,9 @@ import (
 )
 
 var Module = fx.Module(
-	"mission", fx.Provide(
-		fx.Annotate(NewChallengeRepository, fx.As(new(entity.ChallengeRepository))),
+	"challenge", fx.Provide(
+		fx.Annotate(NewMissionRepository, fx.As(new(entity.ChallengeRepository))),
 		fx.Annotate(NewChallengeService, fx.As(new(entity.ChallengeService))),
-		fx.Annotate(NewChallengeController, fx.As(new(entity.ChallengeController))),
+		fx.Annotate(NewMissionController, fx.As(new(entity.ChallengeController))),
 	),
 )

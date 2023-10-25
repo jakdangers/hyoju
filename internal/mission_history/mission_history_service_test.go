@@ -47,7 +47,7 @@ func Test_missionHistoryService_CreateMissionHistory(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS mission history 생성",
+			name: "PASS challenge history 생성",
 			args: args{
 				ctx: context.Background(),
 				req: entity.CreateMissionHistoryRequest{},
@@ -87,7 +87,7 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS mission history 조회",
+			name: "PASS challenge history 조회",
 			args: args{
 				ctx: context.Background(),
 				req: entity.ListMultiModeMissionHistoriesRequest{
@@ -104,12 +104,12 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 					UserID: testUserID,
 					Date:   time.Time{},
 				}).
-					Return([]entity.Mission{
+					Return([]entity.Challenge{
 						{
 							Model: gorm.Model{
 								ID: 1,
 							},
-							AuthorID:  testUserID,
+							UserID:    testUserID,
 							Title:     "test_mission",
 							Emoji:     "test_emoji",
 							Duration:  "DAILY",

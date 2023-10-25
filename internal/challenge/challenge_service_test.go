@@ -1,4 +1,4 @@
-package mission
+package challenge
 
 import (
 	"context"
@@ -13,19 +13,19 @@ import (
 )
 
 type serviceTestSuite struct {
-	missionRepo            *mocks.MissionRepository
+	challengeRepo          *mocks.MissionRepository
 	missionParticipantRepo *mocks.MissionParticipantRepository
 	userRepo               *mocks.UserRepository
-	service                entity.MissionService
+	service                entity.ChallengeService
 }
 
 func initServiceTestSuite(t *testing.T) serviceTestSuite {
 	var ts serviceTestSuite
 
-	ts.missionRepo = mocks.NewMissionRepository(t)
+	ts.challengeRepo = mocks.NewMissionRepository(t)
 	ts.missionParticipantRepo = mocks.NewMissionParticipantRepository(t)
 	ts.userRepo = mocks.NewUserRepository(t)
-	ts.service = NewMissionService(ts.missionRepo, ts.missionParticipantRepo, ts.userRepo)
+	ts.service = NewChallengeService(ts.challengeRepo, ts.missionParticipantRepo, ts.userRepo)
 
 	return ts
 }
@@ -72,9 +72,9 @@ func Test_missionService_CreateMission(t *testing.T) {
 					FirebaseUID: "test_firegbaseUID",
 					FriendCode:  "test_friendCode",
 				}, nil).Once()
-				ts.missionRepo.EXPECT().CreateMission(mock.Anything, &entity.Mission{
+				ts.challengeRepo.EXPECT().CreateMission(mock.Anything, &entity.Challenge{
 					Model:    gorm.Model{},
-					AuthorID: testUserID,
+					UserID:   testUserID,
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
 					Duration: "DAILY",
@@ -83,11 +83,11 @@ func Test_missionService_CreateMission(t *testing.T) {
 					WeekDay:  3,
 					Type:     "SINGLE",
 					Status:   entity.Active,
-				}).Return(&entity.Mission{
+				}).Return(&entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					AuthorID: testUserID,
+					UserID:   testUserID,
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
 					Duration: "DAILY",
@@ -120,7 +120,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
-			ts.missionRepo.AssertExpectations(t)
+			ts.challengeRepo.AssertExpectations(t)
 			ts.userRepo.AssertExpectations(t)
 		})
 	}
@@ -156,12 +156,12 @@ func Test_missionService_ListMissions(t *testing.T) {
 						ID: testUserID,
 					},
 				}, nil).Once()
-				ts.missionRepo.EXPECT().ListMissions(mock.Anything, testUserID).Return([]entity.Mission{
+				ts.challengeRepo.EXPECT().ListMissions(mock.Anything, testUserID).Return([]entity.Challenge{
 					{
 						Model: gorm.Model{
 							ID: 1,
 						},
-						AuthorID: testUserID,
+						UserID:   testUserID,
 						Title:    "test_mission",
 						Emoji:    "test_emoji",
 						Duration: entity.Daily,
@@ -199,7 +199,7 @@ func Test_missionService_ListMissions(t *testing.T) {
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
-			ts.missionRepo.AssertExpectations(t)
+			ts.challengeRepo.AssertExpectations(t)
 			ts.userRepo.AssertExpectations(t)
 		})
 	}
@@ -243,11 +243,11 @@ func Test_missionService_PatchMission(t *testing.T) {
 						ID: testUserID,
 					},
 				}, nil).Once()
-				ts.missionRepo.EXPECT().GetMission(mock.Anything, uint(1)).Return(&entity.Mission{
+				ts.challengeRepo.EXPECT().GetMission(mock.Anything, uint(1)).Return(&entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					AuthorID: testUserID,
+					UserID:   testUserID,
 					Title:    "original_mission",
 					Emoji:    "original_emoji",
 					Duration: entity.Daily,
@@ -256,11 +256,11 @@ func Test_missionService_PatchMission(t *testing.T) {
 					Type:     entity.Single,
 					Status:   entity.Wait,
 				}, nil).Once()
-				ts.missionRepo.EXPECT().PatchMission(mock.Anything, &entity.Mission{
+				ts.challengeRepo.EXPECT().PatchMission(mock.Anything, &entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					AuthorID: testUserID,
+					UserID:   testUserID,
 					Title:    "modified_mission",
 					Emoji:    "modified_emoji",
 					Duration: entity.Period,
@@ -268,11 +268,11 @@ func Test_missionService_PatchMission(t *testing.T) {
 					WeekDay:  7,
 					Type:     entity.Single,
 					Status:   entity.Active,
-				}).Return(&entity.Mission{
+				}).Return(&entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					AuthorID: testUserID,
+					UserID:   testUserID,
 					Title:    "modified_mission",
 					Emoji:    "modified_emoji",
 					Duration: entity.Period,
@@ -306,7 +306,7 @@ func Test_missionService_PatchMission(t *testing.T) {
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
-			ts.missionRepo.AssertExpectations(t)
+			ts.challengeRepo.AssertExpectations(t)
 			ts.userRepo.AssertExpectations(t)
 		})
 	}

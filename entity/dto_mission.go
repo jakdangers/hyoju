@@ -26,7 +26,7 @@ type GetMissionRequest struct {
 }
 
 type GetMissionResponse struct {
-	Mission MissionDTO `json:"mission"`
+	Mission MissionDTO `json:"challenge"`
 }
 
 type ListMissionsRequest struct {
@@ -71,11 +71,11 @@ type MissionDTO struct {
 	Status    string    `json:"status"`
 }
 
-func MissionDTOFrom(mission Mission) MissionDTO {
+func MissionDTOFrom(mission Challenge) MissionDTO {
 
 	return MissionDTO{
 		ID:        mission.ID,
-		AuthorID:  mission.AuthorID.String(),
+		AuthorID:  mission.UserID.String(),
 		Title:     mission.Title,
 		Emoji:     mission.Emoji,
 		Duration:  mission.Duration,

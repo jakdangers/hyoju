@@ -11,7 +11,7 @@ import (
 )
 
 func RegisterRoutes(e *gin.Engine, controller entity.MissionHistoryController) {
-	missionHistories := e.Group("mission-histories")
+	missionHistories := e.Group("challenge-histories")
 	{
 		missionHistories.POST("", controller.CreateMissionHistory)
 		missionHistories.GET("/multi/:userID", controller.ListMultiModeMissionHistories)

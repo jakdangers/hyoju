@@ -1,4 +1,4 @@
-package mission
+package challenge
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func RegisterRoutes(e *gin.Engine, controller entity.MissionController) {
+func RegisterRoutes(e *gin.Engine, controller entity.ChallengeController) {
 	missions := e.Group("/missions")
 	{
 		missions.POST("", controller.CreateMission)
@@ -22,17 +22,17 @@ func RegisterRoutes(e *gin.Engine, controller entity.MissionController) {
 
 type missionController struct {
 	logger  logger.Logger
-	service entity.MissionService
+	service entity.ChallengeService
 }
 
-func NewMissionController(service entity.MissionService, logger logger.Logger) *missionController {
+func NewMissionController(service entity.ChallengeService, logger logger.Logger) *missionController {
 	return &missionController{
 		logger:  logger,
 		service: service,
 	}
 }
 
-var _ entity.MissionController = (*missionController)(nil)
+var _ entity.ChallengeController = (*missionController)(nil)
 
 func (tc *missionController) CreateMission(c *gin.Context) {
 	var req entity.CreateMissionRequest

@@ -1,4 +1,4 @@
-package mission
+package challenge
 
 import (
 	"context"
@@ -18,7 +18,7 @@ type repoTestSuite struct {
 	db                *sql.DB
 	gormDB            *gorm.DB
 	sqlMock           sqlmock.Sqlmock
-	missionRepository entity.MissionRepository
+	missionRepository entity.ChallengeRepository
 }
 
 func initRepoTestSuite() *repoTestSuite {
@@ -50,7 +50,7 @@ func initRepoTestSuite() *repoTestSuite {
 func Test_missionRepository_CreateMission(t *testing.T) {
 	type args struct {
 		ctx     context.Context
-		mission *entity.Mission
+		mission *entity.Challenge
 	}
 
 	ts := initRepoTestSuite()
@@ -60,15 +60,15 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.Mission
+		want    *entity.Challenge
 		wantErr bool
 	}{
 		{
 			name: "PASS 미션 생성",
 			args: args{
 				ctx: context.Background(),
-				mission: &entity.Mission{
-					AuthorID: testUserID,
+				mission: &entity.Challenge{
+					UserID:   testUserID,
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
 					Duration: entity.Period,
@@ -81,11 +81,11 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 			mock: func() {
 				ts.sqlMock.ExpectExec("INSERT INTO `missions` (.+)").WillReturnResult(sqlmock.NewResult(1, 1))
 			},
-			want: &entity.Mission{
+			want: &entity.Challenge{
 				Model: gorm.Model{
 					ID: 1,
 				},
-				AuthorID: testUserID,
+				UserID:   testUserID,
 				Title:    "test_mission",
 				Emoji:    "test_emoji",
 				Duration: entity.Period,
@@ -100,8 +100,8 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 	for _, tt := range tests {
 		tt.mock()
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ts.missionRepository.CreateMission(tt.args.ctx, tt.args.mission)
-			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.Mission{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			got, err := ts.missionRepository.CreateChallenge(tt.args.ctx, tt.args.mission)
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.Challenge{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
@@ -122,7 +122,7 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    []entity.Mission
+		want    []entity.Challenge
 		wantErr bool
 	}{
 		{
@@ -137,12 +137,12 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", true, 3, "SINGLE", "ACTIVE")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
-			want: []entity.Mission{
+			want: []entity.Challenge{
 				{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					AuthorID: testUserID,
+					UserID:   testUserID,
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
 					Duration: entity.Daily,
@@ -158,7 +158,7 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionRepository.ListMissions(tt.args.ctx, tt.args.userID)
+			got, err := ts.missionRepository.ListChallenges(tt.args.ctx, tt.args.userID)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -170,7 +170,7 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 func Test_missionRepository_PatchMission(t *testing.T) {
 	type args struct {
 		ctx     context.Context
-		mission *entity.Mission
+		mission *entity.Challenge
 	}
 
 	ts := initRepoTestSuite()
@@ -180,18 +180,18 @@ func Test_missionRepository_PatchMission(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.Mission
+		want    *entity.Challenge
 		wantErr bool
 	}{
 		{
 			name: "PASS 미션 수정",
 			args: args{
 				ctx: context.Background(),
-				mission: &entity.Mission{
+				mission: &entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					AuthorID: testUserID,
+					UserID:   testUserID,
 					Title:    "modified_mission",
 					Emoji:    "modified_emoji",
 					Duration: entity.Period,
@@ -205,11 +205,11 @@ func Test_missionRepository_PatchMission(t *testing.T) {
 				query := "UPDATE `missions`"
 				ts.sqlMock.ExpectExec(query).WillReturnResult(sqlmock.NewResult(1, 1))
 			},
-			want: &entity.Mission{
+			want: &entity.Challenge{
 				Model: gorm.Model{
 					ID: 1,
 				},
-				AuthorID: testUserID,
+				UserID:   testUserID,
 				Title:    "modified_mission",
 				Emoji:    "modified_emoji",
 				Duration: entity.Period,
@@ -224,8 +224,8 @@ func Test_missionRepository_PatchMission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionRepository.PatchMission(tt.args.ctx, tt.args.mission)
-			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.Mission{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			got, err := ts.missionRepository.PatchChallenge(tt.args.ctx, tt.args.mission)
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.Challenge{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
@@ -246,7 +246,7 @@ func Test_missionRepository_GetMission(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.Mission
+		want    *entity.Challenge
 		wantErr bool
 	}{
 		{
@@ -261,11 +261,11 @@ func Test_missionRepository_GetMission(t *testing.T) {
 				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", true, 3, "SINGLE", "ACTIVE")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
-			want: &entity.Mission{
+			want: &entity.Challenge{
 				Model: gorm.Model{
 					ID: 1,
 				},
-				AuthorID: testUserID,
+				UserID:   testUserID,
 				Title:    "test_mission",
 				Emoji:    "test_emoji",
 				Duration: "DAILY",
@@ -280,49 +280,7 @@ func Test_missionRepository_GetMission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionRepository.GetMission(tt.args.ctx, tt.args.missionID)
-			assert.Equal(t, tt.want, got)
-			if err != nil {
-				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
-			}
-		})
-	}
-}
-
-func Test_missionRepository_ListActiveSingleMissionIDs(t *testing.T) {
-	type args struct {
-		ctx context.Context
-	}
-
-	ts := initRepoTestSuite()
-
-	tests := []struct {
-		name    string
-		args    args
-		mock    func()
-		want    []uint
-		wantErr bool
-	}{
-		{
-			name: "PASS missionID 리스트 조회",
-			args: args{
-				ctx: context.Background(),
-			},
-			mock: func() {
-				query := "SELECT (.+) FROM `missions`"
-				columns := []string{"id"}
-				rows := sqlmock.NewRows(columns).AddRow(1).AddRow(2).AddRow(3)
-				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
-			},
-			want:    []uint{1, 2, 3},
-			wantErr: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.mock()
-			got, err := ts.missionRepository.ListActiveSingleMissionIDs(tt.args.ctx)
+			got, err := ts.missionRepository.GetChallenge(tt.args.ctx, tt.args.missionID)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -344,7 +302,7 @@ func Test_missionRepository_ListMultiModeMissions(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    []entity.Mission
+		want    []entity.Challenge
 		wantErr bool
 	}{
 		{
@@ -362,12 +320,12 @@ func Test_missionRepository_ListMultiModeMissions(t *testing.T) {
 				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", time.Time{}, time.Time{}, 0, true, 3, "SINGLE", "ACTIVE")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
-			want: []entity.Mission{
+			want: []entity.Challenge{
 				{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					AuthorID: testUserID,
+					UserID:   testUserID,
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
 					Duration: "DAILY",

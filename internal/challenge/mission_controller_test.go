@@ -1,4 +1,4 @@
-package mission
+package challenge
 
 import (
 	"bytes"
@@ -21,7 +21,7 @@ type controllerTestSuite struct {
 	router            *gin.Engine
 	log               logger.Logger
 	missionService    *mocks.MissionService
-	missionController entity.MissionController
+	missionController entity.ChallengeController
 }
 
 func initControllerTestSuite(t *testing.T) controllerTestSuite {
@@ -47,7 +47,7 @@ func Test_missionController_CreateTask(t *testing.T) {
 		status int
 	}{
 		{
-			name: "PASS mission 생성",
+			name: "PASS challenge 생성",
 			body: func() *bytes.Reader {
 				req := entity.CreateMissionRequest{
 					UserID:   testUserID,
@@ -175,6 +175,7 @@ func Test_missionController_PatchMission(t *testing.T) {
 			status: http.StatusOK,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()

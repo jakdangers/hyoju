@@ -25,7 +25,7 @@ func (_m *MissionController) CreateMission(c *gin.Context) {
 	_m.Called(c)
 }
 
-// MissionController_CreateMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMission'
+// MissionController_CreateMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateChallenge'
 type MissionController_CreateMission_Call struct {
 	*mock.Call
 }
@@ -33,7 +33,7 @@ type MissionController_CreateMission_Call struct {
 // CreateMission is a helper method to define mock.On call
 //   - c *gin.Context
 func (_e *MissionController_Expecter) CreateMission(c interface{}) *MissionController_CreateMission_Call {
-	return &MissionController_CreateMission_Call{Call: _e.mock.On("CreateMission", c)}
+	return &MissionController_CreateMission_Call{Call: _e.mock.On("CreateChallenge", c)}
 }
 
 func (_c *MissionController_CreateMission_Call) Run(run func(c *gin.Context)) *MissionController_CreateMission_Call {
@@ -58,7 +58,7 @@ func (_m *MissionController) GetMission(c *gin.Context) {
 	_m.Called(c)
 }
 
-// MissionController_GetMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMission'
+// MissionController_GetMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetChallenge'
 type MissionController_GetMission_Call struct {
 	*mock.Call
 }
@@ -66,7 +66,7 @@ type MissionController_GetMission_Call struct {
 // GetMission is a helper method to define mock.On call
 //   - c *gin.Context
 func (_e *MissionController_Expecter) GetMission(c interface{}) *MissionController_GetMission_Call {
-	return &MissionController_GetMission_Call{Call: _e.mock.On("GetMission", c)}
+	return &MissionController_GetMission_Call{Call: _e.mock.On("GetChallenge", c)}
 }
 
 func (_c *MissionController_GetMission_Call) Run(run func(c *gin.Context)) *MissionController_GetMission_Call {
@@ -91,7 +91,7 @@ func (_m *MissionController) ListMissions(c *gin.Context) {
 	_m.Called(c)
 }
 
-// MissionController_ListMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMissions'
+// MissionController_ListMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListChallenges'
 type MissionController_ListMissions_Call struct {
 	*mock.Call
 }
@@ -99,7 +99,7 @@ type MissionController_ListMissions_Call struct {
 // ListMissions is a helper method to define mock.On call
 //   - c *gin.Context
 func (_e *MissionController_Expecter) ListMissions(c interface{}) *MissionController_ListMissions_Call {
-	return &MissionController_ListMissions_Call{Call: _e.mock.On("ListMissions", c)}
+	return &MissionController_ListMissions_Call{Call: _e.mock.On("ListChallenges", c)}
 }
 
 func (_c *MissionController_ListMissions_Call) Run(run func(c *gin.Context)) *MissionController_ListMissions_Call {
@@ -124,7 +124,7 @@ func (_m *MissionController) PatchMission(c *gin.Context) {
 	_m.Called(c)
 }
 
-// MissionController_PatchMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchMission'
+// MissionController_PatchMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchChallenge'
 type MissionController_PatchMission_Call struct {
 	*mock.Call
 }
@@ -132,7 +132,7 @@ type MissionController_PatchMission_Call struct {
 // PatchMission is a helper method to define mock.On call
 //   - c *gin.Context
 func (_e *MissionController_Expecter) PatchMission(c interface{}) *MissionController_PatchMission_Call {
-	return &MissionController_PatchMission_Call{Call: _e.mock.On("PatchMission", c)}
+	return &MissionController_PatchMission_Call{Call: _e.mock.On("PatchChallenge", c)}
 }
 
 func (_c *MissionController_PatchMission_Call) Run(run func(c *gin.Context)) *MissionController_PatchMission_Call {

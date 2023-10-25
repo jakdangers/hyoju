@@ -41,7 +41,7 @@ func Test_missionHistoryController_CreateMissionHistory(t *testing.T) {
 		status int
 	}{
 		{
-			name: "PASS mission 생성",
+			name: "PASS challenge 생성",
 			mock: func() {
 				ts.missionHistoryService.EXPECT().
 					CreateMissionHistory(mock.Anything, entity.CreateMissionHistoryRequest{}).
@@ -77,7 +77,7 @@ func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
 		status int
 	}{
 		{
-			name: "PASS mission 히스토리 조회",
+			name: "PASS challenge 히스토리 조회",
 			mock: func() {
 				ts.missionHistoryService.EXPECT().
 					ListMultiModeMissionHistories(mock.Anything, entity.ListMultiModeMissionHistoriesRequest{
@@ -86,7 +86,7 @@ func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
 					}).Return(&entity.ListMultiModeMissionHistoriesResponse{}, nil).Once()
 			},
 			uri: func() string {
-				path, _ := url.JoinPath("/mission-histories/multi", testUserID)
+				path, _ := url.JoinPath("/challenge-histories/multi", testUserID)
 				return path
 			},
 			query: func() string {

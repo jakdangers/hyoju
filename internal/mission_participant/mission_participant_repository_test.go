@@ -63,7 +63,7 @@ func Test_missionParticipantRepository_CreateMissionParticipant(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS mission 참여자 생성",
+			name: "PASS challenge 참여자 생성",
 			args: args{
 				ctx: context.Background(),
 				participant: &entity.MissionParticipant{
@@ -114,7 +114,7 @@ func Test_missionParticipantRepository_ListMissionParticipants(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS mission 참여자 목록 조회",
+			name: "PASS challenge 참여자 목록 조회",
 			args: args{
 				ctx:       context.Background(),
 				missionID: 1,

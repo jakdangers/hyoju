@@ -48,7 +48,7 @@ func (_m *MissionService) CreateMission(ctx context.Context, req entity.CreateMi
 	return r0, r1
 }
 
-// MissionService_CreateMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateMission'
+// MissionService_CreateMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateChallenge'
 type MissionService_CreateMission_Call struct {
 	*mock.Call
 }
@@ -57,7 +57,7 @@ type MissionService_CreateMission_Call struct {
 //   - ctx context.Context
 //   - req entity.CreateMissionRequest
 func (_e *MissionService_Expecter) CreateMission(ctx interface{}, req interface{}) *MissionService_CreateMission_Call {
-	return &MissionService_CreateMission_Call{Call: _e.mock.On("CreateMission", ctx, req)}
+	return &MissionService_CreateMission_Call{Call: _e.mock.On("CreateChallenge", ctx, req)}
 }
 
 func (_c *MissionService_CreateMission_Call) Run(run func(ctx context.Context, req entity.CreateMissionRequest)) *MissionService_CreateMission_Call {
@@ -103,7 +103,7 @@ func (_m *MissionService) GetMission(ctx context.Context, req entity.GetMissionR
 	return r0, r1
 }
 
-// MissionService_GetMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMission'
+// MissionService_GetMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetChallenge'
 type MissionService_GetMission_Call struct {
 	*mock.Call
 }
@@ -112,7 +112,7 @@ type MissionService_GetMission_Call struct {
 //   - ctx context.Context
 //   - req entity.GetMissionRequest
 func (_e *MissionService_Expecter) GetMission(ctx interface{}, req interface{}) *MissionService_GetMission_Call {
-	return &MissionService_GetMission_Call{Call: _e.mock.On("GetMission", ctx, req)}
+	return &MissionService_GetMission_Call{Call: _e.mock.On("GetChallenge", ctx, req)}
 }
 
 func (_c *MissionService_GetMission_Call) Run(run func(ctx context.Context, req entity.GetMissionRequest)) *MissionService_GetMission_Call {
@@ -158,7 +158,7 @@ func (_m *MissionService) ListMissions(ctx context.Context, req entity.ListMissi
 	return r0, r1
 }
 
-// MissionService_ListMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMissions'
+// MissionService_ListMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListChallenges'
 type MissionService_ListMissions_Call struct {
 	*mock.Call
 }
@@ -167,7 +167,7 @@ type MissionService_ListMissions_Call struct {
 //   - ctx context.Context
 //   - req entity.ListMissionsRequest
 func (_e *MissionService_Expecter) ListMissions(ctx interface{}, req interface{}) *MissionService_ListMissions_Call {
-	return &MissionService_ListMissions_Call{Call: _e.mock.On("ListMissions", ctx, req)}
+	return &MissionService_ListMissions_Call{Call: _e.mock.On("ListChallenges", ctx, req)}
 }
 
 func (_c *MissionService_ListMissions_Call) Run(run func(ctx context.Context, req entity.ListMissionsRequest)) *MissionService_ListMissions_Call {
@@ -213,7 +213,7 @@ func (_m *MissionService) PatchMission(ctx context.Context, req entity.PatchMiss
 	return r0, r1
 }
 
-// MissionService_PatchMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchMission'
+// MissionService_PatchMission_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchChallenge'
 type MissionService_PatchMission_Call struct {
 	*mock.Call
 }
@@ -222,7 +222,7 @@ type MissionService_PatchMission_Call struct {
 //   - ctx context.Context
 //   - req entity.PatchMissionRequest
 func (_e *MissionService_Expecter) PatchMission(ctx interface{}, req interface{}) *MissionService_PatchMission_Call {
-	return &MissionService_PatchMission_Call{Call: _e.mock.On("PatchMission", ctx, req)}
+	return &MissionService_PatchMission_Call{Call: _e.mock.On("PatchChallenge", ctx, req)}
 }
 
 func (_c *MissionService_PatchMission_Call) Run(run func(ctx context.Context, req entity.PatchMissionRequest)) *MissionService_PatchMission_Call {
