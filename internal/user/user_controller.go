@@ -14,7 +14,7 @@ import (
 func RegisterRoutes(e *gin.Engine, controller entity.UserController) {
 	e.GET("/users", controller.ReadUser)
 	e.PUT("/users", controller.UpdateUser)
-	e.DELETE("/users/:MissionID", controller.DeleteUser)
+	e.DELETE("/users/:ChallengeID", controller.DeleteUser)
 	e.POST("/users/login", controller.OAuthLoginUser)
 }
 

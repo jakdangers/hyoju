@@ -22,25 +22,25 @@ func (_m *ChallengeService) EXPECT() *ChallengeService_Expecter {
 	return &ChallengeService_Expecter{mock: &_m.Mock}
 }
 
-// CreateChallenge provides a mock function with given fields: c, req
-func (_m *ChallengeService) CreateChallenge(c context.Context, req entity.CreateChallengeRequest) (*entity.CreateChallengeResponse, error) {
-	ret := _m.Called(c, req)
+// CreateChallenge provides a mock function with given fields: ctx, req
+func (_m *ChallengeService) CreateChallenge(ctx context.Context, req entity.CreateChallengeRequest) (*entity.CreateMissionResponse, error) {
+	ret := _m.Called(ctx, req)
 
-	var r0 *entity.CreateChallengeResponse
+	var r0 *entity.CreateMissionResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateChallengeRequest) (*entity.CreateChallengeResponse, error)); ok {
-		return rf(c, req)
+	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateChallengeRequest) (*entity.CreateMissionResponse, error)); ok {
+		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateChallengeRequest) *entity.CreateChallengeResponse); ok {
-		r0 = rf(c, req)
+	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateChallengeRequest) *entity.CreateMissionResponse); ok {
+		r0 = rf(ctx, req)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entity.CreateChallengeResponse)
+			r0 = ret.Get(0).(*entity.CreateMissionResponse)
 		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, entity.CreateChallengeRequest) error); ok {
-		r1 = rf(c, req)
+		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -54,25 +54,190 @@ type ChallengeService_CreateChallenge_Call struct {
 }
 
 // CreateChallenge is a helper method to define mock.On call
-//   - c context.Context
+//   - ctx context.Context
 //   - req entity.CreateChallengeRequest
-func (_e *ChallengeService_Expecter) CreateChallenge(c interface{}, req interface{}) *ChallengeService_CreateChallenge_Call {
-	return &ChallengeService_CreateChallenge_Call{Call: _e.mock.On("CreateChallenge", c, req)}
+func (_e *ChallengeService_Expecter) CreateChallenge(ctx interface{}, req interface{}) *ChallengeService_CreateChallenge_Call {
+	return &ChallengeService_CreateChallenge_Call{Call: _e.mock.On("CreateChallenge", ctx, req)}
 }
 
-func (_c *ChallengeService_CreateChallenge_Call) Run(run func(c context.Context, req entity.CreateChallengeRequest)) *ChallengeService_CreateChallenge_Call {
+func (_c *ChallengeService_CreateChallenge_Call) Run(run func(ctx context.Context, req entity.CreateChallengeRequest)) *ChallengeService_CreateChallenge_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(entity.CreateChallengeRequest))
 	})
 	return _c
 }
 
-func (_c *ChallengeService_CreateChallenge_Call) Return(_a0 *entity.CreateChallengeResponse, _a1 error) *ChallengeService_CreateChallenge_Call {
+func (_c *ChallengeService_CreateChallenge_Call) Return(_a0 *entity.CreateMissionResponse, _a1 error) *ChallengeService_CreateChallenge_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *ChallengeService_CreateChallenge_Call) RunAndReturn(run func(context.Context, entity.CreateChallengeRequest) (*entity.CreateChallengeResponse, error)) *ChallengeService_CreateChallenge_Call {
+func (_c *ChallengeService_CreateChallenge_Call) RunAndReturn(run func(context.Context, entity.CreateChallengeRequest) (*entity.CreateMissionResponse, error)) *ChallengeService_CreateChallenge_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetChallenge provides a mock function with given fields: ctx, req
+func (_m *ChallengeService) GetChallenge(ctx context.Context, req entity.GetChallengeRequest) (*entity.GetChallengeResponse, error) {
+	ret := _m.Called(ctx, req)
+
+	var r0 *entity.GetChallengeResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.GetChallengeRequest) (*entity.GetChallengeResponse, error)); ok {
+		return rf(ctx, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.GetChallengeRequest) *entity.GetChallengeResponse); ok {
+		r0 = rf(ctx, req)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.GetChallengeResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.GetChallengeRequest) error); ok {
+		r1 = rf(ctx, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ChallengeService_GetChallenge_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetChallenge'
+type ChallengeService_GetChallenge_Call struct {
+	*mock.Call
+}
+
+// GetChallenge is a helper method to define mock.On call
+//   - ctx context.Context
+//   - req entity.GetChallengeRequest
+func (_e *ChallengeService_Expecter) GetChallenge(ctx interface{}, req interface{}) *ChallengeService_GetChallenge_Call {
+	return &ChallengeService_GetChallenge_Call{Call: _e.mock.On("GetChallenge", ctx, req)}
+}
+
+func (_c *ChallengeService_GetChallenge_Call) Run(run func(ctx context.Context, req entity.GetChallengeRequest)) *ChallengeService_GetChallenge_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.GetChallengeRequest))
+	})
+	return _c
+}
+
+func (_c *ChallengeService_GetChallenge_Call) Return(_a0 *entity.GetChallengeResponse, _a1 error) *ChallengeService_GetChallenge_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *ChallengeService_GetChallenge_Call) RunAndReturn(run func(context.Context, entity.GetChallengeRequest) (*entity.GetChallengeResponse, error)) *ChallengeService_GetChallenge_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListChallenges provides a mock function with given fields: ctx, req
+func (_m *ChallengeService) ListChallenges(ctx context.Context, req entity.ListChallengesRequest) (*entity.ListChallengesResponse, error) {
+	ret := _m.Called(ctx, req)
+
+	var r0 *entity.ListChallengesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListChallengesRequest) (*entity.ListChallengesResponse, error)); ok {
+		return rf(ctx, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListChallengesRequest) *entity.ListChallengesResponse); ok {
+		r0 = rf(ctx, req)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.ListChallengesResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ListChallengesRequest) error); ok {
+		r1 = rf(ctx, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ChallengeService_ListChallenges_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListChallenges'
+type ChallengeService_ListChallenges_Call struct {
+	*mock.Call
+}
+
+// ListChallenges is a helper method to define mock.On call
+//   - ctx context.Context
+//   - req entity.ListChallengesRequest
+func (_e *ChallengeService_Expecter) ListChallenges(ctx interface{}, req interface{}) *ChallengeService_ListChallenges_Call {
+	return &ChallengeService_ListChallenges_Call{Call: _e.mock.On("ListChallenges", ctx, req)}
+}
+
+func (_c *ChallengeService_ListChallenges_Call) Run(run func(ctx context.Context, req entity.ListChallengesRequest)) *ChallengeService_ListChallenges_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.ListChallengesRequest))
+	})
+	return _c
+}
+
+func (_c *ChallengeService_ListChallenges_Call) Return(_a0 *entity.ListChallengesResponse, _a1 error) *ChallengeService_ListChallenges_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *ChallengeService_ListChallenges_Call) RunAndReturn(run func(context.Context, entity.ListChallengesRequest) (*entity.ListChallengesResponse, error)) *ChallengeService_ListChallenges_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PatchChallenge provides a mock function with given fields: ctx, req
+func (_m *ChallengeService) PatchChallenge(ctx context.Context, req entity.PatchChallengeRequest) (*entity.PatchChallengeResponse, error) {
+	ret := _m.Called(ctx, req)
+
+	var r0 *entity.PatchChallengeResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.PatchChallengeRequest) (*entity.PatchChallengeResponse, error)); ok {
+		return rf(ctx, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.PatchChallengeRequest) *entity.PatchChallengeResponse); ok {
+		r0 = rf(ctx, req)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.PatchChallengeResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.PatchChallengeRequest) error); ok {
+		r1 = rf(ctx, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ChallengeService_PatchChallenge_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchChallenge'
+type ChallengeService_PatchChallenge_Call struct {
+	*mock.Call
+}
+
+// PatchChallenge is a helper method to define mock.On call
+//   - ctx context.Context
+//   - req entity.PatchChallengeRequest
+func (_e *ChallengeService_Expecter) PatchChallenge(ctx interface{}, req interface{}) *ChallengeService_PatchChallenge_Call {
+	return &ChallengeService_PatchChallenge_Call{Call: _e.mock.On("PatchChallenge", ctx, req)}
+}
+
+func (_c *ChallengeService_PatchChallenge_Call) Run(run func(ctx context.Context, req entity.PatchChallengeRequest)) *ChallengeService_PatchChallenge_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.PatchChallengeRequest))
+	})
+	return _c
+}
+
+func (_c *ChallengeService_PatchChallenge_Call) Return(_a0 *entity.PatchChallengeResponse, _a1 error) *ChallengeService_PatchChallenge_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *ChallengeService_PatchChallenge_Call) RunAndReturn(run func(context.Context, entity.PatchChallengeRequest) (*entity.PatchChallengeResponse, error)) *ChallengeService_PatchChallenge_Call {
 	_c.Call.Return(run)
 	return _c
 }

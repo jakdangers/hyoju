@@ -30,13 +30,13 @@ func initControllerTestSuite(t *testing.T) controllerTestSuite {
 	gin.SetMode(gin.TestMode)
 	ts.router = gin.Default()
 	ts.missionService = mocks.NewMissionService(t)
-	ts.missionController = NewMissionController(ts.missionService, ts.log)
+	ts.missionController = NewChallengeController(ts.missionService, ts.log)
 	RegisterRoutes(ts.router, ts.missionController)
 
 	return ts
 }
 
-func Test_missionController_CreateTask(t *testing.T) {
+func Test_missionController_CreateChallenge(t *testing.T) {
 	ts := initControllerTestSuite(t)
 	testUserID := entity.BinaryUUIDNew().String()
 
@@ -49,7 +49,7 @@ func Test_missionController_CreateTask(t *testing.T) {
 		{
 			name: "PASS challenge 생성",
 			body: func() *bytes.Reader {
-				req := entity.CreateMissionRequest{
+				req := entity.CreateChallengeRequest{
 					UserID:   testUserID,
 					Title:    "tet_mission",
 					Emoji:    "test_emoji",
@@ -64,7 +64,7 @@ func Test_missionController_CreateTask(t *testing.T) {
 				return bytes.NewReader(jb)
 			},
 			mock: func() {
-				ts.missionService.EXPECT().CreateMission(mock.Anything, entity.CreateMissionRequest{
+				ts.missionService.EXPECT().CreateMission(mock.Anything, entity.CreateChallengeRequest{
 					UserID:   testUserID,
 					Title:    "tet_mission",
 					Emoji:    "test_emoji",
@@ -83,7 +83,7 @@ func Test_missionController_CreateTask(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			req, _ := http.NewRequest(http.MethodPost, "/missions", tt.body())
+			req, _ := http.NewRequest(http.MethodPost, "/challenges", tt.body())
 			req.Header.Set("Content-Type", "application/json")
 
 			rec := httptest.NewRecorder()
@@ -112,9 +112,9 @@ func Test_missionController_ListMissions(t *testing.T) {
 				return path
 			},
 			mock: func() {
-				ts.missionService.EXPECT().ListMissions(mock.Anything, entity.ListMissionsRequest{
+				ts.missionService.EXPECT().ListMissions(mock.Anything, entity.ListChallengesRequest{
 					UserID: testUserID,
-				}).Return(&entity.ListMissionsResponse{}, nil).Once()
+				}).Return(&entity.ListChallengesResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
@@ -146,7 +146,7 @@ func Test_missionController_PatchMission(t *testing.T) {
 		{
 			name: "PASS 미션 수정",
 			body: func() *bytes.Reader {
-				req := entity.PatchMissionRequest{
+				req := entity.PatchChallengeRequest{
 					ID:       1,
 					Title:    pointer.String("modified_mission"),
 					Emoji:    pointer.String("modified_emoji"),
@@ -161,7 +161,7 @@ func Test_missionController_PatchMission(t *testing.T) {
 				return bytes.NewReader(jb)
 			},
 			mock: func() {
-				ts.missionService.EXPECT().PatchMission(mock.Anything, entity.PatchMissionRequest{
+				ts.missionService.EXPECT().PatchMission(mock.Anything, entity.PatchChallengeRequest{
 					ID:       1,
 					Title:    pointer.String("modified_mission"),
 					Emoji:    pointer.String("modified_emoji"),
@@ -170,7 +170,7 @@ func Test_missionController_PatchMission(t *testing.T) {
 					WeekDay:  []string{"MONDAY", "TUESDAY"},
 					Type:     pointer.String(entity.Single),
 					Status:   pointer.String(entity.Active),
-				}).Return(&entity.PatchMissionResponse{}, nil).Once()
+				}).Return(&entity.PatchChallengeResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
@@ -179,7 +179,7 @@ func Test_missionController_PatchMission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			req, _ := http.NewRequest(http.MethodPatch, "/missions", tt.body())
+			req, _ := http.NewRequest(http.MethodPatch, "/challenges", tt.body())
 			req.Header.Set("Content-Type", "application/json")
 
 			rec := httptest.NewRecorder()
@@ -207,9 +207,9 @@ func Test_missionController_GetMission(t *testing.T) {
 				return path
 			},
 			mock: func() {
-				ts.missionService.EXPECT().GetMission(mock.Anything, entity.GetMissionRequest{
-					MissionID: 1,
-				}).Return(&entity.GetMissionResponse{}, nil).Once()
+				ts.missionService.EXPECT().GetMission(mock.Anything, entity.GetChallengeRequest{
+					ChallengeID: 1,
+				}).Return(&entity.GetChallengeResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
 		},

@@ -255,7 +255,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			got, err := us.service.OAuthLoginUser(tt.args.ctx, tt.args.req)
-			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.OAuthLoginUserResponse{}, "MissionID", "FriendCode", "AccessToken")))
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.OAuthLoginUserResponse{}, "ChallengeID", "FriendCode", "AccessToken")))
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}

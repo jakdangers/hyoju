@@ -23,21 +23,21 @@ func (_m *TaskService) EXPECT() *TaskService_Expecter {
 }
 
 // CreateMission provides a mock function with given fields: ctx, req
-func (_m *TaskService) CreateMission(ctx context.Context, req dto.CreateMissionRequest) (dto.CreateMissionResponse, error) {
+func (_m *TaskService) CreateMission(ctx context.Context, req dto.CreateChallengeRequest) (dto.CreateMissionResponse, error) {
 	ret := _m.Called(ctx, req)
 
 	var r0 dto.CreateMissionResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, dto.CreateMissionRequest) (dto.CreateMissionResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dto.CreateChallengeRequest) (dto.CreateMissionResponse, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, dto.CreateMissionRequest) dto.CreateMissionResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, dto.CreateChallengeRequest) dto.CreateMissionResponse); ok {
 		r0 = rf(ctx, req)
 	} else {
 		r0 = ret.Get(0).(dto.CreateMissionResponse)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, dto.CreateMissionRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, dto.CreateChallengeRequest) error); ok {
 		r1 = rf(ctx, req)
 	} else {
 		r1 = ret.Error(1)
@@ -53,14 +53,14 @@ type TaskService_CreateTask_Call struct {
 
 // CreateTask is a helper method to define mock.On call
 //   - ctx context.Context
-//   - req dto.CreateMissionRequest
+//   - req dto.CreateChallengeRequest
 func (_e *TaskService_Expecter) CreateTask(ctx interface{}, req interface{}) *TaskService_CreateTask_Call {
 	return &TaskService_CreateTask_Call{Call: _e.mock.On("CreateChallenge", ctx, req)}
 }
 
-func (_c *TaskService_CreateTask_Call) Run(run func(ctx context.Context, req dto.CreateMissionRequest)) *TaskService_CreateTask_Call {
+func (_c *TaskService_CreateTask_Call) Run(run func(ctx context.Context, req dto.CreateChallengeRequest)) *TaskService_CreateTask_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(dto.CreateMissionRequest))
+		run(args[0].(context.Context), args[1].(dto.CreateChallengeRequest))
 	})
 	return _c
 }
@@ -70,7 +70,7 @@ func (_c *TaskService_CreateTask_Call) Return(_a0 dto.CreateMissionResponse, _a1
 	return _c
 }
 
-func (_c *TaskService_CreateTask_Call) RunAndReturn(run func(context.Context, dto.CreateMissionRequest) (dto.CreateMissionResponse, error)) *TaskService_CreateTask_Call {
+func (_c *TaskService_CreateTask_Call) RunAndReturn(run func(context.Context, dto.CreateChallengeRequest) (dto.CreateMissionResponse, error)) *TaskService_CreateTask_Call {
 	_c.Call.Return(run)
 	return _c
 }

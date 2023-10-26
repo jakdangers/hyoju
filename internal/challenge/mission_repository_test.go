@@ -42,7 +42,7 @@ func initRepoTestSuite() *repoTestSuite {
 	}
 
 	ts.gormDB = gormDB
-	ts.missionRepository = NewMissionRepository(gormDB)
+	ts.missionRepository = NewChallengeRepository(gormDB)
 
 	return &ts
 }

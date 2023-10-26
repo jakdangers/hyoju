@@ -21,7 +21,7 @@ func (_m *MissionController) EXPECT() *MissionController_Expecter {
 }
 
 // CreateMission provides a mock function with given fields: c
-func (_m *MissionController) CreateMission(c *gin.Context) {
+func (_m *MissionController) CreateChallenge(c *gin.Context) {
 	_m.Called(c)
 }
 
@@ -54,7 +54,7 @@ func (_c *MissionController_CreateMission_Call) RunAndReturn(run func(*gin.Conte
 }
 
 // GetMission provides a mock function with given fields: c
-func (_m *MissionController) GetMission(c *gin.Context) {
+func (_m *MissionController) GetChallenge(c *gin.Context) {
 	_m.Called(c)
 }
 
@@ -87,7 +87,7 @@ func (_c *MissionController_GetMission_Call) RunAndReturn(run func(*gin.Context)
 }
 
 // ListMissions provides a mock function with given fields: c
-func (_m *MissionController) ListMissions(c *gin.Context) {
+func (_m *MissionController) ListChallenges(c *gin.Context) {
 	_m.Called(c)
 }
 
@@ -120,7 +120,7 @@ func (_c *MissionController_ListMissions_Call) RunAndReturn(run func(*gin.Contex
 }
 
 // PatchMission provides a mock function with given fields: c
-func (_m *MissionController) PatchMission(c *gin.Context) {
+func (_m *MissionController) PatchChallenge(c *gin.Context) {
 	_m.Called(c)
 }
 

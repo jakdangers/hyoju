@@ -22,7 +22,7 @@ func (_m *MissionRepository) EXPECT() *MissionRepository_Expecter {
 	return &MissionRepository_Expecter{mock: &_m.Mock}
 }
 
-// CreateMission provides a mock function with given fields: ctx, challenge
+// CreateChallenge provides a mock function with given fields: ctx, challenge
 func (_m *MissionRepository) CreateChallenge(ctx context.Context, mission *entity.Challenge) (*entity.Challenge, error) {
 	ret := _m.Called(ctx, mission)
 
@@ -77,7 +77,7 @@ func (_c *MissionRepository_CreateMission_Call) RunAndReturn(run func(context.Co
 	return _c
 }
 
-// GetMission provides a mock function with given fields: ctx, missionID
+// GetChallenge provides a mock function with given fields: ctx, missionID
 func (_m *MissionRepository) GetChallenge(ctx context.Context, missionID uint) (*entity.Challenge, error) {
 	ret := _m.Called(ctx, missionID)
 
@@ -186,7 +186,7 @@ func (_c *MissionRepository_ListActiveSingleMissionIDs_Call) RunAndReturn(run fu
 	return _c
 }
 
-// ListMissions provides a mock function with given fields: ctx, userID
+// ListChallenges provides a mock function with given fields: ctx, userID
 func (_m *MissionRepository) ListChallenges(ctx context.Context, userID entity.BinaryUUID) ([]entity.Challenge, error) {
 	ret := _m.Called(ctx, userID)
 
@@ -296,7 +296,7 @@ func (_c *MissionRepository_ListMultiModeMissions_Call) RunAndReturn(run func(co
 	return _c
 }
 
-// PatchMission provides a mock function with given fields: ctx, challenge
+// PatchChallenge provides a mock function with given fields: ctx, challenge
 func (_m *MissionRepository) PatchChallenge(ctx context.Context, mission *entity.Challenge) (*entity.Challenge, error) {
 	ret := _m.Called(ctx, mission)
 

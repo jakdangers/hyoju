@@ -4,8 +4,8 @@ import (
 	"time"
 )
 
-type CreateMissionRequest struct {
-	UserID    string    `json:"userID"`
+type CreateChallengeRequest struct {
+	UserID    string    `json:"userId"`
 	Title     string    `json:"title"`
 	Emoji     string    `json:"emoji"`
 	Duration  string    `json:"duration"`
@@ -18,28 +18,28 @@ type CreateMissionRequest struct {
 }
 
 type CreateMissionResponse struct {
-	MissionID uint `json:"missionID"`
+	ChallengeID uint `json:"challengeId"`
 }
 
-type GetMissionRequest struct {
-	MissionID uint `json:"missionID" uri:"missionID"`
+type GetChallengeRequest struct {
+	ChallengeID uint `json:"ChallengeId" uri:"challengeId"`
 }
 
-type GetMissionResponse struct {
-	Mission MissionDTO `json:"challenge"`
+type GetChallengeResponse struct {
+	Challenge ChallengeDTO `json:"challenge"`
 }
 
-type ListMissionsRequest struct {
-	UserID string `json:"userID" uri:"userID"`
+type ListChallengesRequest struct {
+	UserID string `json:"userId" uri:"userId"`
 }
 
-type ListMissionsResponse struct {
-	Missions []MissionDTO `json:"missions"`
+type ListChallengesResponse struct {
+	Challenges []ChallengeDTO `json:"challenges"`
 }
 
-type PatchMissionRequest struct {
-	ID        uint       `json:"MissionID"`
-	UserID    string     `json:"userID"`
+type PatchChallengeRequest struct {
+	ID        uint       `json:"id"`
+	UserID    string     `json:"userId"`
 	Title     *string    `json:"title"`
 	Emoji     *string    `json:"emoji"`
 	Duration  *string    `json:"duration"`
@@ -52,13 +52,13 @@ type PatchMissionRequest struct {
 	Status    *string    `json:"status"`
 }
 
-type PatchMissionResponse struct {
-	MissionDTO
+type PatchChallengeResponse struct {
+	ChallengeDTO
 }
 
-type MissionDTO struct {
-	ID        uint      `json:"MissionID"`
-	AuthorID  string    `json:"authorID"`
+type ChallengeDTO struct {
+	ID        uint      `json:"id"`
+	UserID    string    `json:"userId"`
 	Title     string    `json:"title"`
 	Emoji     string    `json:"emoji"`
 	Duration  string    `json:"duration"`
@@ -71,20 +71,20 @@ type MissionDTO struct {
 	Status    string    `json:"status"`
 }
 
-func MissionDTOFrom(mission Challenge) MissionDTO {
+func ChallengeDTOFrom(challenge Challenge) ChallengeDTO {
 
-	return MissionDTO{
-		ID:        mission.ID,
-		AuthorID:  mission.UserID.String(),
-		Title:     mission.Title,
-		Emoji:     mission.Emoji,
-		Duration:  mission.Duration,
-		StartDate: mission.StartDate,
-		EndDate:   mission.EndDate,
-		PlanTime:  mission.PlanTime,
-		Alarm:     mission.Alarm,
-		WeekDay:   ConvertIntToDaysOfWeek(mission.WeekDay),
-		Type:      mission.Type,
-		Status:    mission.Status,
+	return ChallengeDTO{
+		ID:        challenge.ID,
+		UserID:    challenge.UserID.String(),
+		Title:     challenge.Title,
+		Emoji:     challenge.Emoji,
+		Duration:  challenge.Duration,
+		StartDate: challenge.StartDate,
+		EndDate:   challenge.EndDate,
+		PlanTime:  challenge.PlanTime,
+		Alarm:     challenge.Alarm,
+		WeekDay:   ConvertIntToDaysOfWeek(challenge.WeekDay),
+		Type:      challenge.Type,
+		Status:    string(challenge.Status),
 	}
 }

@@ -50,7 +50,7 @@ func Test_userController_ReadUser(t *testing.T) {
 			name: "PASS 존재하는 userID 조회",
 			input: func() string {
 				params := url.Values{}
-				params.Add("MissionID", testUserID)
+				params.Add("ChallengeID", testUserID)
 				return params.Encode()
 			},
 			mock: func() {
@@ -66,7 +66,7 @@ func Test_userController_ReadUser(t *testing.T) {
 			name: "PASS 존재하지 않는 userID 조회",
 			input: func() string {
 				params := url.Values{}
-				params.Add("MissionID", testUserID)
+				params.Add("ChallengeID", testUserID)
 				return params.Encode()
 			},
 			mock: func() {

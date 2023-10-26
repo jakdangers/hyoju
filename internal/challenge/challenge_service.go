@@ -22,7 +22,7 @@ func NewChallengeService(missionRepo entity.ChallengeRepository, missionParticip
 
 var _ entity.ChallengeService = (*challengeService)(nil)
 
-func (m challengeService) CreateMission(ctx context.Context, req entity.CreateMissionRequest) (*entity.CreateMissionResponse, error) {
+func (m challengeService) CreateChallenge(ctx context.Context, req entity.CreateChallengeRequest) (*entity.CreateMissionResponse, error) {
 	const op cerrors.Op = "challenge/service/createMission"
 
 	userID, err := entity.ParseUUID(req.UserID)
@@ -37,8 +37,6 @@ func (m challengeService) CreateMission(ctx context.Context, req entity.CreateMi
 	if user == nil {
 		return nil, cerrors.E(op, cerrors.Invalid, "user not exist")
 	}
-
-	//planTime := time.Duration(req.PlanTime.Hour())*time.Hour + time.Duration(req.PlanTime.Minute())*time.Minute
 
 	mission, err := m.challengeRepo.CreateChallenge(ctx, &entity.Challenge{
 		UserID:    userID,
@@ -66,16 +64,16 @@ func (m challengeService) CreateMission(ctx context.Context, req entity.CreateMi
 	}
 
 	return &entity.CreateMissionResponse{
-		MissionID: mission.ID,
+		ChallengeID: mission.ID,
 	}, nil
 }
 
-func (m challengeService) GetMission(ctx context.Context, req entity.GetMissionRequest) (*entity.GetMissionResponse, error) {
+func (m challengeService) GetChallenge(ctx context.Context, req entity.GetChallengeRequest) (*entity.GetChallengeResponse, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (m challengeService) ListMissions(ctx context.Context, req entity.ListMissionsRequest) (*entity.ListMissionsResponse, error) {
+func (m challengeService) ListChallenges(ctx context.Context, req entity.ListChallengesRequest) (*entity.ListChallengesResponse, error) {
 	const op cerrors.Op = "challenge/service/listMissions"
 
 	userID, err := entity.ParseUUID(req.UserID)
@@ -96,17 +94,17 @@ func (m challengeService) ListMissions(ctx context.Context, req entity.ListMissi
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	var missionDTOs []entity.MissionDTO
+	var missionDTOs []entity.ChallengeDTO
 	for _, mission := range missions {
-		missionDTOs = append(missionDTOs, entity.MissionDTOFrom(mission))
+		missionDTOs = append(missionDTOs, entity.ChallengeDTOFrom(mission))
 	}
 
-	return &entity.ListMissionsResponse{
-		Missions: missionDTOs,
+	return &entity.ListChallengesResponse{
+		Challenges: missionDTOs,
 	}, nil
 }
 
-func (m challengeService) PatchMission(ctx context.Context, req entity.PatchMissionRequest) (*entity.PatchMissionResponse, error) {
+func (m challengeService) PatchChallenge(ctx context.Context, req entity.PatchChallengeRequest) (*entity.PatchChallengeResponse, error) {
 	const op cerrors.Op = "challenge/service/patchMission"
 
 	userID, err := entity.ParseUUID(req.UserID)
@@ -164,5 +162,5 @@ func (m challengeService) PatchMission(ctx context.Context, req entity.PatchMiss
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	return &entity.PatchMissionResponse{MissionDTO: entity.MissionDTOFrom(*patchMission)}, nil
+	return &entity.PatchChallengeResponse{ChallengeDTO: entity.ChallengeDTOFrom(*patchMission)}, nil
 }

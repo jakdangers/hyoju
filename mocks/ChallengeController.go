@@ -53,6 +53,105 @@ func (_c *ChallengeController_CreateChallenge_Call) RunAndReturn(run func(*gin.C
 	return _c
 }
 
+// GetChallenge provides a mock function with given fields: c
+func (_m *ChallengeController) GetChallenge(c *gin.Context) {
+	_m.Called(c)
+}
+
+// ChallengeController_GetChallenge_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetChallenge'
+type ChallengeController_GetChallenge_Call struct {
+	*mock.Call
+}
+
+// GetChallenge is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *ChallengeController_Expecter) GetChallenge(c interface{}) *ChallengeController_GetChallenge_Call {
+	return &ChallengeController_GetChallenge_Call{Call: _e.mock.On("GetChallenge", c)}
+}
+
+func (_c *ChallengeController_GetChallenge_Call) Run(run func(c *gin.Context)) *ChallengeController_GetChallenge_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *ChallengeController_GetChallenge_Call) Return() *ChallengeController_GetChallenge_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *ChallengeController_GetChallenge_Call) RunAndReturn(run func(*gin.Context)) *ChallengeController_GetChallenge_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListChallenges provides a mock function with given fields: c
+func (_m *ChallengeController) ListChallenges(c *gin.Context) {
+	_m.Called(c)
+}
+
+// ChallengeController_ListChallenges_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListChallenges'
+type ChallengeController_ListChallenges_Call struct {
+	*mock.Call
+}
+
+// ListChallenges is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *ChallengeController_Expecter) ListChallenges(c interface{}) *ChallengeController_ListChallenges_Call {
+	return &ChallengeController_ListChallenges_Call{Call: _e.mock.On("ListChallenges", c)}
+}
+
+func (_c *ChallengeController_ListChallenges_Call) Run(run func(c *gin.Context)) *ChallengeController_ListChallenges_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *ChallengeController_ListChallenges_Call) Return() *ChallengeController_ListChallenges_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *ChallengeController_ListChallenges_Call) RunAndReturn(run func(*gin.Context)) *ChallengeController_ListChallenges_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PatchChallenge provides a mock function with given fields: c
+func (_m *ChallengeController) PatchChallenge(c *gin.Context) {
+	_m.Called(c)
+}
+
+// ChallengeController_PatchChallenge_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchChallenge'
+type ChallengeController_PatchChallenge_Call struct {
+	*mock.Call
+}
+
+// PatchChallenge is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *ChallengeController_Expecter) PatchChallenge(c interface{}) *ChallengeController_PatchChallenge_Call {
+	return &ChallengeController_PatchChallenge_Call{Call: _e.mock.On("PatchChallenge", c)}
+}
+
+func (_c *ChallengeController_PatchChallenge_Call) Run(run func(c *gin.Context)) *ChallengeController_PatchChallenge_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *ChallengeController_PatchChallenge_Call) Return() *ChallengeController_PatchChallenge_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *ChallengeController_PatchChallenge_Call) RunAndReturn(run func(*gin.Context)) *ChallengeController_PatchChallenge_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewChallengeController creates a new instance of ChallengeController. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewChallengeController(t interface {

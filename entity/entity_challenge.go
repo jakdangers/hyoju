@@ -53,22 +53,21 @@ type ChallengeRepository interface {
 	GetChallenge(ctx context.Context, missionID uint) (*Challenge, error)
 	ListChallenges(ctx context.Context, userID BinaryUUID) ([]Challenge, error)
 	PatchChallenge(ctx context.Context, mission *Challenge) (*Challenge, error)
-	ListActiveSingleMissionIDs(ctx context.Context) ([]uint, error)
 	ListMultiModeMissions(ctx context.Context, params ListMultiModeMissionsParams) ([]Challenge, error)
 }
 
 type ChallengeService interface {
-	CreateMission(ctx context.Context, req CreateMissionRequest) (*CreateMissionResponse, error)
-	GetMission(ctx context.Context, req GetMissionRequest) (*GetMissionResponse, error)
-	ListMissions(ctx context.Context, req ListMissionsRequest) (*ListMissionsResponse, error)
-	PatchMission(ctx context.Context, req PatchMissionRequest) (*PatchMissionResponse, error)
+	CreateChallenge(ctx context.Context, req CreateChallengeRequest) (*CreateMissionResponse, error)
+	GetChallenge(ctx context.Context, req GetChallengeRequest) (*GetChallengeResponse, error)
+	ListChallenges(ctx context.Context, req ListChallengesRequest) (*ListChallengesResponse, error)
+	PatchChallenge(ctx context.Context, req PatchChallengeRequest) (*PatchChallengeResponse, error)
 }
 
 type ChallengeController interface {
-	CreateMission(c *gin.Context)
-	GetMission(c *gin.Context)
-	ListMissions(c *gin.Context)
-	PatchMission(c *gin.Context)
+	CreateChallenge(c *gin.Context)
+	GetChallenge(c *gin.Context)
+	ListChallenges(c *gin.Context)
+	PatchChallenge(c *gin.Context)
 }
 
 func ConvertDaysOfWeekToInt(daysOfWeek []string) int {

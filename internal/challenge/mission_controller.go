@@ -11,91 +11,31 @@ import (
 )
 
 func RegisterRoutes(e *gin.Engine, controller entity.ChallengeController) {
-	missions := e.Group("/missions")
+	challenges := e.Group("/challenges")
 	{
-		missions.POST("", controller.CreateMission)
-		missions.GET("/user/:userID", controller.ListMissions)
-		missions.GET("/:missionID", controller.GetMission)
-		missions.PATCH("", controller.PatchMission)
+		challenges.POST("", controller.CreateChallenge)
+		challenges.GET("/user/:userId", controller.ListChallenges)
+		challenges.GET("/:challengeId", controller.GetChallenge)
+		challenges.PATCH("", controller.PatchChallenge)
 	}
 }
 
-type missionController struct {
+type challengeController struct {
 	logger  logger.Logger
 	service entity.ChallengeService
 }
 
-func NewMissionController(service entity.ChallengeService, logger logger.Logger) *missionController {
-	return &missionController{
+func NewChallengeController(service entity.ChallengeService, logger logger.Logger) *challengeController {
+	return &challengeController{
 		logger:  logger,
 		service: service,
 	}
 }
 
-var _ entity.ChallengeController = (*missionController)(nil)
+var _ entity.ChallengeController = (*challengeController)(nil)
 
-func (tc *missionController) CreateMission(c *gin.Context) {
-	var req entity.CreateMissionRequest
-
-	if err := c.ShouldBind(&req); err != nil {
-		c.JSON(cerrors.ToSentinelAPIError(err))
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
-	defer cancel()
-
-	res, err := tc.service.CreateMission(ctx, req)
-	if err != nil {
-		c.JSON(cerrors.ToSentinelAPIError(err))
-		return
-	}
-
-	c.JSON(http.StatusOK, res)
-}
-
-func (tc *missionController) GetMission(c *gin.Context) {
-	var req entity.GetMissionRequest
-
-	if err := c.ShouldBindUri(&req); err != nil {
-		c.JSON(cerrors.ToSentinelAPIError(err))
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
-	defer cancel()
-
-	res, err := tc.service.GetMission(ctx, req)
-	if err != nil {
-		c.JSON(cerrors.ToSentinelAPIError(err))
-		return
-	}
-
-	c.JSON(http.StatusOK, res)
-}
-
-func (tc *missionController) ListMissions(c *gin.Context) {
-	var req entity.ListMissionsRequest
-
-	if err := c.ShouldBindUri(&req); err != nil {
-		c.JSON(cerrors.ToSentinelAPIError(err))
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
-	defer cancel()
-
-	res, err := tc.service.ListMissions(ctx, req)
-	if err != nil {
-		c.JSON(cerrors.ToSentinelAPIError(err))
-		return
-	}
-
-	c.JSON(http.StatusOK, res)
-}
-
-func (tc *missionController) PatchMission(c *gin.Context) {
-	var req entity.PatchMissionRequest
+func (tc *challengeController) CreateChallenge(c *gin.Context) {
+	var req entity.CreateChallengeRequest
 
 	if err := c.ShouldBind(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
@@ -105,7 +45,67 @@ func (tc *missionController) PatchMission(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	res, err := tc.service.PatchMission(ctx, req)
+	res, err := tc.service.CreateChallenge(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func (tc *challengeController) GetChallenge(c *gin.Context) {
+	var req entity.GetChallengeRequest
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	res, err := tc.service.GetChallenge(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func (tc *challengeController) ListChallenges(c *gin.Context) {
+	var req entity.ListChallengesRequest
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	res, err := tc.service.ListChallenges(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func (tc *challengeController) PatchChallenge(c *gin.Context) {
+	var req entity.PatchChallengeRequest
+
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	defer cancel()
+
+	res, err := tc.service.PatchChallenge(ctx, req)
 	if err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return

@@ -8,19 +8,19 @@ import (
 	"pixelix/pkg/cerrors"
 )
 
-type missionRepository struct {
+type challengeRepository struct {
 	gormDB *gorm.DB
 }
 
-func NewMissionRepository(gormDB *gorm.DB) *missionRepository {
-	return &missionRepository{
+func NewChallengeRepository(gormDB *gorm.DB) *challengeRepository {
+	return &challengeRepository{
 		gormDB: gormDB,
 	}
 }
 
-var _ entity.ChallengeRepository = (*missionRepository)(nil)
+var _ entity.ChallengeRepository = (*challengeRepository)(nil)
 
-func (m missionRepository) CreateChallenge(ctx context.Context, mission *entity.Challenge) (*entity.Challenge, error) {
+func (m challengeRepository) CreateChallenge(ctx context.Context, mission *entity.Challenge) (*entity.Challenge, error) {
 	const op cerrors.Op = "challenge/repository/createMission"
 
 	result := m.gormDB.WithContext(ctx).Create(mission)
@@ -31,7 +31,7 @@ func (m missionRepository) CreateChallenge(ctx context.Context, mission *entity.
 	return mission, nil
 }
 
-func (m missionRepository) GetChallenge(ctx context.Context, missionID uint) (*entity.Challenge, error) {
+func (m challengeRepository) GetChallenge(ctx context.Context, missionID uint) (*entity.Challenge, error) {
 	const op cerrors.Op = "challenge/repository/getMission"
 
 	var mission entity.Challenge
@@ -46,7 +46,7 @@ func (m missionRepository) GetChallenge(ctx context.Context, missionID uint) (*e
 	return &mission, nil
 }
 
-func (m missionRepository) ListChallenges(ctx context.Context, userID entity.BinaryUUID) ([]entity.Challenge, error) {
+func (m challengeRepository) ListChallenges(ctx context.Context, userID entity.BinaryUUID) ([]entity.Challenge, error) {
 	const op cerrors.Op = "challenge/repository/listMissions"
 
 	var missions []entity.Challenge
@@ -58,7 +58,7 @@ func (m missionRepository) ListChallenges(ctx context.Context, userID entity.Bin
 	return missions, nil
 }
 
-func (m missionRepository) ListMultiModeMissions(ctx context.Context, params entity.ListMultiModeMissionsParams) ([]entity.Challenge, error) {
+func (m challengeRepository) ListMultiModeMissions(ctx context.Context, params entity.ListMultiModeMissionsParams) ([]entity.Challenge, error) {
 	const op cerrors.Op = "challenge/repository/listMultipleModeMissions"
 
 	rows, err := m.gormDB.WithContext(ctx).Table("missions").Select(
@@ -94,7 +94,7 @@ func (m missionRepository) ListMultiModeMissions(ctx context.Context, params ent
 	return missions, nil
 }
 
-func (m missionRepository) PatchChallenge(ctx context.Context, mission *entity.Challenge) (*entity.Challenge, error) {
+func (m challengeRepository) PatchChallenge(ctx context.Context, mission *entity.Challenge) (*entity.Challenge, error) {
 	const op cerrors.Op = "challenge/repository/patchMission"
 
 	result := m.gormDB.WithContext(ctx).Save(mission)

@@ -13,19 +13,19 @@ import (
 )
 
 type serviceTestSuite struct {
-	challengeRepo          *mocks.MissionRepository
-	missionParticipantRepo *mocks.MissionParticipantRepository
-	userRepo               *mocks.UserRepository
-	service                entity.ChallengeService
+	challengeRepo            *mocks.MissionRepository
+	challengeParticipantRepo *mocks.MissionParticipantRepository
+	userRepo                 *mocks.UserRepository
+	service                  entity.ChallengeService
 }
 
 func initServiceTestSuite(t *testing.T) serviceTestSuite {
 	var ts serviceTestSuite
 
 	ts.challengeRepo = mocks.NewMissionRepository(t)
-	ts.missionParticipantRepo = mocks.NewMissionParticipantRepository(t)
+	ts.challengeParticipantRepo = mocks.NewMissionParticipantRepository(t)
 	ts.userRepo = mocks.NewUserRepository(t)
-	ts.service = NewChallengeService(ts.challengeRepo, ts.missionParticipantRepo, ts.userRepo)
+	ts.service = NewChallengeService(ts.challengeRepo, ts.challengeParticipantRepo, ts.userRepo)
 
 	return ts
 }
@@ -33,7 +33,7 @@ func initServiceTestSuite(t *testing.T) serviceTestSuite {
 func Test_missionService_CreateMission(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req entity.CreateMissionRequest
+		req entity.CreateChallengeRequest
 	}
 
 	ts := initServiceTestSuite(t)
@@ -50,7 +50,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 			name: "PASS 미션 생성",
 			args: args{
 				ctx: context.Background(),
-				req: entity.CreateMissionRequest{
+				req: entity.CreateChallengeRequest{
 					UserID:   testUserID.String(),
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
@@ -78,7 +78,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
 					Duration: "DAILY",
-					PlanTime: 15*time.Hour + 30*time.Minute,
+					PlanTime: time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
 					Alarm:    true,
 					WeekDay:  3,
 					Type:     "SINGLE",
@@ -91,13 +91,13 @@ func Test_missionService_CreateMission(t *testing.T) {
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
 					Duration: "DAILY",
-					PlanTime: 15*time.Hour + 30*time.Minute,
+					PlanTime: time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
 					Alarm:    false,
 					WeekDay:  3,
 					Type:     "SINGLE",
 					Status:   entity.Active,
 				}, nil).Once()
-				ts.missionParticipantRepo.EXPECT().CreateMissionParticipant(mock.Anything, &entity.MissionParticipant{
+				ts.challengeParticipantRepo.EXPECT().CreateMissionParticipant(mock.Anything, &entity.MissionParticipant{
 					UserID:    testUserID,
 					MissionID: 1,
 				}).Return(&entity.MissionParticipant{
@@ -106,7 +106,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 				}, nil).Once()
 			},
 			want: &entity.CreateMissionResponse{
-				MissionID: 1,
+				ChallengeID: 1,
 			},
 			wantErr: false,
 		},
@@ -115,7 +115,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.service.CreateMission(tt.args.ctx, tt.args.req)
+			got, err := ts.service.CreateChallenge(tt.args.ctx, tt.args.req)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -129,7 +129,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 func Test_missionService_ListMissions(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req entity.ListMissionsRequest
+		req entity.ListChallengesRequest
 	}
 
 	ts := initServiceTestSuite(t)
@@ -139,14 +139,14 @@ func Test_missionService_ListMissions(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.ListMissionsResponse
+		want    *entity.ListChallengesResponse
 		wantErr bool
 	}{
 		{
 			name: "PASS 미션 리스트 조회",
 			args: args{
 				ctx: context.Background(),
-				req: entity.ListMissionsRequest{
+				req: entity.ListChallengesRequest{
 					UserID: testUserID.String(),
 				},
 			},
@@ -172,11 +172,11 @@ func Test_missionService_ListMissions(t *testing.T) {
 					},
 				}, nil).Once()
 			},
-			want: &entity.ListMissionsResponse{
-				Missions: []entity.MissionDTO{
+			want: &entity.ListChallengesResponse{
+				Challenges: []entity.ChallengeDTO{
 					{
 						ID:       1,
-						AuthorID: testUserID.String(),
+						UserID:   testUserID.String(),
 						Title:    "test_mission",
 						Emoji:    "test_emoji",
 						Duration: entity.Daily,
@@ -194,7 +194,7 @@ func Test_missionService_ListMissions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.service.ListMissions(tt.args.ctx, tt.args.req)
+			got, err := ts.service.ListChallenges(tt.args.ctx, tt.args.req)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -208,7 +208,7 @@ func Test_missionService_ListMissions(t *testing.T) {
 func Test_missionService_PatchMission(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req entity.PatchMissionRequest
+		req entity.PatchChallengeRequest
 	}
 
 	ts := initServiceTestSuite(t)
@@ -218,14 +218,14 @@ func Test_missionService_PatchMission(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.PatchMissionResponse
+		want    *entity.PatchChallengeResponse
 		wantErr bool
 	}{
 		{
 			name: "PASS 미션 수정",
 			args: args{
 				ctx: context.Background(),
-				req: entity.PatchMissionRequest{
+				req: entity.PatchChallengeRequest{
 					ID:       1,
 					UserID:   testUserID.String(),
 					Title:    pointer.String("modified_mission"),
@@ -282,10 +282,10 @@ func Test_missionService_PatchMission(t *testing.T) {
 					Status:   entity.Active,
 				}, nil).Once()
 			},
-			want: &entity.PatchMissionResponse{
-				MissionDTO: entity.MissionDTO{
+			want: &entity.PatchChallengeResponse{
+				ChallengeDTO: entity.ChallengeDTO{
 					ID:       1,
-					AuthorID: testUserID.String(),
+					UserID:   testUserID.String(),
 					Title:    "modified_mission",
 					Emoji:    "modified_emoji",
 					Duration: entity.Period,
@@ -301,7 +301,7 @@ func Test_missionService_PatchMission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.service.PatchMission(tt.args.ctx, tt.args.req)
+			got, err := ts.service.PatchChallenge(tt.args.ctx, tt.args.req)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
