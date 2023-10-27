@@ -50,7 +50,7 @@ func (m challengeRepository) ListChallenges(ctx context.Context, userID entity.B
 	const op cerrors.Op = "challenge/repository/listMissions"
 
 	var missions []entity.Challenge
-	result := m.gormDB.WithContext(ctx).Where("author_id = ? AND status = ?", userID, entity.Active).Find(&missions)
+	result := m.gormDB.WithContext(ctx).Where("user_id = ? AND status = ?", userID, entity.ChallengeStatusDeActivate).Find(&missions)
 	if result.Error != nil {
 		return nil, cerrors.E(op, cerrors.Internal, result.Error)
 	}
@@ -58,13 +58,13 @@ func (m challengeRepository) ListChallenges(ctx context.Context, userID entity.B
 	return missions, nil
 }
 
-func (m challengeRepository) ListMultiModeMissions(ctx context.Context, params entity.ListMultiModeMissionsParams) ([]entity.Challenge, error) {
+func (m challengeRepository) ListMultiChallenges(ctx context.Context, params entity.ListMultiChallengeParams) ([]entity.Challenge, error) {
 	const op cerrors.Op = "challenge/repository/listMultipleModeMissions"
 
 	rows, err := m.gormDB.WithContext(ctx).Table("missions").Select(
-		"missions.id, missions.author_id, missions.title, missions.emoji, missions.duration, missions.start_date, missions.end_date, missions.plan_time, missions.alarm, missions.week_day, missions.type, missions.status").
+		"missions.id, missions.user_id, missions.title, missions.emoji, missions.duration, missions.start_date, missions.end_date, missions.plan_time, missions.alarm, missions.week_day, missions.type, missions.status").
 		Joins("inner join mission_participants on mission_participants.mission_id = missions.id").
-		Where("missions.status = ? AND mission_participants.user_id = ? AND missions.start_date <= ? AND missions.end_date >= ?", entity.Active, params.UserID, params.Date, params.Date).Order("missions.plan_time").Rows()
+		Where("missions.status = ? AND mission_participants.user_id = ? AND missions.start_date <= ? AND missions.end_date >= ?", entity.ChallengeStatusActivate, params.UserID, params.Date, params.Date).Order("missions.plan_time").Rows()
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}

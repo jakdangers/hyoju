@@ -100,7 +100,7 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 						ID: testUserID,
 					},
 				}, nil).Once()
-				ts.missionRepo.EXPECT().ListMultiModeMissions(mock.Anything, entity.ListMultiModeMissionsParams{
+				ts.missionRepo.EXPECT().ListMultiModeMissions(mock.Anything, entity.ListMultiChallengeParams{
 					UserID: testUserID,
 					Date:   time.Time{},
 				}).

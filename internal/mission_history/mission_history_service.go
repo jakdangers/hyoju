@@ -55,7 +55,7 @@ func (m missionHistoryService) ListMultiModeMissionHistories(ctx context.Context
 	utcKst := date.Add(-time.Hour * 9)
 
 	// 멀티 플레이 미션 목록 조회
-	missions, err := m.missionRepo.ListMultiModeMissions(ctx, entity.ListMultiModeMissionsParams{
+	missions, err := m.missionRepo.ListMultiChallenges(ctx, entity.ListMultiChallengeParams{
 		UserID: userID,
 		Date:   utcKst,
 	})

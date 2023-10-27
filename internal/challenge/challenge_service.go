@@ -48,8 +48,8 @@ func (m challengeService) CreateChallenge(ctx context.Context, req entity.Create
 		PlanTime:  req.PlanTime,
 		Alarm:     req.Alarm,
 		WeekDay:   entity.ConvertDaysOfWeekToInt(req.WeekDay),
-		Type:      entity.Single,
-		Status:    entity.Active,
+		Type:      req.Type,
+		Status:    entity.ChallengeStatusActivate,
 	})
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
@@ -141,7 +141,6 @@ func (m challengeService) PatchChallenge(ctx context.Context, req entity.PatchCh
 		mission.EndDate = *req.EndDate
 	}
 	if req.PlanTime != nil {
-		//duration := time.Duration(req.PlanTime.Hour())*time.Hour + time.Duration(req.PlanTime.Minute())*time.Minute
 		mission.PlanTime = *req.PlanTime
 	}
 	if req.Alarm != nil {
@@ -154,7 +153,7 @@ func (m challengeService) PatchChallenge(ctx context.Context, req entity.PatchCh
 		mission.Type = *req.Type
 	}
 	if req.Status != nil {
-		mission.Status = entity.ChallengeStatus(*req.Status)
+		mission.Status = *req.Status
 	}
 
 	patchMission, err := m.challengeRepo.PatchChallenge(ctx, mission)

@@ -15,10 +15,10 @@ import (
 )
 
 type repoTestSuite struct {
-	db                *sql.DB
-	gormDB            *gorm.DB
-	sqlMock           sqlmock.Sqlmock
-	missionRepository entity.ChallengeRepository
+	db         *sql.DB
+	gormDB     *gorm.DB
+	sqlMock    sqlmock.Sqlmock
+	repository entity.ChallengeRepository
 }
 
 func initRepoTestSuite() *repoTestSuite {
@@ -42,15 +42,15 @@ func initRepoTestSuite() *repoTestSuite {
 	}
 
 	ts.gormDB = gormDB
-	ts.missionRepository = NewChallengeRepository(gormDB)
+	ts.repository = NewChallengeRepository(gormDB)
 
 	return &ts
 }
 
-func Test_missionRepository_CreateMission(t *testing.T) {
+func Test_missionRepository_CreateChallenge(t *testing.T) {
 	type args struct {
-		ctx     context.Context
-		mission *entity.Challenge
+		ctx       context.Context
+		challenge *entity.Challenge
 	}
 
 	ts := initRepoTestSuite()
@@ -67,19 +67,19 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 			name: "PASS 미션 생성",
 			args: args{
 				ctx: context.Background(),
-				mission: &entity.Challenge{
+				challenge: &entity.Challenge{
 					UserID:   testUserID,
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
-					Duration: entity.Period,
+					Duration: entity.ChallengeDurationPeriod,
 					Alarm:    false,
 					WeekDay:  3,
-					Type:     entity.Single,
-					Status:   entity.Active,
+					Type:     entity.ChallengeTypeSingle,
+					Status:   entity.ChallengeStatusActivate,
 				},
 			},
 			mock: func() {
-				ts.sqlMock.ExpectExec("INSERT INTO `missions` (.+)").WillReturnResult(sqlmock.NewResult(1, 1))
+				ts.sqlMock.ExpectExec("INSERT INTO `challenges` (.+)").WillReturnResult(sqlmock.NewResult(1, 1))
 			},
 			want: &entity.Challenge{
 				Model: gorm.Model{
@@ -88,11 +88,11 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 				UserID:   testUserID,
 				Title:    "test_mission",
 				Emoji:    "test_emoji",
-				Duration: entity.Period,
+				Duration: entity.ChallengeDurationPeriod,
 				Alarm:    false,
 				WeekDay:  3,
-				Type:     entity.Single,
-				Status:   entity.Active,
+				Type:     entity.ChallengeTypeSingle,
+				Status:   entity.ChallengeStatusActivate,
 			},
 			wantErr: false,
 		},
@@ -100,7 +100,7 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 	for _, tt := range tests {
 		tt.mock()
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ts.missionRepository.CreateChallenge(tt.args.ctx, tt.args.mission)
+			got, err := ts.repository.CreateChallenge(tt.args.ctx, tt.args.challenge)
 			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.Challenge{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -109,7 +109,7 @@ func Test_missionRepository_CreateMission(t *testing.T) {
 	}
 }
 
-func Test_missionRepository_ListMissions(t *testing.T) {
+func Test_missionRepository_ListChallenges(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		userID entity.BinaryUUID
@@ -132,9 +132,9 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 				userID: testUserID,
 			},
 			mock: func() {
-				query := "SELECT (.+) FROM `missions`"
-				columns := []string{"id", "author_id", "title", "emoji", "duration", "alarm", "week_day", "type", "status"}
-				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", true, 3, "SINGLE", "ACTIVE")
+				query := "SELECT (.+) FROM `challenges`"
+				columns := []string{"id", "user_id", "title", "emoji", "duration", "alarm", "week_day", "type", "status"}
+				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", true, 3, "SINGLE", "ACTIVATE")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
 			want: []entity.Challenge{
@@ -145,11 +145,11 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 					UserID:   testUserID,
 					Title:    "test_mission",
 					Emoji:    "test_emoji",
-					Duration: entity.Daily,
+					Duration: entity.ChallengeDurationDaily,
 					Alarm:    true,
 					WeekDay:  3,
-					Type:     entity.Single,
-					Status:   entity.Active,
+					Type:     entity.ChallengeTypeSingle,
+					Status:   entity.ChallengeStatusActivate,
 				},
 			},
 			wantErr: false,
@@ -158,7 +158,7 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionRepository.ListChallenges(tt.args.ctx, tt.args.userID)
+			got, err := ts.repository.ListChallenges(tt.args.ctx, tt.args.userID)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -169,8 +169,8 @@ func Test_missionRepository_ListMissions(t *testing.T) {
 
 func Test_missionRepository_PatchMission(t *testing.T) {
 	type args struct {
-		ctx     context.Context
-		mission *entity.Challenge
+		ctx       context.Context
+		challenge *entity.Challenge
 	}
 
 	ts := initRepoTestSuite()
@@ -184,25 +184,25 @@ func Test_missionRepository_PatchMission(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS 미션 수정",
+			name: "PASS 첼린지 수정",
 			args: args{
 				ctx: context.Background(),
-				mission: &entity.Challenge{
+				challenge: &entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},
 					UserID:   testUserID,
 					Title:    "modified_mission",
 					Emoji:    "modified_emoji",
-					Duration: entity.Period,
+					Duration: entity.ChallengeDurationPeriod,
 					Alarm:    false,
 					WeekDay:  7,
-					Type:     entity.Single,
-					Status:   entity.Active,
+					Type:     entity.ChallengeTypeSingle,
+					Status:   entity.ChallengeStatusActivate,
 				},
 			},
 			mock: func() {
-				query := "UPDATE `missions`"
+				query := "UPDATE `challenges`"
 				ts.sqlMock.ExpectExec(query).WillReturnResult(sqlmock.NewResult(1, 1))
 			},
 			want: &entity.Challenge{
@@ -212,11 +212,11 @@ func Test_missionRepository_PatchMission(t *testing.T) {
 				UserID:   testUserID,
 				Title:    "modified_mission",
 				Emoji:    "modified_emoji",
-				Duration: entity.Period,
+				Duration: entity.ChallengeDurationPeriod,
 				Alarm:    false,
 				WeekDay:  7,
-				Type:     entity.Single,
-				Status:   entity.Active,
+				Type:     entity.ChallengeTypeSingle,
+				Status:   entity.ChallengeStatusActivate,
 			},
 			wantErr: false,
 		},
@@ -224,7 +224,7 @@ func Test_missionRepository_PatchMission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionRepository.PatchChallenge(tt.args.ctx, tt.args.mission)
+			got, err := ts.repository.PatchChallenge(tt.args.ctx, tt.args.challenge)
 			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.Challenge{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -233,10 +233,10 @@ func Test_missionRepository_PatchMission(t *testing.T) {
 	}
 }
 
-func Test_missionRepository_GetMission(t *testing.T) {
+func Test_missionRepository_GetChallenge(t *testing.T) {
 	type args struct {
-		ctx       context.Context
-		missionID uint
+		ctx         context.Context
+		challengeID uint
 	}
 
 	ts := initRepoTestSuite()
@@ -250,15 +250,15 @@ func Test_missionRepository_GetMission(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS 미션 조회",
+			name: "PASS challenge 조회",
 			args: args{
-				ctx:       context.Background(),
-				missionID: 1,
+				ctx:         context.Background(),
+				challengeID: 1,
 			},
 			mock: func() {
-				query := "SELECT (.+) FROM `missions`"
-				columns := []string{"id", "author_id", "title", "emoji", "duration", "alarm", "week_day", "type", "status"}
-				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", true, 3, "SINGLE", "ACTIVE")
+				query := "SELECT (.+) FROM `challenges`"
+				columns := []string{"id", "user_id", "title", "emoji", "duration", "alarm", "week_day", "type", "status"}
+				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", true, 3, "SINGLE", "ACTIVATE")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
 			want: &entity.Challenge{
@@ -271,8 +271,8 @@ func Test_missionRepository_GetMission(t *testing.T) {
 				Duration: "DAILY",
 				Alarm:    true,
 				WeekDay:  3,
-				Type:     "SINGLE",
-				Status:   "ACTIVE",
+				Type:     entity.ChallengeTypeSingle,
+				Status:   entity.ChallengeStatusActivate,
 			},
 			wantErr: false,
 		},
@@ -280,7 +280,7 @@ func Test_missionRepository_GetMission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionRepository.GetChallenge(tt.args.ctx, tt.args.missionID)
+			got, err := ts.repository.GetChallenge(tt.args.ctx, tt.args.challengeID)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
@@ -289,10 +289,10 @@ func Test_missionRepository_GetMission(t *testing.T) {
 	}
 }
 
-func Test_missionRepository_ListMultiModeMissions(t *testing.T) {
+func Test_missionRepository_ListMultiChallenges(t *testing.T) {
 	type args struct {
 		ctx    context.Context
-		params entity.ListMultiModeMissionsParams
+		params entity.ListMultiChallengeParams
 	}
 
 	ts := initRepoTestSuite()
@@ -306,18 +306,18 @@ func Test_missionRepository_ListMultiModeMissions(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS 미션 목록 조회",
+			name: "PASS challenge 목록 조회",
 			args: args{
 				ctx: context.Background(),
-				params: entity.ListMultiModeMissionsParams{
+				params: entity.ListMultiChallengeParams{
 					UserID: testUserID,
 					Date:   time.Time{},
 				},
 			},
 			mock: func() {
-				query := "SELECT (.+) FROM `missions`"
-				columns := []string{"missions.id", "missions.author_id", "missions.title", "missions.emoji", "missions.duration", "missions.start_date", "missions.end_date", "missions.plan_date", "missions.alarm", "missions.week_day", "missions.type", "missions_status"}
-				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", time.Time{}, time.Time{}, 0, true, 3, "SINGLE", "ACTIVE")
+				query := "SELECT (.+) FROM `challenges`"
+				columns := []string{"challenges.id", "challenges.user_id", "challenges.title", "challenges.emoji", "challenges.duration", "challenges.start_date", "challenges.end_date", "challenges.plan_date", "challenges.alarm", "challenges.week_day", "challenges.type", "challenges_status"}
+				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, "test_mission", "test_emoji", "DAILY", time.Time{}, time.Time{}, 0, true, 3, "SINGLE", "ACTIVATE")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
 			want: []entity.Challenge{
@@ -341,7 +341,7 @@ func Test_missionRepository_ListMultiModeMissions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionRepository.ListMultiModeMissions(tt.args.ctx, tt.args.params)
+			got, err := ts.repository.ListMultiChallenges(tt.args.ctx, tt.args.params)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())

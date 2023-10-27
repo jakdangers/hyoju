@@ -11,6 +11,8 @@ import (
 type UserName string
 type Op string
 type Kind uint8
+type ServiceCode string
+type ServiceMessage string
 
 var Separator = ":\n\t"
 
@@ -26,10 +28,12 @@ const (
 )
 
 type Error struct {
-	User UserName // 요청자
-	Op   Op       // 도메인/액션
-	Kind Kind     // 에러 종류
-	Err  error    // 에러
+	User           UserName       // 요청자
+	Op             Op             // 도메인/액션
+	Kind           Kind           // 에러 종류
+	Err            error          // 에러
+	ServiceCode    ServiceCode    // 클라이언트 전용 코드
+	ServiceMessage ServiceMessage // 클라이언트 전용 메시지
 }
 
 // 문자열을 이용한 에러 생성
@@ -87,11 +91,14 @@ func E(args ...interface{}) error {
 		case Kind:
 			e.Kind = arg
 		case *Error:
-			// Make a copy
 			copy := *arg
 			e.Err = &copy
 		case error:
 			e.Err = arg
+		case ServiceCode:
+			e.ServiceCode = arg
+		case ServiceMessage:
+			e.ServiceMessage = arg
 		default:
 			_, file, line, _ := runtime.Caller(1)
 			log.Printf("cerrors.E: bad call from %s:%d: %v", file, line, args)

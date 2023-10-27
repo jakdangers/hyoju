@@ -17,35 +17,32 @@ const (
 	Sunday                    // 128
 )
 
-const (
-	Single = "SINGLE"
-	Multi  = "MULTI"
-	Active = "ACTIVE"
-	Wait   = "WAIT"
-	Daily  = "DAILY"
-	Period = "PERIOD"
-)
-
 type ChallengeStatus string
+type ChallengeType string
+type ChallengeDuration string
 
 const (
-	ChallengeStatusActivate   ChallengeStatus = "ACTIVATE"
-	ChallengeStatusDeActivate ChallengeStatus = "DEACTIVATE"
+	ChallengeStatusActivate   ChallengeStatus   = "ACTIVATE"
+	ChallengeStatusDeActivate ChallengeStatus   = "DEACTIVATE"
+	ChallengeTypeSingle       ChallengeType     = "SINGLE"
+	ChallengeTypeMulti        ChallengeType     = "MULTI"
+	ChallengeDurationDaily    ChallengeDuration = "DAILY"
+	ChallengeDurationPeriod   ChallengeDuration = "PERIOD"
 )
 
 type Challenge struct {
 	gorm.Model
-	UserID    BinaryUUID      `db:"user_id"`
-	Title     string          `db:"title"`
-	Emoji     string          `db:"emoji"`
-	Duration  string          `db:"duration"`
-	StartDate time.Time       `gorm:"type:timestamp"`
-	EndDate   time.Time       `gorm:"type:timestamp"`
-	PlanTime  time.Time       `gorm:"type:timestamp"`
-	Alarm     bool            `db:"alarm"`
-	WeekDay   int             `db:"week_day"`
-	Type      string          `db:"type"`
-	Status    ChallengeStatus `db:"status"`
+	UserID    BinaryUUID        `db:"user_id"`
+	Title     string            `db:"title"`
+	Emoji     string            `db:"emoji"`
+	StartDate time.Time         `gorm:"type:timestamp"`
+	EndDate   time.Time         `gorm:"type:timestamp"`
+	PlanTime  time.Time         `gorm:"type:timestamp"`
+	Alarm     bool              `db:"alarm"`
+	WeekDay   int               `db:"week_day"`
+	Duration  ChallengeDuration `db:"duration"`
+	Type      ChallengeType     `db:"type"`
+	Status    ChallengeStatus   `db:"status"`
 }
 
 type ChallengeRepository interface {
@@ -53,7 +50,7 @@ type ChallengeRepository interface {
 	GetChallenge(ctx context.Context, missionID uint) (*Challenge, error)
 	ListChallenges(ctx context.Context, userID BinaryUUID) ([]Challenge, error)
 	PatchChallenge(ctx context.Context, mission *Challenge) (*Challenge, error)
-	ListMultiModeMissions(ctx context.Context, params ListMultiModeMissionsParams) ([]Challenge, error)
+	ListMultiChallenges(ctx context.Context, params ListMultiChallengeParams) ([]Challenge, error)
 }
 
 type ChallengeService interface {
@@ -110,7 +107,7 @@ func ConvertIntToDaysOfWeek(days int) []string {
 	return selectedDays
 }
 
-type ListMultiModeMissionsParams struct {
+type ListMultiChallengeParams struct {
 	UserID BinaryUUID
 	Date   time.Time
 }

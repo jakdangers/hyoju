@@ -188,15 +188,15 @@ func (_c *ChallengeRepository_ListChallenges_Call) RunAndReturn(run func(context
 }
 
 // ListMultiModeMissions provides a mock function with given fields: ctx, params
-func (_m *ChallengeRepository) ListMultiModeMissions(ctx context.Context, params entity.ListMultiModeMissionsParams) ([]entity.Challenge, error) {
+func (_m *ChallengeRepository) ListMultiChallenges(ctx context.Context, params entity.ListMultiChallengeParams) ([]entity.Challenge, error) {
 	ret := _m.Called(ctx, params)
 
 	var r0 []entity.Challenge
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMultiModeMissionsParams) ([]entity.Challenge, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMultiChallengeParams) ([]entity.Challenge, error)); ok {
 		return rf(ctx, params)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMultiModeMissionsParams) []entity.Challenge); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListMultiChallengeParams) []entity.Challenge); ok {
 		r0 = rf(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
@@ -204,7 +204,7 @@ func (_m *ChallengeRepository) ListMultiModeMissions(ctx context.Context, params
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, entity.ListMultiModeMissionsParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ListMultiChallengeParams) error); ok {
 		r1 = rf(ctx, params)
 	} else {
 		r1 = ret.Error(1)
@@ -213,21 +213,21 @@ func (_m *ChallengeRepository) ListMultiModeMissions(ctx context.Context, params
 	return r0, r1
 }
 
-// ChallengeRepository_ListMultiModeMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultiModeMissions'
+// ChallengeRepository_ListMultiModeMissions_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultiChallenges'
 type ChallengeRepository_ListMultiModeMissions_Call struct {
 	*mock.Call
 }
 
 // ListMultiModeMissions is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params entity.ListMultiModeMissionsParams
+//   - params entity.ListMultiChallengeParams
 func (_e *ChallengeRepository_Expecter) ListMultiModeMissions(ctx interface{}, params interface{}) *ChallengeRepository_ListMultiModeMissions_Call {
-	return &ChallengeRepository_ListMultiModeMissions_Call{Call: _e.mock.On("ListMultiModeMissions", ctx, params)}
+	return &ChallengeRepository_ListMultiModeMissions_Call{Call: _e.mock.On("ListMultiChallenges", ctx, params)}
 }
 
-func (_c *ChallengeRepository_ListMultiModeMissions_Call) Run(run func(ctx context.Context, params entity.ListMultiModeMissionsParams)) *ChallengeRepository_ListMultiModeMissions_Call {
+func (_c *ChallengeRepository_ListMultiModeMissions_Call) Run(run func(ctx context.Context, params entity.ListMultiChallengeParams)) *ChallengeRepository_ListMultiModeMissions_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(entity.ListMultiModeMissionsParams))
+		run(args[0].(context.Context), args[1].(entity.ListMultiChallengeParams))
 	})
 	return _c
 }
@@ -237,7 +237,7 @@ func (_c *ChallengeRepository_ListMultiModeMissions_Call) Return(_a0 []entity.Ch
 	return _c
 }
 
-func (_c *ChallengeRepository_ListMultiModeMissions_Call) RunAndReturn(run func(context.Context, entity.ListMultiModeMissionsParams) ([]entity.Challenge, error)) *ChallengeRepository_ListMultiModeMissions_Call {
+func (_c *ChallengeRepository_ListMultiModeMissions_Call) RunAndReturn(run func(context.Context, entity.ListMultiChallengeParams) ([]entity.Challenge, error)) *ChallengeRepository_ListMultiModeMissions_Call {
 	_c.Call.Return(run)
 	return _c
 }

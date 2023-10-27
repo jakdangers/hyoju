@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"pixelix/entity"
 	"pixelix/mocks"
+	"pixelix/pkg/helper"
 	"pixelix/pkg/logger"
 	"testing"
 	"time"
@@ -53,11 +54,11 @@ func Test_missionController_CreateChallenge(t *testing.T) {
 					UserID:   testUserID,
 					Title:    "tet_mission",
 					Emoji:    "test_emoji",
-					Duration: entity.Daily,
+					Duration: entity.ChallengeDurationDaily,
 					PlanTime: time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
 					Alarm:    true,
 					WeekDay:  []string{"SUNDAY", "MONDAY"},
-					Type:     entity.Single,
+					Type:     entity.ChallengeTypeSingle,
 				}
 				jb, _ := json.Marshal(req)
 
@@ -68,11 +69,11 @@ func Test_missionController_CreateChallenge(t *testing.T) {
 					UserID:   testUserID,
 					Title:    "tet_mission",
 					Emoji:    "test_emoji",
-					Duration: entity.Daily,
+					Duration: entity.ChallengeDurationDaily,
 					PlanTime: time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
 					Alarm:    true,
 					WeekDay:  []string{"SUNDAY", "MONDAY"},
-					Type:     entity.Single,
+					Type:     entity.ChallengeTypeSingle,
 				}).
 					Return(&entity.CreateMissionResponse{}, nil).Once()
 			},
@@ -108,7 +109,7 @@ func Test_missionController_ListMissions(t *testing.T) {
 		{
 			name: "PASS 미션 리스트 조회",
 			url: func() string {
-				path, _ := url.JoinPath("/missions/user", testUserID)
+				path, _ := url.JoinPath("/challenges/user", testUserID)
 				return path
 			},
 			mock: func() {
@@ -150,11 +151,11 @@ func Test_missionController_PatchMission(t *testing.T) {
 					ID:       1,
 					Title:    pointer.String("modified_mission"),
 					Emoji:    pointer.String("modified_emoji"),
-					Duration: pointer.String("DAILY"),
+					Duration: helper.EnumToPointer(entity.ChallengeDurationDaily),
 					Alarm:    pointer.Bool(false),
 					WeekDay:  []string{"MONDAY", "TUESDAY"},
-					Type:     pointer.String(entity.Single),
-					Status:   pointer.String(entity.Active),
+					Type:     helper.EnumToPointer(entity.ChallengeTypeSingle),
+					Status:   helper.EnumToPointer(entity.ChallengeStatusActivate),
 				}
 				jb, _ := json.Marshal(req)
 
@@ -165,11 +166,11 @@ func Test_missionController_PatchMission(t *testing.T) {
 					ID:       1,
 					Title:    pointer.String("modified_mission"),
 					Emoji:    pointer.String("modified_emoji"),
-					Duration: pointer.String("DAILY"),
+					Duration: helper.EnumToPointer(entity.ChallengeDurationDaily),
 					Alarm:    pointer.Bool(false),
 					WeekDay:  []string{"MONDAY", "TUESDAY"},
-					Type:     pointer.String(entity.Single),
-					Status:   pointer.String(entity.Active),
+					Type:     helper.EnumToPointer(entity.ChallengeTypeSingle),
+					Status:   helper.EnumToPointer(entity.ChallengeStatusActivate),
 				}).Return(&entity.PatchChallengeResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
@@ -203,7 +204,7 @@ func Test_missionController_GetMission(t *testing.T) {
 		{
 			name: "PASS 미션 조회",
 			uri: func() string {
-				path, _ := url.JoinPath("/missions", "1")
+				path, _ := url.JoinPath("/challenges", "1")
 				return path
 			},
 			mock: func() {

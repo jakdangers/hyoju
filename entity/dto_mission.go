@@ -5,16 +5,16 @@ import (
 )
 
 type CreateChallengeRequest struct {
-	UserID    string    `json:"userId"`
-	Title     string    `json:"title"`
-	Emoji     string    `json:"emoji"`
-	Duration  string    `json:"duration"`
-	StartDate time.Time `json:"startDate"`
-	EndDate   time.Time `json:"endDate"`
-	PlanTime  time.Time `json:"planTime"`
-	Alarm     bool      `json:"alarm"`
-	WeekDay   []string  `json:"weekDay"`
-	Type      string    `json:"type"`
+	UserID    string            `json:"userId"`
+	Title     string            `json:"title"`
+	Emoji     string            `json:"emoji"`
+	StartDate time.Time         `json:"startDate"`
+	EndDate   time.Time         `json:"endDate"`
+	PlanTime  time.Time         `json:"planTime"`
+	Alarm     bool              `json:"alarm"`
+	WeekDay   []string          `json:"weekDay"`
+	Type      ChallengeType     `json:"type"`
+	Duration  ChallengeDuration `json:"duration"`
 }
 
 type CreateMissionResponse struct {
@@ -38,18 +38,18 @@ type ListChallengesResponse struct {
 }
 
 type PatchChallengeRequest struct {
-	ID        uint       `json:"id"`
-	UserID    string     `json:"userId"`
-	Title     *string    `json:"title"`
-	Emoji     *string    `json:"emoji"`
-	Duration  *string    `json:"duration"`
-	StartDate *time.Time `json:"startDate"`
-	EndDate   *time.Time `json:"endDate"`
-	PlanTime  *time.Time `json:"planTime"`
-	Alarm     *bool      `json:"alarm"`
-	WeekDay   []string   `json:"weekDay"`
-	Type      *string    `json:"type"`
-	Status    *string    `json:"status"`
+	ID        uint               `json:"id"`
+	UserID    string             `json:"userId"`
+	Title     *string            `json:"title"`
+	Emoji     *string            `json:"emoji"`
+	StartDate *time.Time         `json:"startDate"`
+	EndDate   *time.Time         `json:"endDate"`
+	PlanTime  *time.Time         `json:"planTime"`
+	Alarm     *bool              `json:"alarm"`
+	WeekDay   []string           `json:"weekDay"`
+	Duration  *ChallengeDuration `json:"duration"`
+	Type      *ChallengeType     `json:"type"`
+	Status    *ChallengeStatus   `json:"status"`
 }
 
 type PatchChallengeResponse struct {
@@ -61,12 +61,12 @@ type ChallengeDTO struct {
 	UserID    string    `json:"userId"`
 	Title     string    `json:"title"`
 	Emoji     string    `json:"emoji"`
-	Duration  string    `json:"duration"`
 	StartDate time.Time `json:"startDate"`
 	EndDate   time.Time `json:"endDate"`
 	PlanTime  time.Time `json:"planTime"`
 	Alarm     bool      `json:"alarm"`
 	WeekDay   []string  `json:"weekDay"`
+	Duration  string    `json:"duration"`
 	Type      string    `json:"type"`
 	Status    string    `json:"status"`
 }
@@ -78,13 +78,13 @@ func ChallengeDTOFrom(challenge Challenge) ChallengeDTO {
 		UserID:    challenge.UserID.String(),
 		Title:     challenge.Title,
 		Emoji:     challenge.Emoji,
-		Duration:  challenge.Duration,
+		Duration:  string(challenge.Duration),
 		StartDate: challenge.StartDate,
 		EndDate:   challenge.EndDate,
 		PlanTime:  challenge.PlanTime,
 		Alarm:     challenge.Alarm,
 		WeekDay:   ConvertIntToDaysOfWeek(challenge.WeekDay),
-		Type:      challenge.Type,
+		Type:      string(challenge.Type),
 		Status:    string(challenge.Status),
 	}
 }

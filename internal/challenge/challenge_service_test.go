@@ -8,6 +8,7 @@ import (
 	"k8s.io/utils/pointer"
 	"pixelix/entity"
 	"pixelix/mocks"
+	"pixelix/pkg/helper"
 	"testing"
 	"time"
 )
@@ -82,7 +83,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 					Alarm:    true,
 					WeekDay:  3,
 					Type:     "SINGLE",
-					Status:   entity.Active,
+					Status:   entity.ChallengeStatusActivate,
 				}).Return(&entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
@@ -95,7 +96,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 					Alarm:    false,
 					WeekDay:  3,
 					Type:     "SINGLE",
-					Status:   entity.Active,
+					Status:   entity.ChallengeStatusDeActivate,
 				}, nil).Once()
 				ts.challengeParticipantRepo.EXPECT().CreateMissionParticipant(mock.Anything, &entity.MissionParticipant{
 					UserID:    testUserID,
@@ -164,11 +165,11 @@ func Test_missionService_ListMissions(t *testing.T) {
 						UserID:   testUserID,
 						Title:    "test_mission",
 						Emoji:    "test_emoji",
-						Duration: entity.Daily,
+						Duration: entity.ChallengeDurationDaily,
 						Alarm:    false,
 						WeekDay:  3,
-						Type:     entity.Single,
-						Status:   entity.Active,
+						Type:     entity.ChallengeTypeSingle,
+						Status:   entity.ChallengeStatusActivate,
 					},
 				}, nil).Once()
 			},
@@ -179,11 +180,11 @@ func Test_missionService_ListMissions(t *testing.T) {
 						UserID:   testUserID.String(),
 						Title:    "test_mission",
 						Emoji:    "test_emoji",
-						Duration: entity.Daily,
+						Duration: string(entity.ChallengeDurationDaily),
 						Alarm:    false,
 						WeekDay:  []string{"MONDAY", "TUESDAY"},
-						Type:     entity.Single,
-						Status:   entity.Active,
+						Type:     string(entity.ChallengeTypeSingle),
+						Status:   string(entity.ChallengeStatusActivate),
 					},
 				},
 			},
@@ -230,11 +231,11 @@ func Test_missionService_PatchMission(t *testing.T) {
 					UserID:   testUserID.String(),
 					Title:    pointer.String("modified_mission"),
 					Emoji:    pointer.String("modified_emoji"),
-					Duration: pointer.String(entity.Period),
+					Duration: helper.EnumToPointer(entity.ChallengeDurationPeriod),
 					Alarm:    pointer.Bool(false),
 					WeekDay:  []string{"MONDAY", "TUESDAY", "WEDNESDAY"},
-					Type:     pointer.String(entity.Single),
-					Status:   pointer.String(entity.Active),
+					Type:     helper.EnumToPointer(entity.ChallengeTypeSingle),
+					Status:   helper.EnumToPointer(entity.ChallengeStatusActivate),
 				},
 			},
 			mock: func() {
@@ -250,11 +251,11 @@ func Test_missionService_PatchMission(t *testing.T) {
 					UserID:   testUserID,
 					Title:    "original_mission",
 					Emoji:    "original_emoji",
-					Duration: entity.Daily,
+					Duration: entity.ChallengeDurationDaily,
 					Alarm:    true,
 					WeekDay:  3,
-					Type:     entity.Single,
-					Status:   entity.Wait,
+					Type:     entity.ChallengeTypeSingle,
+					Status:   entity.ChallengeStatusDeActivate,
 				}, nil).Once()
 				ts.challengeRepo.EXPECT().PatchMission(mock.Anything, &entity.Challenge{
 					Model: gorm.Model{
@@ -263,11 +264,11 @@ func Test_missionService_PatchMission(t *testing.T) {
 					UserID:   testUserID,
 					Title:    "modified_mission",
 					Emoji:    "modified_emoji",
-					Duration: entity.Period,
+					Duration: entity.ChallengeDurationPeriod,
 					Alarm:    false,
 					WeekDay:  7,
-					Type:     entity.Single,
-					Status:   entity.Active,
+					Type:     entity.ChallengeTypeSingle,
+					Status:   entity.ChallengeStatusActivate,
 				}).Return(&entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
@@ -275,11 +276,11 @@ func Test_missionService_PatchMission(t *testing.T) {
 					UserID:   testUserID,
 					Title:    "modified_mission",
 					Emoji:    "modified_emoji",
-					Duration: entity.Period,
+					Duration: entity.ChallengeDurationPeriod,
 					Alarm:    false,
 					WeekDay:  7,
-					Type:     entity.Single,
-					Status:   entity.Active,
+					Type:     entity.ChallengeTypeSingle,
+					Status:   entity.ChallengeStatusActivate,
 				}, nil).Once()
 			},
 			want: &entity.PatchChallengeResponse{
@@ -288,11 +289,11 @@ func Test_missionService_PatchMission(t *testing.T) {
 					UserID:   testUserID.String(),
 					Title:    "modified_mission",
 					Emoji:    "modified_emoji",
-					Duration: entity.Period,
+					Duration: string(entity.ChallengeDurationPeriod),
 					Alarm:    false,
 					WeekDay:  []string{"MONDAY", "TUESDAY", "WEDNESDAY"},
-					Type:     entity.Single,
-					Status:   entity.Active,
+					Type:     string(entity.ChallengeTypeSingle),
+					Status:   string(entity.ChallengeStatusActivate),
 				},
 			},
 			wantErr: false,

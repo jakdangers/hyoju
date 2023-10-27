@@ -5,56 +5,46 @@ import (
 	"net/http"
 )
 
-var (
-	ErrInvalid    = &SentinelAPIError{status: http.StatusBadRequest, message: "Invalid"}
-	ErrAuth       = &SentinelAPIError{status: http.StatusUnauthorized, message: "unauthorized"}
-	ErrPermission = &SentinelAPIError{status: http.StatusForbidden, message: "forbidden"}
-	ErrConflict   = &SentinelAPIError{status: http.StatusConflict, message: "conflict"}
-	ErrNotFound   = &SentinelAPIError{status: http.StatusNotFound, message: "not found"}
-	ErrInternal   = &SentinelAPIError{status: http.StatusInternalServerError, message: "server Error"}
-)
-
-type APIError interface {
-	// APIError returns an HTTP status code and an API-safe error message.
-	APIError() (int, string)
+type SentinelAPIError struct {
+	status         int
+	serviceMessage string
+	serviceCode    string
 }
 
-type SentinelAPIError struct {
-	status      int
-	message     string
-	serviceCode string
+func NewSentinelAPIError(status int, serviceMessage ServiceMessage, serviceCode ServiceCode) (int, SentinelAPIError) {
+	return status, SentinelAPIError{
+		status:         status,
+		serviceMessage: string(serviceMessage),
+		serviceCode:    string(serviceCode),
+	}
 }
 
 func (e SentinelAPIError) Error() string {
-	return e.message
+	return e.serviceMessage
 }
 
-func (e SentinelAPIError) APIError() (int, string) {
-	return e.status, e.message
-}
-
-func ToSentinelAPIError(err error) (int, *SentinelAPIError) {
+func ToSentinelAPIError(err error) (int, SentinelAPIError) {
 	var cErr *Error
 	if errors.As(err, &cErr) {
 		switch cErr.Kind {
 		case Other, Internal, IO:
-			return http.StatusInternalServerError, ErrInternal
+			return NewSentinelAPIError(http.StatusInternalServerError, cErr.ServiceMessage, cErr.ServiceCode)
 		case Invalid:
-			return http.StatusBadRequest, ErrInvalid
+			return NewSentinelAPIError(http.StatusBadRequest, cErr.ServiceMessage, cErr.ServiceCode)
 		case Auth:
-			return http.StatusUnauthorized, ErrAuth
+			return NewSentinelAPIError(http.StatusUnauthorized, cErr.ServiceMessage, cErr.ServiceCode)
 		case Permission:
-			return http.StatusForbidden, ErrPermission
+			return NewSentinelAPIError(http.StatusForbidden, cErr.ServiceMessage, cErr.ServiceCode)
 		case Exist:
-			return http.StatusConflict, ErrConflict
+			return NewSentinelAPIError(http.StatusConflict, cErr.ServiceMessage, cErr.ServiceCode)
 		case NotExist:
-			return http.StatusNotFound, ErrNotFound
+			return NewSentinelAPIError(http.StatusNotFound, cErr.ServiceMessage, cErr.ServiceCode)
 		default:
-			return http.StatusInternalServerError, ErrInternal
+			return NewSentinelAPIError(http.StatusInternalServerError, cErr.ServiceMessage, cErr.ServiceCode)
 		}
 	}
-	return http.StatusBadRequest, &SentinelAPIError{
-		status:  http.StatusBadRequest,
-		message: err.Error(),
+	return http.StatusBadRequest, SentinelAPIError{
+		status:         http.StatusBadRequest,
+		serviceMessage: err.Error(),
 	}
 }
