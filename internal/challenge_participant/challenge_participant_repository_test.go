@@ -1,4 +1,4 @@
-package mission_participant
+package challenge_participant
 
 import (
 	"context"
@@ -14,10 +14,10 @@ import (
 )
 
 type repoTestSuite struct {
-	db                           *sql.DB
-	gormDB                       *gorm.DB
-	sqlMock                      sqlmock.Sqlmock
-	missionParticipantRepository entity.MissionParticipantRepository
+	db         *sql.DB
+	gormDB     *gorm.DB
+	sqlMock    sqlmock.Sqlmock
+	repository entity.ChallengeParticipantRepository
 }
 
 func initRepoTestSuite() *repoTestSuite {
@@ -41,7 +41,7 @@ func initRepoTestSuite() *repoTestSuite {
 	}
 
 	ts.gormDB = gormDB
-	ts.missionParticipantRepository = NewMissionParticipantRepository(gormDB)
+	ts.repository = NewMissionParticipantRepository(gormDB)
 
 	return &ts
 }
@@ -49,7 +49,7 @@ func initRepoTestSuite() *repoTestSuite {
 func Test_missionParticipantRepository_CreateMissionParticipant(t *testing.T) {
 	type args struct {
 		ctx         context.Context
-		participant *entity.MissionParticipant
+		participant *entity.ChallengeParticipant
 	}
 
 	ts := initRepoTestSuite()
@@ -59,27 +59,27 @@ func Test_missionParticipantRepository_CreateMissionParticipant(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.MissionParticipant
+		want    *entity.ChallengeParticipant
 		wantErr bool
 	}{
 		{
 			name: "PASS challenge 참여자 생성",
 			args: args{
 				ctx: context.Background(),
-				participant: &entity.MissionParticipant{
-					UserID:    testUserID,
-					MissionID: 1,
+				participant: &entity.ChallengeParticipant{
+					UserID:      testUserID,
+					ChallengeID: 1,
 				},
 			},
 			mock: func() {
 				ts.sqlMock.ExpectExec("INSERT INTO `mission_participants`").WillReturnResult(sqlmock.NewResult(1, 1))
 			},
-			want: &entity.MissionParticipant{
+			want: &entity.ChallengeParticipant{
 				Model: gorm.Model{
 					ID: 1,
 				},
-				UserID:    testUserID,
-				MissionID: 1,
+				UserID:      testUserID,
+				ChallengeID: 1,
 			},
 			wantErr: false,
 		},
@@ -88,8 +88,8 @@ func Test_missionParticipantRepository_CreateMissionParticipant(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionParticipantRepository.CreateMissionParticipant(tt.args.ctx, tt.args.participant)
-			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.MissionParticipant{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
+			got, err := ts.repository.CreateChallengeParticipant(tt.args.ctx, tt.args.participant)
+			assert.Equal(t, true, cmp.Equal(tt.want, got, cmpopts.IgnoreFields(entity.ChallengeParticipant{}, "CreatedAt", "UpdatedAt", "DeletedAt")))
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
 			}
@@ -110,7 +110,7 @@ func Test_missionParticipantRepository_ListMissionParticipants(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    []entity.MissionParticipant
+		want    []entity.ChallengeParticipant
 		wantErr bool
 	}{
 		{
@@ -125,13 +125,13 @@ func Test_missionParticipantRepository_ListMissionParticipants(t *testing.T) {
 				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, 1)
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
-			want: []entity.MissionParticipant{
+			want: []entity.ChallengeParticipant{
 				{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					UserID:    testUserID,
-					MissionID: 1,
+					UserID:      testUserID,
+					ChallengeID: 1,
 				},
 			},
 			wantErr: false,
@@ -141,7 +141,7 @@ func Test_missionParticipantRepository_ListMissionParticipants(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.missionParticipantRepository.ListMissionParticipants(tt.args.ctx, tt.args.missionID)
+			got, err := ts.repository.ListMissionParticipants(tt.args.ctx, tt.args.missionID)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())

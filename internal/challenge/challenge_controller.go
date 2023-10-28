@@ -82,6 +82,11 @@ func (tc *challengeController) ListChallenges(c *gin.Context) {
 		return
 	}
 
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 

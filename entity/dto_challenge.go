@@ -17,7 +17,7 @@ type CreateChallengeRequest struct {
 	Duration  ChallengeDuration `json:"duration"`
 }
 
-type CreateMissionResponse struct {
+type CreateChallengeResponse struct {
 	ChallengeID uint `json:"challengeId"`
 }
 
@@ -30,7 +30,8 @@ type GetChallengeResponse struct {
 }
 
 type ListChallengesRequest struct {
-	UserID string `json:"userId" uri:"userId"`
+	UserID string        `json:"userId" uri:"userId"`
+	Type   ChallengeType `json:"type" form:"type"`
 }
 
 type ListChallengesResponse struct {

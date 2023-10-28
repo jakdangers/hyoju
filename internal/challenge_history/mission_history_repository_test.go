@@ -1,4 +1,4 @@
-package mission_history
+package challenge_history
 
 import (
 	"context"
@@ -16,7 +16,7 @@ type repoTestSuite struct {
 	db         *sql.DB
 	gormDB     *gorm.DB
 	sqlMock    sqlmock.Sqlmock
-	repository entity.MissionHistoryRepository
+	repository entity.ChallengeHistoryRepository
 }
 
 func initRepoTestSuite() *repoTestSuite {
@@ -40,7 +40,7 @@ func initRepoTestSuite() *repoTestSuite {
 	}
 
 	ts.gormDB = gormDB
-	ts.repository = NewMissionHistoryRepository(gormDB)
+	ts.repository = NewChallengeHistoryRepository(gormDB)
 
 	return &ts
 }
@@ -59,7 +59,7 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 		name    string
 		args    args
 		mock    func()
-		want    []entity.MissionHistory
+		want    []entity.ChallengeHistory
 		wantErr bool
 	}{
 		{
@@ -67,8 +67,8 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 			args: args{
 				ctx: context.Background(),
 				params: entity.ListMultipleMissionHistoriesParams{
-					UserID:     testUserID,
-					MissionIDs: []uint{1, 2, 3},
+					UserID:       testUserID,
+					ChallengeIDs: []uint{1, 2, 3},
 				},
 			},
 
@@ -78,17 +78,16 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, 1, "INIT", testTimeStamp, testTimeStamp, "", "")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
-			want: []entity.MissionHistory{
+			want: []entity.ChallengeHistory{
 				{
 					Model: gorm.Model{
 						ID: 1,
 					},
-					UserID:     testUserID,
-					MissionID:  1,
-					Status:     "INIT",
-					PlanTime:   testTimeStamp,
-					FrontImage: "",
-					BackImage:  "",
+					UserID:      testUserID,
+					ChallengeID: 1,
+					PlanTime:    testTimeStamp,
+					FrontImage:  "",
+					BackImage:   "",
 				},
 			},
 			wantErr: false,
@@ -97,7 +96,7 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.repository.ListMultipleModeMissionHistories(tt.args.ctx, tt.args.params)
+			got, err := ts.repository.ListMultiChallengeHistories(tt.args.ctx, tt.args.params)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())

@@ -43,18 +43,20 @@ type Challenge struct {
 	Duration  ChallengeDuration `db:"duration"`
 	Type      ChallengeType     `db:"type"`
 	Status    ChallengeStatus   `db:"status"`
+	Code      string            `db:"code"`
 }
 
 type ChallengeRepository interface {
 	CreateChallenge(ctx context.Context, mission *Challenge) (*Challenge, error)
-	GetChallenge(ctx context.Context, missionID uint) (*Challenge, error)
-	ListChallenges(ctx context.Context, userID BinaryUUID) ([]Challenge, error)
-	PatchChallenge(ctx context.Context, mission *Challenge) (*Challenge, error)
+	GetChallenge(ctx context.Context, challengeID uint) (*Challenge, error)
+	ListChallenges(ctx context.Context, params ListChallengesParams) ([]Challenge, error)
+	PatchChallenge(ctx context.Context, challenge *Challenge) (*Challenge, error)
 	ListMultiChallenges(ctx context.Context, params ListMultiChallengeParams) ([]Challenge, error)
+	ChallengeFindByCode(ctx context.Context, code string) (*Challenge, error)
 }
 
 type ChallengeService interface {
-	CreateChallenge(ctx context.Context, req CreateChallengeRequest) (*CreateMissionResponse, error)
+	CreateChallenge(ctx context.Context, req CreateChallengeRequest) (*CreateChallengeResponse, error)
 	GetChallenge(ctx context.Context, req GetChallengeRequest) (*GetChallengeResponse, error)
 	ListChallenges(ctx context.Context, req ListChallengesRequest) (*ListChallengesResponse, error)
 	PatchChallenge(ctx context.Context, req PatchChallengeRequest) (*PatchChallengeResponse, error)
@@ -107,7 +109,13 @@ func ConvertIntToDaysOfWeek(days int) []string {
 	return selectedDays
 }
 
+type ListChallengesParams struct {
+	UserID BinaryUUID
+	Type   ChallengeType
+}
+
 type ListMultiChallengeParams struct {
 	UserID BinaryUUID
 	Date   time.Time
+	Type   ChallengeType
 }

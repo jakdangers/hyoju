@@ -255,7 +255,7 @@ func Test_userRepository_FindByEmail(t *testing.T) {
 				Email:       "blipix@blipix.com",
 				Provider:    "blipix",
 				FirebaseUID: "firebase_uid",
-				FriendCode:  "test_friendCode",
+				Code:        "test_friendCode",
 			},
 			wantErr: false,
 		},
@@ -379,7 +379,7 @@ func Test_userRepository_FindByFriendCode(t *testing.T) {
 			},
 			mock: func() {
 				query := "SELECT (.+) FROM `users`"
-				columns := []string{"id", "nick_name", "email", "provider", "firebase_uid", "friend_code"}
+				columns := []string{"id", "nick_name", "email", "provider", "firebase_uid", "code"}
 				rows := sqlmock.NewRows(columns).AddRow(testUserID, "test_nickName", "blipix@blipix.com", "kakao", "test_firebaseUID", testFriendCode)
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
@@ -391,7 +391,7 @@ func Test_userRepository_FindByFriendCode(t *testing.T) {
 				Email:       "blipix@blipix.com",
 				Provider:    "kakao",
 				FirebaseUID: "test_firebaseUID",
-				FriendCode:  testFriendCode,
+				Code:        testFriendCode,
 			},
 			wantErr: false,
 		},
@@ -399,7 +399,7 @@ func Test_userRepository_FindByFriendCode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.userRepository.FindByFriendCode(tt.args.ctx, tt.args.friendCode)
+			got, err := ts.userRepository.FindByCode(tt.args.ctx, tt.args.friendCode)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())

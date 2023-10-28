@@ -11,7 +11,7 @@ type User struct {
 	Email       string `db:"email"`
 	Provider    string `db:"provider"`
 	FirebaseUID string `db:"firebase_uid"`
-	FriendCode  string `db:"friend_code"`
+	Code        string `db:"code"`
 }
 
 type UserRepository interface {
@@ -20,7 +20,7 @@ type UserRepository interface {
 	UpdateUser(ctx context.Context, user *User) (*User, error)
 	DeleteUser(ctx context.Context, id BinaryUUID) error
 	FindByEmail(ctx context.Context, email string) (*User, error)
-	FindByFriendCode(ctx context.Context, friendCode string) (*User, error)
+	FindByCode(ctx context.Context, friendCode string) (*User, error)
 }
 
 type UserService interface {

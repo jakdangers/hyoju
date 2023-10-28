@@ -5,17 +5,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type MissionParticipant struct {
+type ChallengeParticipant struct {
 	gorm.Model
-	UserID    BinaryUUID
-	MissionID uint
+	UserID      BinaryUUID
+	ChallengeID uint
 }
 
-type MissionParticipantRepository interface {
-	CreateMissionParticipant(ctx context.Context, participant *MissionParticipant) (*MissionParticipant, error)
-	ListMissionParticipants(ctx context.Context, missionID uint) ([]MissionParticipant, error)
+type ChallengeParticipantRepository interface {
+	CreateChallengeParticipant(ctx context.Context, participant *ChallengeParticipant) (*ChallengeParticipant, error)
+	ListMissionParticipants(ctx context.Context, missionID uint) ([]ChallengeParticipant, error)
 }
 
-type MissionParticipantService interface{}
+type ChallengeParticipantService interface{}
 
-type MissionParticipantController interface{}
+type ChallengeParticipantController interface{}

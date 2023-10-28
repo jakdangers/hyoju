@@ -97,7 +97,7 @@ func (us *userService) OAuthLoginUser(ctx context.Context, req entity.OAuthLogin
 	if user == nil {
 		userID := entity.BinaryUUIDNew()
 		for {
-			findUser, err := us.repository.FindByFriendCode(ctx, userID.FriendCode())
+			findUser, err := us.repository.FindByCode(ctx, userID.ToCode())
 			if err != nil {
 				return nil, cerrors.E(op, cerrors.Internal, err)
 			}
@@ -114,7 +114,7 @@ func (us *userService) OAuthLoginUser(ctx context.Context, req entity.OAuthLogin
 			Email:       req.Email,
 			Provider:    req.Provider,
 			FirebaseUID: req.FirebaseUID,
-			FriendCode:  userID.FriendCode(),
+			Code:        userID.ToCode(),
 		})
 		if err != nil {
 			return nil, cerrors.E(op, cerrors.Internal, err)
@@ -125,7 +125,7 @@ func (us *userService) OAuthLoginUser(ctx context.Context, req entity.OAuthLogin
 		ID:          user.ID.String(),
 		NickName:    user.NickName,
 		Email:       user.Email,
-		FriendCode:  user.FriendCode,
+		FriendCode:  user.Code,
 		AccessToken: generateAccessToken(user),
 	}, nil
 }

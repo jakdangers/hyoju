@@ -8,11 +8,11 @@ import (
 
 type challengeService struct {
 	challengeRepo            entity.ChallengeRepository
-	challengeParticipantRepo entity.MissionParticipantRepository
+	challengeParticipantRepo entity.ChallengeParticipantRepository
 	userRepo                 entity.UserRepository
 }
 
-func NewChallengeService(missionRepo entity.ChallengeRepository, missionParticipantRepo entity.MissionParticipantRepository, userRepo entity.UserRepository) *challengeService {
+func NewChallengeService(missionRepo entity.ChallengeRepository, missionParticipantRepo entity.ChallengeParticipantRepository, userRepo entity.UserRepository) *challengeService {
 	return &challengeService{
 		challengeRepo:            missionRepo,
 		challengeParticipantRepo: missionParticipantRepo,
@@ -22,8 +22,8 @@ func NewChallengeService(missionRepo entity.ChallengeRepository, missionParticip
 
 var _ entity.ChallengeService = (*challengeService)(nil)
 
-func (m challengeService) CreateChallenge(ctx context.Context, req entity.CreateChallengeRequest) (*entity.CreateMissionResponse, error) {
-	const op cerrors.Op = "challenge/service/createMission"
+func (m challengeService) CreateChallenge(ctx context.Context, req entity.CreateChallengeRequest) (*entity.CreateChallengeResponse, error) {
+	const op cerrors.Op = "challenge/service/createChallenge"
 
 	userID, err := entity.ParseUUID(req.UserID)
 	if err != nil {
@@ -38,7 +38,19 @@ func (m challengeService) CreateChallenge(ctx context.Context, req entity.Create
 		return nil, cerrors.E(op, cerrors.Invalid, "user not exist")
 	}
 
-	mission, err := m.challengeRepo.CreateChallenge(ctx, &entity.Challenge{
+	code := entity.BinaryUUIDNew().ToCode()
+	for {
+		findChallenge, err := m.challengeRepo.ChallengeFindByCode(ctx, code)
+		if err != nil {
+			return nil, cerrors.E(op, cerrors.Internal, err)
+		}
+		if findChallenge == nil {
+			break
+		}
+		code = entity.BinaryUUIDNew().ToCode()
+	}
+
+	challenge, err := m.challengeRepo.CreateChallenge(ctx, &entity.Challenge{
 		UserID:    userID,
 		Title:     req.Title,
 		Emoji:     req.Emoji,
@@ -50,21 +62,22 @@ func (m challengeService) CreateChallenge(ctx context.Context, req entity.Create
 		WeekDay:   entity.ConvertDaysOfWeekToInt(req.WeekDay),
 		Type:      req.Type,
 		Status:    entity.ChallengeStatusActivate,
+		Code:      code,
 	})
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	_, err = m.challengeParticipantRepo.CreateMissionParticipant(ctx, &entity.MissionParticipant{
-		UserID:    userID,
-		MissionID: mission.ID,
+	_, err = m.challengeParticipantRepo.CreateChallengeParticipant(ctx, &entity.ChallengeParticipant{
+		UserID:      userID,
+		ChallengeID: challenge.ID,
 	})
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	return &entity.CreateMissionResponse{
-		ChallengeID: mission.ID,
+	return &entity.CreateChallengeResponse{
+		ChallengeID: challenge.ID,
 	}, nil
 }
 
@@ -89,18 +102,21 @@ func (m challengeService) ListChallenges(ctx context.Context, req entity.ListCha
 		return nil, cerrors.E(op, cerrors.Invalid, "user not exist")
 	}
 
-	missions, err := m.challengeRepo.ListChallenges(ctx, userID)
+	challenges, err := m.challengeRepo.ListChallenges(ctx, entity.ListChallengesParams{
+		UserID: userID,
+		Type:   req.Type,
+	})
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	var missionDTOs []entity.ChallengeDTO
-	for _, mission := range missions {
-		missionDTOs = append(missionDTOs, entity.ChallengeDTOFrom(mission))
+	var challengeDTOS []entity.ChallengeDTO
+	for _, mission := range challenges {
+		challengeDTOS = append(challengeDTOS, entity.ChallengeDTOFrom(mission))
 	}
 
 	return &entity.ListChallengesResponse{
-		Challenges: missionDTOs,
+		Challenges: challengeDTOS,
 	}, nil
 }
 

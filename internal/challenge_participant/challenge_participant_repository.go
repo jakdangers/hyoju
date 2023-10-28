@@ -1,4 +1,4 @@
-package mission_participant
+package challenge_participant
 
 import (
 	"context"
@@ -15,9 +15,9 @@ func NewMissionParticipantRepository(gormDB *gorm.DB) *missionParticipantReposit
 	return &missionParticipantRepository{gormDB: gormDB}
 }
 
-var _ entity.MissionParticipantRepository = (*missionParticipantRepository)(nil)
+var _ entity.ChallengeParticipantRepository = (*missionParticipantRepository)(nil)
 
-func (m missionParticipantRepository) CreateMissionParticipant(ctx context.Context, participant *entity.MissionParticipant) (*entity.MissionParticipant, error) {
+func (m missionParticipantRepository) CreateChallengeParticipant(ctx context.Context, participant *entity.ChallengeParticipant) (*entity.ChallengeParticipant, error) {
 	const op cerrors.Op = "missionParticipant/repository/createMissionParticipant"
 
 	if err := m.gormDB.WithContext(ctx).Create(participant).Error; err != nil {
@@ -27,10 +27,10 @@ func (m missionParticipantRepository) CreateMissionParticipant(ctx context.Conte
 	return participant, nil
 }
 
-func (m missionParticipantRepository) ListMissionParticipants(ctx context.Context, missionID uint) ([]entity.MissionParticipant, error) {
+func (m missionParticipantRepository) ListMissionParticipants(ctx context.Context, missionID uint) ([]entity.ChallengeParticipant, error) {
 	const op cerrors.Op = "missionParticipant/repository/listMissionParticipants"
 
-	var participants []entity.MissionParticipant
+	var participants []entity.ChallengeParticipant
 	if err := m.gormDB.WithContext(ctx).Find(&participants, "mission_id = ?", missionID).Error; err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}

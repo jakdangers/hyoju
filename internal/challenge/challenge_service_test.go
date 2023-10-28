@@ -14,7 +14,7 @@ import (
 )
 
 type serviceTestSuite struct {
-	challengeRepo            *mocks.MissionRepository
+	challengeRepo            *mocks.ChallengeRepository
 	challengeParticipantRepo *mocks.MissionParticipantRepository
 	userRepo                 *mocks.UserRepository
 	service                  entity.ChallengeService
@@ -23,7 +23,7 @@ type serviceTestSuite struct {
 func initServiceTestSuite(t *testing.T) serviceTestSuite {
 	var ts serviceTestSuite
 
-	ts.challengeRepo = mocks.NewMissionRepository(t)
+	ts.challengeRepo = mocks.NewChallengeRepository(t)
 	ts.challengeParticipantRepo = mocks.NewMissionParticipantRepository(t)
 	ts.userRepo = mocks.NewUserRepository(t)
 	ts.service = NewChallengeService(ts.challengeRepo, ts.challengeParticipantRepo, ts.userRepo)
@@ -31,7 +31,7 @@ func initServiceTestSuite(t *testing.T) serviceTestSuite {
 	return ts
 }
 
-func Test_missionService_CreateMission(t *testing.T) {
+func Test_missionService_CreateChallenge(t *testing.T) {
 	type args struct {
 		ctx context.Context
 		req entity.CreateChallengeRequest
@@ -44,7 +44,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.CreateMissionResponse
+		want    *entity.CreateChallengeResponse
 		wantErr bool
 	}{
 		{
@@ -71,20 +71,10 @@ func Test_missionService_CreateMission(t *testing.T) {
 					Email:       "test_email",
 					Provider:    "test_provider",
 					FirebaseUID: "test_firegbaseUID",
-					FriendCode:  "test_friendCode",
+					Code:        "test_friendCode",
 				}, nil).Once()
-				ts.challengeRepo.EXPECT().CreateMission(mock.Anything, &entity.Challenge{
-					Model:    gorm.Model{},
-					UserID:   testUserID,
-					Title:    "test_mission",
-					Emoji:    "test_emoji",
-					Duration: "DAILY",
-					PlanTime: time.Date(2023, time.October, 14, 15, 30, 0, 0, time.UTC),
-					Alarm:    true,
-					WeekDay:  3,
-					Type:     "SINGLE",
-					Status:   entity.ChallengeStatusActivate,
-				}).Return(&entity.Challenge{
+				ts.challengeRepo.EXPECT().ChallengeFindByCode(mock.Anything, mock.Anything).Return(nil, nil).Once()
+				ts.challengeRepo.EXPECT().CreateChallenge(mock.Anything, mock.Anything).Return(&entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},
@@ -98,15 +88,15 @@ func Test_missionService_CreateMission(t *testing.T) {
 					Type:     "SINGLE",
 					Status:   entity.ChallengeStatusDeActivate,
 				}, nil).Once()
-				ts.challengeParticipantRepo.EXPECT().CreateMissionParticipant(mock.Anything, &entity.MissionParticipant{
-					UserID:    testUserID,
-					MissionID: 1,
-				}).Return(&entity.MissionParticipant{
-					UserID:    testUserID,
-					MissionID: 1,
+				ts.challengeParticipantRepo.EXPECT().CreateMissionParticipant(mock.Anything, &entity.ChallengeParticipant{
+					UserID:      testUserID,
+					ChallengeID: 1,
+				}).Return(&entity.ChallengeParticipant{
+					UserID:      testUserID,
+					ChallengeID: 1,
 				}, nil).Once()
 			},
-			want: &entity.CreateMissionResponse{
+			want: &entity.CreateChallengeResponse{
 				ChallengeID: 1,
 			},
 			wantErr: false,
@@ -127,7 +117,7 @@ func Test_missionService_CreateMission(t *testing.T) {
 	}
 }
 
-func Test_missionService_ListMissions(t *testing.T) {
+func Test_challengeService_ListChallenges(t *testing.T) {
 	type args struct {
 		ctx context.Context
 		req entity.ListChallengesRequest
@@ -144,11 +134,12 @@ func Test_missionService_ListMissions(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "PASS 미션 리스트 조회",
+			name: "PASS 미션 리스트 조회 (타입 SINGLE)",
 			args: args{
 				ctx: context.Background(),
 				req: entity.ListChallengesRequest{
 					UserID: testUserID.String(),
+					Type:   entity.ChallengeTypeSingle,
 				},
 			},
 			mock: func() {
@@ -157,7 +148,10 @@ func Test_missionService_ListMissions(t *testing.T) {
 						ID: testUserID,
 					},
 				}, nil).Once()
-				ts.challengeRepo.EXPECT().ListMissions(mock.Anything, testUserID).Return([]entity.Challenge{
+				ts.challengeRepo.EXPECT().ListChallenges(mock.Anything, entity.ListChallengesParams{
+					UserID: testUserID,
+					Type:   entity.ChallengeTypeSingle,
+				}).Return([]entity.Challenge{
 					{
 						Model: gorm.Model{
 							ID: 1,
@@ -184,6 +178,57 @@ func Test_missionService_ListMissions(t *testing.T) {
 						Alarm:    false,
 						WeekDay:  []string{"MONDAY", "TUESDAY"},
 						Type:     string(entity.ChallengeTypeSingle),
+						Status:   string(entity.ChallengeStatusActivate),
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "PASS 미션 리스트 조회 (타입 MULTI)",
+			args: args{
+				ctx: context.Background(),
+				req: entity.ListChallengesRequest{
+					UserID: testUserID.String(),
+					Type:   entity.ChallengeTypeMulti,
+				},
+			},
+			mock: func() {
+				ts.userRepo.EXPECT().FindByID(mock.Anything, testUserID).Return(&entity.User{
+					Base: entity.Base{
+						ID: testUserID,
+					},
+				}, nil).Once()
+				ts.challengeRepo.EXPECT().ListChallenges(mock.Anything, entity.ListChallengesParams{
+					UserID: testUserID,
+					Type:   entity.ChallengeTypeMulti,
+				}).Return([]entity.Challenge{
+					{
+						Model: gorm.Model{
+							ID: 1,
+						},
+						UserID:   testUserID,
+						Title:    "test_mission",
+						Emoji:    "test_emoji",
+						Duration: entity.ChallengeDurationDaily,
+						Alarm:    false,
+						WeekDay:  3,
+						Type:     entity.ChallengeTypeMulti,
+						Status:   entity.ChallengeStatusActivate,
+					},
+				}, nil).Once()
+			},
+			want: &entity.ListChallengesResponse{
+				Challenges: []entity.ChallengeDTO{
+					{
+						ID:       1,
+						UserID:   testUserID.String(),
+						Title:    "test_mission",
+						Emoji:    "test_emoji",
+						Duration: string(entity.ChallengeDurationDaily),
+						Alarm:    false,
+						WeekDay:  []string{"MONDAY", "TUESDAY"},
+						Type:     string(entity.ChallengeTypeMulti),
 						Status:   string(entity.ChallengeStatusActivate),
 					},
 				},
@@ -244,7 +289,7 @@ func Test_missionService_PatchMission(t *testing.T) {
 						ID: testUserID,
 					},
 				}, nil).Once()
-				ts.challengeRepo.EXPECT().GetMission(mock.Anything, uint(1)).Return(&entity.Challenge{
+				ts.challengeRepo.EXPECT().GetChallenge(mock.Anything, uint(1)).Return(&entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},
@@ -257,7 +302,7 @@ func Test_missionService_PatchMission(t *testing.T) {
 					Type:     entity.ChallengeTypeSingle,
 					Status:   entity.ChallengeStatusDeActivate,
 				}, nil).Once()
-				ts.challengeRepo.EXPECT().PatchMission(mock.Anything, &entity.Challenge{
+				ts.challengeRepo.EXPECT().PatchChallenge(mock.Anything, &entity.Challenge{
 					Model: gorm.Model{
 						ID: 1,
 					},

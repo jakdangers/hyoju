@@ -1,4 +1,4 @@
-package mission_participant
+package challenge_participant
 
 import (
 	"go.uber.org/fx"
@@ -6,8 +6,8 @@ import (
 )
 
 var Module = fx.Module(
-	"missionParticipant", fx.Provide(
-		fx.Annotate(NewMissionParticipantRepository, fx.As(new(entity.MissionParticipantRepository))),
+	"challenge_participant", fx.Provide(
+		fx.Annotate(NewMissionParticipantRepository, fx.As(new(entity.ChallengeParticipantRepository))),
 		//fx.Annotate(NewSer, fx.As(new(entity.ChallengeService))),
 		//fx.Annotate(NewMissionController, fx.As(new(entity.ChallengeController))),
 	),

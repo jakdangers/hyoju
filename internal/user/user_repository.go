@@ -84,11 +84,11 @@ func (ur *userRepository) FindByID(ctx context.Context, id entity.BinaryUUID) (*
 	return &user, nil
 }
 
-func (ur *userRepository) FindByFriendCode(ctx context.Context, friendCode string) (*entity.User, error) {
+func (ur *userRepository) FindByCode(ctx context.Context, friendCode string) (*entity.User, error) {
 	const op cerrors.Op = "user/repository/findByFriendCode"
 
 	var user entity.User
-	result := ur.gormDB.WithContext(ctx).Where("friend_code = ?", friendCode).First(&user)
+	result := ur.gormDB.WithContext(ctx).Where("code = ?", friendCode).First(&user)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}

@@ -21,7 +21,7 @@ import (
 type controllerTestSuite struct {
 	router            *gin.Engine
 	log               logger.Logger
-	missionService    *mocks.MissionService
+	challengeService  *mocks.ChallengeService
 	missionController entity.ChallengeController
 }
 
@@ -30,8 +30,8 @@ func initControllerTestSuite(t *testing.T) controllerTestSuite {
 
 	gin.SetMode(gin.TestMode)
 	ts.router = gin.Default()
-	ts.missionService = mocks.NewMissionService(t)
-	ts.missionController = NewChallengeController(ts.missionService, ts.log)
+	ts.challengeService = mocks.NewChallengeService(t)
+	ts.missionController = NewChallengeController(ts.challengeService, ts.log)
 	RegisterRoutes(ts.router, ts.missionController)
 
 	return ts
@@ -65,7 +65,7 @@ func Test_missionController_CreateChallenge(t *testing.T) {
 				return bytes.NewReader(jb)
 			},
 			mock: func() {
-				ts.missionService.EXPECT().CreateMission(mock.Anything, entity.CreateChallengeRequest{
+				ts.challengeService.EXPECT().CreateChallenge(mock.Anything, entity.CreateChallengeRequest{
 					UserID:   testUserID,
 					Title:    "tet_mission",
 					Emoji:    "test_emoji",
@@ -75,7 +75,7 @@ func Test_missionController_CreateChallenge(t *testing.T) {
 					WeekDay:  []string{"SUNDAY", "MONDAY"},
 					Type:     entity.ChallengeTypeSingle,
 				}).
-					Return(&entity.CreateMissionResponse{}, nil).Once()
+					Return(&entity.CreateChallengeResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
 		},
@@ -91,30 +91,56 @@ func Test_missionController_CreateChallenge(t *testing.T) {
 			ts.router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			ts.missionService.AssertExpectations(t)
+			ts.challengeService.AssertExpectations(t)
 		})
 	}
 }
 
-func Test_missionController_ListMissions(t *testing.T) {
+func Test_challengeController_ListChallenges(t *testing.T) {
 	ts := initControllerTestSuite(t)
 	testUserID := entity.BinaryUUIDNew().String()
 
 	tests := []struct {
 		name   string
 		url    func() string
+		query  func() string
 		mock   func()
 		status int
 	}{
 		{
-			name: "PASS 미션 리스트 조회",
+			name: "PASS 미션 리스트 조회 (타입 SINGLE)",
 			url: func() string {
 				path, _ := url.JoinPath("/challenges/user", testUserID)
 				return path
 			},
+			query: func() string {
+				params := url.Values{}
+				params.Add("type", string(entity.ChallengeTypeSingle))
+				return params.Encode()
+			},
 			mock: func() {
-				ts.missionService.EXPECT().ListMissions(mock.Anything, entity.ListChallengesRequest{
+				ts.challengeService.EXPECT().ListChallenges(mock.Anything, entity.ListChallengesRequest{
 					UserID: testUserID,
+					Type:   entity.ChallengeTypeSingle,
+				}).Return(&entity.ListChallengesResponse{}, nil).Once()
+			},
+			status: http.StatusOK,
+		},
+		{
+			name: "PASS 미션 리스트 조회 (타입 SINGLE)",
+			url: func() string {
+				path, _ := url.JoinPath("/challenges/user", testUserID)
+				return path
+			},
+			query: func() string {
+				params := url.Values{}
+				params.Add("type", string(entity.ChallengeTypeMulti))
+				return params.Encode()
+			},
+			mock: func() {
+				ts.challengeService.EXPECT().ListChallenges(mock.Anything, entity.ListChallengesRequest{
+					UserID: testUserID,
+					Type:   entity.ChallengeTypeMulti,
 				}).Return(&entity.ListChallengesResponse{}, nil).Once()
 			},
 			status: http.StatusOK,
@@ -125,12 +151,13 @@ func Test_missionController_ListMissions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 			req, _ := http.NewRequest(http.MethodGet, tt.url(), nil)
+			req.URL.RawQuery = tt.query()
 
 			rec := httptest.NewRecorder()
 			ts.router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			ts.missionService.AssertExpectations(t)
+			ts.challengeService.AssertExpectations(t)
 		})
 	}
 }
@@ -162,7 +189,7 @@ func Test_missionController_PatchMission(t *testing.T) {
 				return bytes.NewReader(jb)
 			},
 			mock: func() {
-				ts.missionService.EXPECT().PatchMission(mock.Anything, entity.PatchChallengeRequest{
+				ts.challengeService.EXPECT().PatchChallenge(mock.Anything, entity.PatchChallengeRequest{
 					ID:       1,
 					Title:    pointer.String("modified_mission"),
 					Emoji:    pointer.String("modified_emoji"),
@@ -187,7 +214,7 @@ func Test_missionController_PatchMission(t *testing.T) {
 			ts.router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			ts.missionService.AssertExpectations(t)
+			ts.challengeService.AssertExpectations(t)
 		})
 	}
 }
@@ -208,7 +235,7 @@ func Test_missionController_GetMission(t *testing.T) {
 				return path
 			},
 			mock: func() {
-				ts.missionService.EXPECT().GetMission(mock.Anything, entity.GetChallengeRequest{
+				ts.challengeService.EXPECT().GetChallenge(mock.Anything, entity.GetChallengeRequest{
 					ChallengeID: 1,
 				}).Return(&entity.GetChallengeResponse{}, nil).Once()
 			},
@@ -225,7 +252,7 @@ func Test_missionController_GetMission(t *testing.T) {
 			ts.router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			ts.missionService.AssertExpectations(t)
+			ts.challengeService.AssertExpectations(t)
 		})
 	}
 }

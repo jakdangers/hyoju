@@ -23,19 +23,19 @@ func (_m *ChallengeService) EXPECT() *ChallengeService_Expecter {
 }
 
 // CreateChallenge provides a mock function with given fields: ctx, req
-func (_m *ChallengeService) CreateChallenge(ctx context.Context, req entity.CreateChallengeRequest) (*entity.CreateMissionResponse, error) {
+func (_m *ChallengeService) CreateChallenge(ctx context.Context, req entity.CreateChallengeRequest) (*entity.CreateChallengeResponse, error) {
 	ret := _m.Called(ctx, req)
 
-	var r0 *entity.CreateMissionResponse
+	var r0 *entity.CreateChallengeResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateChallengeRequest) (*entity.CreateMissionResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateChallengeRequest) (*entity.CreateChallengeResponse, error)); ok {
 		return rf(ctx, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateChallengeRequest) *entity.CreateMissionResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateChallengeRequest) *entity.CreateChallengeResponse); ok {
 		r0 = rf(ctx, req)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entity.CreateMissionResponse)
+			r0 = ret.Get(0).(*entity.CreateChallengeResponse)
 		}
 	}
 
@@ -67,12 +67,12 @@ func (_c *ChallengeService_CreateChallenge_Call) Run(run func(ctx context.Contex
 	return _c
 }
 
-func (_c *ChallengeService_CreateChallenge_Call) Return(_a0 *entity.CreateMissionResponse, _a1 error) *ChallengeService_CreateChallenge_Call {
+func (_c *ChallengeService_CreateChallenge_Call) Return(_a0 *entity.CreateChallengeResponse, _a1 error) *ChallengeService_CreateChallenge_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *ChallengeService_CreateChallenge_Call) RunAndReturn(run func(context.Context, entity.CreateChallengeRequest) (*entity.CreateMissionResponse, error)) *ChallengeService_CreateChallenge_Call {
+func (_c *ChallengeService_CreateChallenge_Call) RunAndReturn(run func(context.Context, entity.CreateChallengeRequest) (*entity.CreateChallengeResponse, error)) *ChallengeService_CreateChallenge_Call {
 	_c.Call.Return(run)
 	return _c
 }

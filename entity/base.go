@@ -57,6 +57,6 @@ func (b BinaryUUID) Value() (driver.Value, error) {
 	return uuid.UUID(b).MarshalBinary()
 }
 
-func (b BinaryUUID) FriendCode() string {
+func (b BinaryUUID) ToCode() string {
 	return strings.Split(b.String(), "-")[0]
 }

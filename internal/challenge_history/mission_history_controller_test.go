@@ -1,4 +1,4 @@
-package mission_history
+package challenge_history
 
 import (
 	"github.com/gin-gonic/gin"
@@ -14,10 +14,10 @@ import (
 )
 
 type controllerTestSuite struct {
-	router                   *gin.Engine
-	log                      logger.Logger
-	missionHistoryService    *mocks.MissionHistoryService
-	missionHistoryController entity.MissionHistoryController
+	router     *gin.Engine
+	log        logger.Logger
+	service    *mocks.ChallengeHistoryService
+	controller entity.ChallengeHistoryController
 }
 
 func initControllerTestSuite(t *testing.T) controllerTestSuite {
@@ -25,14 +25,14 @@ func initControllerTestSuite(t *testing.T) controllerTestSuite {
 
 	gin.SetMode(gin.TestMode)
 	ts.router = gin.Default()
-	ts.missionHistoryService = mocks.NewMissionHistoryService(t)
-	ts.missionHistoryController = NewMissionHistoryController(ts.missionHistoryService, ts.log)
-	RegisterRoutes(ts.router, ts.missionHistoryController)
+	ts.service = mocks.NewChallengeHistoryService(t)
+	ts.controller = NewChallengeHistoryController(ts.service, ts.log)
+	RegisterRoutes(ts.router, ts.controller)
 
 	return ts
 }
 
-func Test_missionHistoryController_CreateMissionHistory(t *testing.T) {
+func Test_challengeHistoryController_CreateMissionHistory(t *testing.T) {
 	ts := initControllerTestSuite(t)
 
 	tests := []struct {
@@ -43,7 +43,7 @@ func Test_missionHistoryController_CreateMissionHistory(t *testing.T) {
 		{
 			name: "PASS challenge 생성",
 			mock: func() {
-				ts.missionHistoryService.EXPECT().
+				ts.service.EXPECT().
 					CreateMissionHistory(mock.Anything, entity.CreateMissionHistoryRequest{}).
 					Return(&entity.CreateMissionHistoryResponse{}, nil).Once()
 			},
@@ -54,13 +54,13 @@ func Test_missionHistoryController_CreateMissionHistory(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			req, _ := http.NewRequest(http.MethodPost, "/mission-histories", nil)
+			req, _ := http.NewRequest(http.MethodPost, "/challenges/histories", nil)
 
 			rec := httptest.NewRecorder()
 			ts.router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			ts.missionHistoryService.AssertExpectations(t)
+			ts.service.AssertExpectations(t)
 		})
 	}
 }
@@ -79,19 +79,21 @@ func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
 		{
 			name: "PASS challenge 히스토리 조회",
 			mock: func() {
-				ts.missionHistoryService.EXPECT().
-					ListMultiModeMissionHistories(mock.Anything, entity.ListMultiModeMissionHistoriesRequest{
+				ts.service.EXPECT().
+					ListMultiChallengeHistories(mock.Anything, entity.ListMultiChallengeHistoriesRequest{
 						UserID: testUserID,
 						Date:   "2023-10-10",
-					}).Return(&entity.ListMultiModeMissionHistoriesResponse{}, nil).Once()
+						Type:   "SINGLE",
+					}).Return(&entity.ListMultiChallengeHistoriesResponse{}, nil).Once()
 			},
 			uri: func() string {
-				path, _ := url.JoinPath("/challenge-histories/multi", testUserID)
+				path, _ := url.JoinPath("/challenges/histories", testUserID)
 				return path
 			},
 			query: func() string {
 				params := url.Values{}
 				params.Add("date", "2023-10-10")
+				params.Add("type", "SINGLE")
 				return params.Encode()
 			},
 			status: http.StatusOK,
@@ -108,7 +110,7 @@ func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
 			ts.router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			ts.missionHistoryService.AssertExpectations(t)
+			ts.service.AssertExpectations(t)
 		})
 	}
 }

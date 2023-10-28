@@ -1,4 +1,4 @@
-package mission_history
+package challenge_history
 
 import (
 	"context"
@@ -12,21 +12,21 @@ import (
 )
 
 type serviceTestSuite struct {
-	missionRepo            *mocks.MissionRepository
-	missionParticipantRepo *mocks.MissionParticipantRepository
-	missionHistoryRepo     *mocks.MissionHistoryRepository
-	userRepo               *mocks.UserRepository
-	service                entity.MissionHistoryService
+	challengeRepo            *mocks.ChallengeRepository
+	challengeParticipantRepo *mocks.ChallengeParticipantRepository
+	challengeHistoryRepo     *mocks.ChallengeHistoryRepository
+	userRepo                 *mocks.UserRepository
+	service                  entity.ChallengeHistoryService
 }
 
 func initServiceTestSuite(t *testing.T) serviceTestSuite {
 	var ts serviceTestSuite
 
-	ts.missionRepo = mocks.NewMissionRepository(t)
-	ts.missionParticipantRepo = mocks.NewMissionParticipantRepository(t)
-	ts.missionHistoryRepo = mocks.NewMissionHistoryRepository(t)
+	ts.challengeRepo = mocks.NewChallengeRepository(t)
+	ts.challengeParticipantRepo = mocks.NewChallengeParticipantRepository(t)
+	ts.challengeHistoryRepo = mocks.NewChallengeHistoryRepository(t)
 	ts.userRepo = mocks.NewUserRepository(t)
-	ts.service = NewMissionHistoryService(ts.missionRepo, ts.missionParticipantRepo, ts.missionHistoryRepo, ts.userRepo)
+	ts.service = NewChallengeHistoryService(ts.challengeRepo, ts.challengeParticipantRepo, ts.challengeHistoryRepo, ts.userRepo)
 
 	return ts
 }
@@ -70,10 +70,10 @@ func Test_missionHistoryService_CreateMissionHistory(t *testing.T) {
 	}
 }
 
-func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
+func Test_challengeHistoryService_ListMultiChallengeHistories(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req entity.ListMultiModeMissionHistoriesRequest
+		req entity.ListMultiChallengeHistoriesRequest
 	}
 
 	ts := initServiceTestSuite(t)
@@ -83,15 +83,17 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.ListMultiModeMissionHistoriesResponse
+		want    *entity.ListMultiChallengeHistoriesResponse
 		wantErr bool
 	}{
 		{
 			name: "PASS challenge history 조회",
 			args: args{
 				ctx: context.Background(),
-				req: entity.ListMultiModeMissionHistoriesRequest{
+				req: entity.ListMultiChallengeHistoriesRequest{
 					UserID: testUserID.String(),
+					Date:   "2019-12-09",
+					Type:   entity.ChallengeTypeSingle,
 				},
 			},
 			mock: func() {
@@ -100,9 +102,10 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 						ID: testUserID,
 					},
 				}, nil).Once()
-				ts.missionRepo.EXPECT().ListMultiModeMissions(mock.Anything, entity.ListMultiChallengeParams{
+				ts.challengeRepo.EXPECT().ListMultiChallenges(mock.Anything, entity.ListMultiChallengeParams{
 					UserID: testUserID,
-					Date:   time.Time{},
+					Date:   time.Date(2019, 12, 9, 0, 0, 0, 0, time.UTC).Add(-time.Hour * 9),
+					Type:   entity.ChallengeTypeSingle,
 				}).
 					Return([]entity.Challenge{
 						{
@@ -118,38 +121,38 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 							PlanTime:  time.Time{},
 							Alarm:     true,
 							WeekDay:   3,
-							Type:      entity.Single,
-							Status:    entity.Active,
+							Type:      entity.ChallengeTypeSingle,
+							Status:    entity.ChallengeStatusActivate,
 						},
 					}, nil).Once()
-				ts.missionHistoryRepo.EXPECT().ListMultipleModeMissionHistories(mock.Anything, entity.ListMultipleMissionHistoriesParams{
-					UserID:     testUserID,
-					MissionIDs: []uint{1},
+				ts.challengeHistoryRepo.EXPECT().ListMultiChallengeHistories(mock.Anything, entity.ListMultipleMissionHistoriesParams{
+					UserID:       testUserID,
+					ChallengeIDs: []uint{1},
 				}).
-					Return([]entity.MissionHistory{
+					Return([]entity.ChallengeHistory{
 						{
 							Model: gorm.Model{
 								ID: 1,
 							},
-							UserID:     testUserID,
-							MissionID:  1,
-							Status:     entity.MissionHistoryStatusInit,
-							PlanTime:   time.Date(2023, 10, 10, 10, 00, 10, 00, time.UTC),
-							FrontImage: "front_image",
-							BackImage:  "back_image",
+							UserID:      testUserID,
+							ChallengeID: 1,
+							PlanTime:    time.Date(2023, 10, 10, 10, 00, 10, 00, time.UTC),
+							FrontImage:  "front_image",
+							BackImage:   "back_image",
 						},
 					}, nil).Once()
 			},
-			want: &entity.ListMultiModeMissionHistoriesResponse{
-				MissionHistories: []entity.MissionHistoryDTO{
+			want: &entity.ListMultiChallengeHistoriesResponse{
+				ChallengeHistories: []entity.ChallengeHistoryDTO{
 					{
-						ID:         1,
-						UserID:     testUserID.String(),
-						MissionID:  1,
-						Status:     entity.MissionHistoryStatusInit,
-						PlanTime:   time.Date(2023, 10, 10, 10, 00, 10, 00, time.UTC),
-						FrontImage: "front_image",
-						BackImage:  "back_image",
+						ID:          1,
+						UserID:      testUserID.String(),
+						ChallengeID: 1,
+						PlanTime:    time.Date(2023, 10, 10, 10, 00, 10, 00, time.UTC),
+						FrontImage:  "front_image",
+						BackImage:   "back_image",
+						Title:       "test_mission",
+						Emoji:       "test_emoji",
 					},
 				},
 			},
@@ -160,15 +163,15 @@ func Test_missionHistoryService_ListMissionHistories(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.service.ListMultiModeMissionHistories(tt.args.ctx, tt.args.req)
+			got, err := ts.service.ListMultiChallengeHistories(tt.args.ctx, tt.args.req)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err, err.Error())
 			}
 			ts.userRepo.AssertExpectations(t)
-			ts.missionHistoryRepo.AssertExpectations(t)
-			ts.missionRepo.AssertExpectations(t)
-			ts.missionParticipantRepo.AssertExpectations(t)
+			ts.challengeHistoryRepo.AssertExpectations(t)
+			ts.challengeRepo.AssertExpectations(t)
+			ts.challengeParticipantRepo.AssertExpectations(t)
 		})
 	}
 }
