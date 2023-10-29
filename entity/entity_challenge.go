@@ -32,18 +32,19 @@ const (
 
 type Challenge struct {
 	gorm.Model
-	UserID    BinaryUUID        `db:"user_id"`
-	Title     string            `db:"title"`
-	Emoji     string            `db:"emoji"`
-	StartDate time.Time         `gorm:"type:timestamp"`
-	EndDate   time.Time         `gorm:"type:timestamp"`
-	PlanTime  time.Time         `gorm:"type:timestamp"`
-	Alarm     bool              `db:"alarm"`
-	WeekDay   int               `db:"week_day"`
-	Duration  ChallengeDuration `db:"duration"`
-	Type      ChallengeType     `db:"type"`
-	Status    ChallengeStatus   `db:"status"`
-	Code      string            `db:"code"`
+	UserID      BinaryUUID        `db:"user_id"`
+	Title       string            `db:"title"`
+	Description string            `json:"description"`
+	Emoji       string            `db:"emoji"`
+	StartDate   time.Time         `gorm:"type:timestamp"`
+	EndDate     time.Time         `gorm:"type:timestamp"`
+	PlanTime    time.Time         `gorm:"type:timestamp"`
+	Alarm       bool              `db:"alarm"`
+	WeekDay     int               `db:"week_day"`
+	Duration    ChallengeDuration `db:"duration"`
+	Type        ChallengeType     `db:"type"`
+	Status      ChallengeStatus   `db:"status"`
+	Code        string            `db:"code"`
 }
 
 type ChallengeRepository interface {

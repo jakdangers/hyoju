@@ -50,7 +50,7 @@ func (m challengeRepository) ListChallenges(ctx context.Context, params entity.L
 	const op cerrors.Op = "challenge/repository/listChallenges"
 
 	var challenges []entity.Challenge
-	result := m.gormDB.WithContext(ctx).Where("user_id = ? AND type = ? AND status = ?", params.UserID, params.Type, entity.ChallengeStatusDeActivate).Find(&challenges)
+	result := m.gormDB.WithContext(ctx).Where("user_id = ? AND type = ? AND status = ?", params.UserID, params.Type, entity.ChallengeStatusActivate).Find(&challenges)
 	if result.Error != nil {
 		return nil, cerrors.E(op, cerrors.Internal, result.Error)
 	}

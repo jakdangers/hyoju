@@ -111,8 +111,8 @@ func (m challengeService) ListChallenges(ctx context.Context, req entity.ListCha
 	}
 
 	var challengeDTOS []entity.ChallengeDTO
-	for _, mission := range challenges {
-		challengeDTOS = append(challengeDTOS, entity.ChallengeDTOFrom(mission))
+	for _, challenge := range challenges {
+		challengeDTOS = append(challengeDTOS, entity.ChallengeDTOFrom(challenge))
 	}
 
 	return &entity.ListChallengesResponse{

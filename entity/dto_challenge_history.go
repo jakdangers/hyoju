@@ -30,6 +30,7 @@ type ChallengeHistoryDTO struct {
 	UserID      string    `json:"userID"`
 	ChallengeID uint      `json:"challengeID"`
 	Title       string    `json:"title"`
+	Description string    `json:"description"`
 	Emoji       string    `json:"emoji"`
 	PlanTime    time.Time `json:"planTime"`
 	FrontImage  string    `json:"frontImage"`

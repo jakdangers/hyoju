@@ -58,34 +58,36 @@ type PatchChallengeResponse struct {
 }
 
 type ChallengeDTO struct {
-	ID        uint      `json:"id"`
-	UserID    string    `json:"userId"`
-	Title     string    `json:"title"`
-	Emoji     string    `json:"emoji"`
-	StartDate time.Time `json:"startDate"`
-	EndDate   time.Time `json:"endDate"`
-	PlanTime  time.Time `json:"planTime"`
-	Alarm     bool      `json:"alarm"`
-	WeekDay   []string  `json:"weekDay"`
-	Duration  string    `json:"duration"`
-	Type      string    `json:"type"`
-	Status    string    `json:"status"`
+	ID          uint      `json:"id"`
+	UserID      string    `json:"userId"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Emoji       string    `json:"emoji"`
+	StartDate   time.Time `json:"startDate"`
+	EndDate     time.Time `json:"endDate"`
+	PlanTime    time.Time `json:"planTime"`
+	Alarm       bool      `json:"alarm"`
+	WeekDay     []string  `json:"weekDay"`
+	Duration    string    `json:"duration"`
+	Type        string    `json:"type"`
+	Status      string    `json:"status"`
 }
 
 func ChallengeDTOFrom(challenge Challenge) ChallengeDTO {
 
 	return ChallengeDTO{
-		ID:        challenge.ID,
-		UserID:    challenge.UserID.String(),
-		Title:     challenge.Title,
-		Emoji:     challenge.Emoji,
-		Duration:  string(challenge.Duration),
-		StartDate: challenge.StartDate,
-		EndDate:   challenge.EndDate,
-		PlanTime:  challenge.PlanTime,
-		Alarm:     challenge.Alarm,
-		WeekDay:   ConvertIntToDaysOfWeek(challenge.WeekDay),
-		Type:      string(challenge.Type),
-		Status:    string(challenge.Status),
+		ID:          challenge.ID,
+		UserID:      challenge.UserID.String(),
+		Title:       challenge.Title,
+		Description: challenge.Description,
+		Emoji:       challenge.Emoji,
+		Duration:    string(challenge.Duration),
+		StartDate:   challenge.StartDate,
+		EndDate:     challenge.EndDate,
+		PlanTime:    challenge.PlanTime,
+		Alarm:       challenge.Alarm,
+		WeekDay:     ConvertIntToDaysOfWeek(challenge.WeekDay),
+		Type:        string(challenge.Type),
+		Status:      string(challenge.Status),
 	}
 }

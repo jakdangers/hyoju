@@ -19,6 +19,7 @@ CREATE TABLE challenges
     deleted_at TIMESTAMP NULL,
     user_id  BINARY(16),
     title      VARCHAR(255),
+    description VARCHAR(255),
     emoji      VARCHAR(255),
     duration   VARCHAR(255),
     start_date TIMESTAMP,
