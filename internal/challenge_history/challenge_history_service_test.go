@@ -70,10 +70,10 @@ func Test_missionHistoryService_CreateMissionHistory(t *testing.T) {
 	}
 }
 
-func Test_challengeHistoryService_ListMultiChallengeHistories(t *testing.T) {
+func Test_challengeHistoryService_ListGroupChallengeHistories(t *testing.T) {
 	type args struct {
 		ctx context.Context
-		req entity.ListMultiChallengeHistoriesRequest
+		req entity.ListGroupChallengeHistoriesRequest
 	}
 
 	ts := initServiceTestSuite(t)
@@ -83,17 +83,17 @@ func Test_challengeHistoryService_ListMultiChallengeHistories(t *testing.T) {
 		name    string
 		args    args
 		mock    func()
-		want    *entity.ListMultiChallengeHistoriesResponse
+		want    *entity.ListGroupChallengeHistoriesResponse
 		wantErr bool
 	}{
 		{
 			name: "PASS challenge history 조회",
 			args: args{
 				ctx: context.Background(),
-				req: entity.ListMultiChallengeHistoriesRequest{
-					UserID: testUserID.String(),
-					Date:   "2019-12-09",
-					Type:   entity.ChallengeTypeSingle,
+				req: entity.ListGroupChallengeHistoriesRequest{
+					UserID:      testUserID.String(),
+					ChallengeID: 1,
+					Date:        "2023-01-01",
 				},
 			},
 			mock: func() {
@@ -103,9 +103,9 @@ func Test_challengeHistoryService_ListMultiChallengeHistories(t *testing.T) {
 					},
 				}, nil).Once()
 				ts.challengeRepo.EXPECT().ListMultiChallenges(mock.Anything, entity.ListMultiChallengeParams{
-					UserID: testUserID,
-					Date:   time.Date(2019, 12, 9, 0, 0, 0, 0, time.UTC).Add(-time.Hour * 9),
-					Type:   entity.ChallengeTypeSingle,
+					UserID:        testUserID,
+					StartDateTime: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC).Add(-time.Hour * 9),
+					Type:          entity.ChallengeTypeGroup,
 				}).
 					Return([]entity.Challenge{
 						{
@@ -121,11 +121,11 @@ func Test_challengeHistoryService_ListMultiChallengeHistories(t *testing.T) {
 							PlanTime:  time.Time{},
 							Alarm:     true,
 							WeekDay:   3,
-							Type:      entity.ChallengeTypeSingle,
+							Type:      entity.ChallengeTypeGroup,
 							Status:    entity.ChallengeStatusActivate,
 						},
 					}, nil).Once()
-				ts.challengeHistoryRepo.EXPECT().ListMultiChallengeHistories(mock.Anything, entity.ListMultipleMissionHistoriesParams{
+				ts.challengeHistoryRepo.EXPECT().ListMultiChallengeHistories(mock.Anything, entity.ListGroupChallengeHistoriesParams{
 					UserID:       testUserID,
 					ChallengeIDs: []uint{1},
 				}).
@@ -142,7 +142,7 @@ func Test_challengeHistoryService_ListMultiChallengeHistories(t *testing.T) {
 						},
 					}, nil).Once()
 			},
-			want: &entity.ListMultiChallengeHistoriesResponse{
+			want: &entity.ListGroupChallengeHistoriesResponse{
 				ChallengeHistories: []entity.ChallengeHistoryDTO{
 					{
 						ID:          1,
@@ -163,7 +163,7 @@ func Test_challengeHistoryService_ListMultiChallengeHistories(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.service.ListMultiChallengeHistories(tt.args.ctx, tt.args.req)
+			got, err := ts.service.ListGroupChallengeHistories(tt.args.ctx, tt.args.req)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err, err.Error())

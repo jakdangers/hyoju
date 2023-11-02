@@ -22,20 +22,21 @@ func (ChallengeHistory) TableName() string {
 
 type ChallengeHistoryRepository interface {
 	CreateChallengeHistory(ctx context.Context, missionHistory *ChallengeHistory) (*ChallengeHistory, error)
-	ListMultiChallengeHistories(ctx context.Context, params ListMultipleMissionHistoriesParams) ([]ChallengeHistory, error)
+	ListGroupChallengeHistories(ctx context.Context, params ListGroupChallengeHistoriesParams) ([]ChallengeHistory, error)
 }
 
 type ChallengeHistoryService interface {
 	CreateMissionHistory(ctx context.Context, req CreateMissionHistoryRequest) (*CreateMissionHistoryResponse, error)
-	ListMultiChallengeHistories(ctx context.Context, req ListMultiChallengeHistoriesRequest) (*ListMultiChallengeHistoriesResponse, error)
+	ListGroupChallengeHistories(ctx context.Context, req ListGroupChallengeHistoriesRequest) (*ListGroupChallengeHistoriesResponse, error)
 }
 
 type ChallengeHistoryController interface {
 	CreateMissionHistory(c *gin.Context)
-	ListMultiModeMissionHistories(c *gin.Context)
+	ListGroupChallengeHistories(c *gin.Context)
 }
 
-type ListMultipleMissionHistoriesParams struct {
-	UserID       BinaryUUID
-	ChallengeIDs []uint
+type ListGroupChallengeHistoriesParams struct {
+	ChallengeID   uint
+	StartDateTime time.Time
+	EndDateTime   time.Time
 }

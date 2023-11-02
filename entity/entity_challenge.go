@@ -25,7 +25,7 @@ const (
 	ChallengeStatusActivate   ChallengeStatus   = "ACTIVATE"
 	ChallengeStatusDeActivate ChallengeStatus   = "DEACTIVATE"
 	ChallengeTypeSingle       ChallengeType     = "SINGLE"
-	ChallengeTypeMulti        ChallengeType     = "MULTI"
+	ChallengeTypeGroup        ChallengeType     = "GROUP"
 	ChallengeDurationDaily    ChallengeDuration = "DAILY"
 	ChallengeDurationPeriod   ChallengeDuration = "PERIOD"
 )

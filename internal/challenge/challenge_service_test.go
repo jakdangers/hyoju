@@ -190,7 +190,7 @@ func Test_challengeService_ListChallenges(t *testing.T) {
 				ctx: context.Background(),
 				req: entity.ListChallengesRequest{
 					UserID: testUserID.String(),
-					Type:   entity.ChallengeTypeMulti,
+					Type:   entity.ChallengeTypeGroup,
 				},
 			},
 			mock: func() {
@@ -201,7 +201,7 @@ func Test_challengeService_ListChallenges(t *testing.T) {
 				}, nil).Once()
 				ts.challengeRepo.EXPECT().ListChallenges(mock.Anything, entity.ListChallengesParams{
 					UserID: testUserID,
-					Type:   entity.ChallengeTypeMulti,
+					Type:   entity.ChallengeTypeGroup,
 				}).Return([]entity.Challenge{
 					{
 						Model: gorm.Model{
@@ -213,7 +213,7 @@ func Test_challengeService_ListChallenges(t *testing.T) {
 						Duration: entity.ChallengeDurationDaily,
 						Alarm:    false,
 						WeekDay:  3,
-						Type:     entity.ChallengeTypeMulti,
+						Type:     entity.ChallengeTypeGroup,
 						Status:   entity.ChallengeStatusActivate,
 					},
 				}, nil).Once()
@@ -228,7 +228,7 @@ func Test_challengeService_ListChallenges(t *testing.T) {
 						Duration: string(entity.ChallengeDurationDaily),
 						Alarm:    false,
 						WeekDay:  []string{"MONDAY", "TUESDAY"},
-						Type:     string(entity.ChallengeTypeMulti),
+						Type:     string(entity.ChallengeTypeGroup),
 						Status:   string(entity.ChallengeStatusActivate),
 					},
 				},

@@ -134,13 +134,13 @@ func Test_challengeController_ListChallenges(t *testing.T) {
 			},
 			query: func() string {
 				params := url.Values{}
-				params.Add("type", string(entity.ChallengeTypeMulti))
+				params.Add("type", string(entity.ChallengeTypeGroup))
 				return params.Encode()
 			},
 			mock: func() {
 				ts.challengeService.EXPECT().ListChallenges(mock.Anything, entity.ListChallengesRequest{
 					UserID: testUserID,
-					Type:   entity.ChallengeTypeMulti,
+					Type:   entity.ChallengeTypeGroup,
 				}).Return(&entity.ListChallengesResponse{}, nil).Once()
 			},
 			status: http.StatusOK,

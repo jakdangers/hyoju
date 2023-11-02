@@ -14,7 +14,7 @@ func RegisterRoutes(e *gin.Engine, controller entity.ChallengeHistoryController)
 	histories := e.Group("challenges/histories")
 	{
 		histories.POST("", controller.CreateMissionHistory)
-		histories.GET("/:userID", controller.ListMultiModeMissionHistories)
+		histories.GET("/:userID", controller.ListGroupChallengeHistories)
 	}
 }
 
@@ -44,8 +44,8 @@ func (m challengeHistoryController) CreateMissionHistory(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (m challengeHistoryController) ListMultiModeMissionHistories(c *gin.Context) {
-	var req entity.ListMultiChallengeHistoriesRequest
+func (m challengeHistoryController) ListGroupChallengeHistories(c *gin.Context) {
+	var req entity.ListGroupChallengeHistoriesRequest
 
 	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
@@ -54,12 +54,13 @@ func (m challengeHistoryController) ListMultiModeMissionHistories(c *gin.Context
 
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
 	}
 
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	res, err := m.service.ListMultiChallengeHistories(ctx, req)
+	res, err := m.service.ListGroupChallengeHistories(ctx, req)
 	if err != nil {
 		c.JSON(cerrors.ToSentinelAPIError(err))
 		return

@@ -65,9 +65,9 @@ func Test_challengeHistoryController_CreateMissionHistory(t *testing.T) {
 	}
 }
 
-func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
+func Test_challengeHistoryController_ListGroupChallengeHistories(t *testing.T) {
 	ts := initControllerTestSuite(t)
-	testUserID := entity.BinaryUUIDNew().String()
+	testUserID := entity.BinaryUUIDNew()
 
 	tests := []struct {
 		name   string
@@ -80,20 +80,20 @@ func Test_missionHistoryController_ListMissionHistories(t *testing.T) {
 			name: "PASS challenge 히스토리 조회",
 			mock: func() {
 				ts.service.EXPECT().
-					ListMultiChallengeHistories(mock.Anything, entity.ListMultiChallengeHistoriesRequest{
-						UserID: testUserID,
-						Date:   "2023-10-10",
-						Type:   "SINGLE",
-					}).Return(&entity.ListMultiChallengeHistoriesResponse{}, nil).Once()
+					ListGroupChallengeHistories(mock.Anything, entity.ListGroupChallengeHistoriesRequest{
+						UserID:      testUserID.String(),
+						ChallengeID: 1,
+						Date:        "2023-01-01",
+					}).Return(&entity.ListGroupChallengeHistoriesResponse{}, nil).Once()
 			},
 			uri: func() string {
-				path, _ := url.JoinPath("/challenges/histories", testUserID)
+				path, _ := url.JoinPath("/challenges/histories", testUserID.String())
 				return path
 			},
 			query: func() string {
 				params := url.Values{}
-				params.Add("date", "2023-10-10")
-				params.Add("type", "SINGLE")
+				params.Add("date", "2023-01-01")
+				params.Add("challengeId", "1")
 				return params.Encode()
 			},
 			status: http.StatusOK,

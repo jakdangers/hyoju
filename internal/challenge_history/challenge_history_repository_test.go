@@ -48,7 +48,7 @@ func initRepoTestSuite() *repoTestSuite {
 func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T) {
 	type args struct {
 		ctx    context.Context
-		params entity.ListMultipleMissionHistoriesParams
+		params entity.ListGroupChallengeHistoriesParams
 	}
 
 	ts := initRepoTestSuite()
@@ -66,7 +66,7 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 			name: "PASS challenge history 리스트 조회",
 			args: args{
 				ctx: context.Background(),
-				params: entity.ListMultipleMissionHistoriesParams{
+				params: entity.ListGroupChallengeHistoriesParams{
 					UserID:       testUserID,
 					ChallengeIDs: []uint{1, 2, 3},
 				},
@@ -96,7 +96,7 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
-			got, err := ts.repository.ListMultiChallengeHistories(tt.args.ctx, tt.args.params)
+			got, err := ts.repository.ListGroupChallengeHistories(tt.args.ctx, tt.args.params)
 			assert.Equal(t, tt.want, got)
 			if err != nil {
 				assert.Equalf(t, tt.wantErr, err != nil, err.Error())

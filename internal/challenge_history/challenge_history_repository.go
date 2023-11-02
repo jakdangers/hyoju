@@ -22,12 +22,12 @@ func (m challengeHistoryRepository) CreateChallengeHistory(ctx context.Context, 
 	panic("implement me")
 }
 
-func (m challengeHistoryRepository) ListMultiChallengeHistories(ctx context.Context, params entity.ListMultipleMissionHistoriesParams) ([]entity.ChallengeHistory, error) {
-	const op cerrors.Op = "challengeHistory/repository/ListMultiChallengeHistories"
+func (m challengeHistoryRepository) ListGroupChallengeHistories(ctx context.Context, params entity.ListGroupChallengeHistoriesParams) ([]entity.ChallengeHistory, error) {
+	const op cerrors.Op = "challengeHistory/repository/ListGroupChallengeHistories"
 
 	var challengeHistories []entity.ChallengeHistory
 	if result := m.gormDB.WithContext(ctx).
-		Where("user_id = ? AND challenge_id IN ?", params.UserID, params.ChallengeIDs).
+		Where("created_at >= ? AND created_at < ? AND challenge_id IN ?", params.StartDateTime, params.StartDateTime, params.ChallengeID).
 		Find(&challengeHistories); result.Error != nil {
 		return nil, cerrors.E(op, cerrors.Internal, result.Error)
 	}

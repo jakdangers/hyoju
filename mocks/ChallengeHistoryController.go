@@ -53,35 +53,35 @@ func (_c *ChallengeHistoryController_CreateMissionHistory_Call) RunAndReturn(run
 	return _c
 }
 
-// ListMultiModeMissionHistories provides a mock function with given fields: c
-func (_m *ChallengeHistoryController) ListMultiModeMissionHistories(c *gin.Context) {
+// ListGroupChallengeHistories provides a mock function with given fields: c
+func (_m *ChallengeHistoryController) ListGroupChallengeHistories(c *gin.Context) {
 	_m.Called(c)
 }
 
-// ChallengeHistoryController_ListMultiModeMissionHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListMultiModeMissionHistories'
-type ChallengeHistoryController_ListMultiModeMissionHistories_Call struct {
+// ChallengeHistoryController_ListGroupChallengeHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGroupChallengeHistories'
+type ChallengeHistoryController_ListGroupChallengeHistories_Call struct {
 	*mock.Call
 }
 
-// ListMultiModeMissionHistories is a helper method to define mock.On call
+// ListGroupChallengeHistories is a helper method to define mock.On call
 //   - c *gin.Context
-func (_e *ChallengeHistoryController_Expecter) ListMultiModeMissionHistories(c interface{}) *ChallengeHistoryController_ListMultiModeMissionHistories_Call {
-	return &ChallengeHistoryController_ListMultiModeMissionHistories_Call{Call: _e.mock.On("ListMultiModeMissionHistories", c)}
+func (_e *ChallengeHistoryController_Expecter) ListGroupChallengeHistories(c interface{}) *ChallengeHistoryController_ListGroupChallengeHistories_Call {
+	return &ChallengeHistoryController_ListGroupChallengeHistories_Call{Call: _e.mock.On("ListGroupChallengeHistories", c)}
 }
 
-func (_c *ChallengeHistoryController_ListMultiModeMissionHistories_Call) Run(run func(c *gin.Context)) *ChallengeHistoryController_ListMultiModeMissionHistories_Call {
+func (_c *ChallengeHistoryController_ListGroupChallengeHistories_Call) Run(run func(c *gin.Context)) *ChallengeHistoryController_ListGroupChallengeHistories_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(*gin.Context))
 	})
 	return _c
 }
 
-func (_c *ChallengeHistoryController_ListMultiModeMissionHistories_Call) Return() *ChallengeHistoryController_ListMultiModeMissionHistories_Call {
+func (_c *ChallengeHistoryController_ListGroupChallengeHistories_Call) Return() *ChallengeHistoryController_ListGroupChallengeHistories_Call {
 	_c.Call.Return()
 	return _c
 }
 
-func (_c *ChallengeHistoryController_ListMultiModeMissionHistories_Call) RunAndReturn(run func(*gin.Context)) *ChallengeHistoryController_ListMultiModeMissionHistories_Call {
+func (_c *ChallengeHistoryController_ListGroupChallengeHistories_Call) RunAndReturn(run func(*gin.Context)) *ChallengeHistoryController_ListGroupChallengeHistories_Call {
 	_c.Call.Return(run)
 	return _c
 }

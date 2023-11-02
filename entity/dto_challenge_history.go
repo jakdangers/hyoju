@@ -9,19 +9,19 @@ type CreateMissionHistoryResponse struct {
 }
 
 type ListMissionHistoriesRequest struct {
-	UserID string `json:"userID" uri:"userID"`
+	UserID string `uri:"userID"`
 }
 
 type ListMissionHistoriesResponse struct {
 }
 
-type ListMultiChallengeHistoriesRequest struct {
-	UserID string        `json:"userID" uri:"userID"`
-	Date   string        `json:"date" form:"date"`
-	Type   ChallengeType `json:"type" form:"type"`
+type ListGroupChallengeHistoriesRequest struct {
+	UserID      string `uri:"userID"`
+	ChallengeID uint   `form:"challengeId"`
+	Date        string `form:"date"`
 }
 
-type ListMultiChallengeHistoriesResponse struct {
+type ListGroupChallengeHistoriesResponse struct {
 	ChallengeHistories []ChallengeHistoryDTO `json:"challengeHistories"`
 }
 
