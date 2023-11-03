@@ -77,7 +77,7 @@ func (_c *ChallengeHistoryRepository_CreateChallengeHistory_Call) RunAndReturn(r
 	return _c
 }
 
-// ListMultiChallengeHistories provides a mock function with given fields: ctx, params
+// ListGroupChallengeHistories provides a mock function with given fields: ctx, params
 func (_m *ChallengeHistoryRepository) ListGroupChallengeHistories(ctx context.Context, params entity.ListGroupChallengeHistoriesParams) ([]entity.ChallengeHistory, error) {
 	ret := _m.Called(ctx, params)
 
@@ -103,31 +103,31 @@ func (_m *ChallengeHistoryRepository) ListGroupChallengeHistories(ctx context.Co
 	return r0, r1
 }
 
-// ChallengeHistoryRepository_ListMultiChallengeHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGroupChallengeHistories'
-type ChallengeHistoryRepository_ListMultiChallengeHistories_Call struct {
+// ChallengeHistoryRepository_ListGroupChallengeHistories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGroupChallengeHistories'
+type ChallengeHistoryRepository_ListGroupChallengeHistories_Call struct {
 	*mock.Call
 }
 
-// ListMultiChallengeHistories is a helper method to define mock.On call
+// ListGroupChallengeHistories is a helper method to define mock.On call
 //   - ctx context.Context
 //   - params entity.ListGroupChallengeHistoriesParams
-func (_e *ChallengeHistoryRepository_Expecter) ListMultiChallengeHistories(ctx interface{}, params interface{}) *ChallengeHistoryRepository_ListMultiChallengeHistories_Call {
-	return &ChallengeHistoryRepository_ListMultiChallengeHistories_Call{Call: _e.mock.On("ListGroupChallengeHistories", ctx, params)}
+func (_e *ChallengeHistoryRepository_Expecter) ListGroupChallengeHistories(ctx interface{}, params interface{}) *ChallengeHistoryRepository_ListGroupChallengeHistories_Call {
+	return &ChallengeHistoryRepository_ListGroupChallengeHistories_Call{Call: _e.mock.On("ListGroupChallengeHistories", ctx, params)}
 }
 
-func (_c *ChallengeHistoryRepository_ListMultiChallengeHistories_Call) Run(run func(ctx context.Context, params entity.ListGroupChallengeHistoriesParams)) *ChallengeHistoryRepository_ListMultiChallengeHistories_Call {
+func (_c *ChallengeHistoryRepository_ListGroupChallengeHistories_Call) Run(run func(ctx context.Context, params entity.ListGroupChallengeHistoriesParams)) *ChallengeHistoryRepository_ListGroupChallengeHistories_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(entity.ListGroupChallengeHistoriesParams))
 	})
 	return _c
 }
 
-func (_c *ChallengeHistoryRepository_ListMultiChallengeHistories_Call) Return(_a0 []entity.ChallengeHistory, _a1 error) *ChallengeHistoryRepository_ListMultiChallengeHistories_Call {
+func (_c *ChallengeHistoryRepository_ListGroupChallengeHistories_Call) Return(_a0 []entity.ChallengeHistory, _a1 error) *ChallengeHistoryRepository_ListGroupChallengeHistories_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *ChallengeHistoryRepository_ListMultiChallengeHistories_Call) RunAndReturn(run func(context.Context, entity.ListGroupChallengeHistoriesParams) ([]entity.ChallengeHistory, error)) *ChallengeHistoryRepository_ListMultiChallengeHistories_Call {
+func (_c *ChallengeHistoryRepository_ListGroupChallengeHistories_Call) RunAndReturn(run func(context.Context, entity.ListGroupChallengeHistoriesParams) ([]entity.ChallengeHistory, error)) *ChallengeHistoryRepository_ListGroupChallengeHistories_Call {
 	_c.Call.Return(run)
 	return _c
 }

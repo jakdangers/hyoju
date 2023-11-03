@@ -27,7 +27,7 @@ func (m challengeHistoryRepository) ListGroupChallengeHistories(ctx context.Cont
 
 	var challengeHistories []entity.ChallengeHistory
 	if result := m.gormDB.WithContext(ctx).
-		Where("created_at >= ? AND created_at < ? AND challenge_id IN ?", params.StartDateTime, params.StartDateTime, params.ChallengeID).
+		Where("created_at >= ? AND created_at < ? AND challenge_id IN ?", params.StartDateTime, params.EndDateTime, params.ChallengeID).
 		Find(&challengeHistories); result.Error != nil {
 		return nil, cerrors.E(op, cerrors.Internal, result.Error)
 	}

@@ -27,8 +27,8 @@ type ListGroupChallengeHistoriesResponse struct {
 
 type ChallengeHistoryDTO struct {
 	ID          uint      `json:"id"`
-	UserID      string    `json:"userID"`
-	ChallengeID uint      `json:"challengeID"`
+	UserID      string    `json:"userId"`
+	ChallengeID uint      `json:"challengeId"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Emoji       string    `json:"emoji"`

@@ -45,7 +45,7 @@ func initRepoTestSuite() *repoTestSuite {
 	return &ts
 }
 
-func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T) {
+func Test_challengeHistoryRepository_ListGroupChallengeHistories(t *testing.T) {
 	type args struct {
 		ctx    context.Context
 		params entity.ListGroupChallengeHistoriesParams
@@ -67,14 +67,15 @@ func Test_missionHistoryRepository_ListMultipleModeMissionHistories(t *testing.T
 			args: args{
 				ctx: context.Background(),
 				params: entity.ListGroupChallengeHistoriesParams{
-					UserID:       testUserID,
-					ChallengeIDs: []uint{1, 2, 3},
+					ChallengeID:   1,
+					StartDateTime: time.Date(2023, 10, 10, 15, 0, 0, 0, time.UTC),
+					EndDateTime:   time.Date(2023, 10, 11, 15, 0, 0, 0, time.UTC),
 				},
 			},
 
 			mock: func() {
-				query := "SELECT (.+) FROM `mission_histories`"
-				columns := []string{"id", "user_id", "mission_id", "status", "date", "plan_time", "front_image", "back_image"}
+				query := "SELECT (.+) FROM `challenge_histories`"
+				columns := []string{"id", "user_id", "challenge_id", "status", "date", "plan_time", "front_image", "back_image"}
 				rows := sqlmock.NewRows(columns).AddRow(1, testUserID, 1, "INIT", testTimeStamp, testTimeStamp, "", "")
 				ts.sqlMock.ExpectQuery(query).WillReturnRows(rows)
 			},
