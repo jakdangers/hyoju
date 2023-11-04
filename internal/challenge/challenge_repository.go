@@ -64,7 +64,7 @@ func (m challengeRepository) ListMultiChallenges(ctx context.Context, params ent
 	rows, err := m.gormDB.WithContext(ctx).Table("challenges").Select(
 		"challenges.id, challenges.user_id, challenges.title, challenges.emoji, challenges.duration, challenges.start_date, challenges.end_date, challenges.plan_time, challenges.alarm, challenges.week_day, challenges.type, challenges.status").
 		Joins("inner join challenge_participants on challenge_participants.challenge_id = challenges.id").
-		Where("challenges.status = ? AND challenge_participants.user_id = ? AND challenge_type AND challenges.start_date <= ? AND challenges.end_date >= ?", entity.ChallengeStatusActivate, params.UserID, params.Type, params.StartDateTime, params.StartDateTime).Order("challenges.plan_time").Rows()
+		Where("challenges.status = ? AND challenge_participants.user_id = ? AND challenge_type AND challenges.start_date <= ? AND challenges.end_date >= ?", entity.ChallengeStatusActivate, params.UserID, params.Type, params.Date, params.Date).Order("challenges.plan_time").Rows()
 	if err != nil {
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
