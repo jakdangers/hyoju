@@ -34,7 +34,7 @@ func NewChallengeController(service entity.ChallengeService, logger logger.Logge
 
 var _ entity.ChallengeController = (*challengeController)(nil)
 
-func (tc *challengeController) CreateChallenge(c *gin.Context) {
+func (tc challengeController) CreateChallenge(c *gin.Context) {
 	var req entity.CreateChallengeRequest
 
 	if err := c.ShouldBind(&req); err != nil {
@@ -54,7 +54,7 @@ func (tc *challengeController) CreateChallenge(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (tc *challengeController) GetChallenge(c *gin.Context) {
+func (tc challengeController) GetChallenge(c *gin.Context) {
 	var req entity.GetChallengeRequest
 
 	if err := c.ShouldBindUri(&req); err != nil {
@@ -74,7 +74,7 @@ func (tc *challengeController) GetChallenge(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (tc *challengeController) ListChallenges(c *gin.Context) {
+func (tc challengeController) ListChallenges(c *gin.Context) {
 	var req entity.ListChallengesRequest
 
 	if err := c.ShouldBindUri(&req); err != nil {
@@ -99,7 +99,7 @@ func (tc *challengeController) ListChallenges(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (tc *challengeController) PatchChallenge(c *gin.Context) {
+func (tc challengeController) PatchChallenge(c *gin.Context) {
 	var req entity.PatchChallengeRequest
 
 	if err := c.ShouldBind(&req); err != nil {
