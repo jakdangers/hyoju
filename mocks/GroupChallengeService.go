@@ -23,27 +23,17 @@ func (_m *GroupChallengeService) EXPECT() *GroupChallengeService_Expecter {
 }
 
 // CreateGroupChallenge provides a mock function with given fields: c, req
-func (_m *GroupChallengeService) CreateGroupChallenge(c context.Context, req entity.CreateGroupChallengeRequest) (entity.CreateGroupChallengeResponse, error) {
+func (_m *GroupChallengeService) CreateGroupChallenge(c context.Context, req entity.CreateGroupChallengeRequest) error {
 	ret := _m.Called(c, req)
 
-	var r0 entity.CreateGroupChallengeResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateGroupChallengeRequest) (entity.CreateGroupChallengeResponse, error)); ok {
-		return rf(c, req)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateGroupChallengeRequest) entity.CreateGroupChallengeResponse); ok {
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.CreateGroupChallengeRequest) error); ok {
 		r0 = rf(c, req)
 	} else {
-		r0 = ret.Get(0).(entity.CreateGroupChallengeResponse)
+		r0 = ret.Error(0)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, entity.CreateGroupChallengeRequest) error); ok {
-		r1 = rf(c, req)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // GroupChallengeService_CreateGroupChallenge_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateGroupChallenge'
@@ -65,12 +55,12 @@ func (_c *GroupChallengeService_CreateGroupChallenge_Call) Run(run func(c contex
 	return _c
 }
 
-func (_c *GroupChallengeService_CreateGroupChallenge_Call) Return(_a0 entity.CreateGroupChallengeResponse, _a1 error) *GroupChallengeService_CreateGroupChallenge_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *GroupChallengeService_CreateGroupChallenge_Call) Return(_a0 error) *GroupChallengeService_CreateGroupChallenge_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *GroupChallengeService_CreateGroupChallenge_Call) RunAndReturn(run func(context.Context, entity.CreateGroupChallengeRequest) (entity.CreateGroupChallengeResponse, error)) *GroupChallengeService_CreateGroupChallenge_Call {
+func (_c *GroupChallengeService_CreateGroupChallenge_Call) RunAndReturn(run func(context.Context, entity.CreateGroupChallengeRequest) error) *GroupChallengeService_CreateGroupChallenge_Call {
 	_c.Call.Return(run)
 	return _c
 }

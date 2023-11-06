@@ -6,6 +6,7 @@ import (
 	"pixelix/internal/challenge"
 	"pixelix/internal/challenge_history"
 	"pixelix/internal/challenge_participant"
+	"pixelix/internal/group_challenge"
 	"pixelix/internal/user"
 	"pixelix/pkg/db"
 	"pixelix/pkg/handler"
@@ -27,6 +28,7 @@ func main() {
 		challenge.Module,
 		challenge_participant.Module,
 		challenge_history.Module,
+		group_challenge.Module,
 
 		// invoke
 		fx.Invoke(
@@ -34,6 +36,7 @@ func main() {
 			user.RegisterRoutes,
 			challenge.RegisterRoutes,
 			challenge_history.RegisterRoutes,
+			group_challenge.RegisterRoutes,
 			// Infra Invoke
 			server.NewHTTPServer,
 		),

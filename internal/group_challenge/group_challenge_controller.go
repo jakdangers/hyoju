@@ -1,9 +1,12 @@
 package group_challenge
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"pixelix/entity"
+	"pixelix/pkg/cerrors"
 	"pixelix/pkg/logger"
+	"time"
 )
 
 func RegisterRoutes(e *gin.Engine, controller entity.GroupChallengeController) {
@@ -28,6 +31,21 @@ func NewGroupChallengeController(service entity.GroupChallengeService, logger lo
 var _ entity.GroupChallengeController = (*groupChallengeController)(nil)
 
 func (g groupChallengeController) CreateGroupChallenge(c *gin.Context) {
-	//TODO implement me
-	panic("implement me")
+	var req entity.CreateGroupChallengeRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), time.Second*30)
+	defer cancel()
+
+	err := g.service.CreateGroupChallenge(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.Status(200)
 }

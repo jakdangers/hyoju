@@ -1,7 +1,6 @@
 package entity
 
 type CreateGroupChallengeRequest struct {
-}
-
-type CreateGroupChallengeResponse struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }

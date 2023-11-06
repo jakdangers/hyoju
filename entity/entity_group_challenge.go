@@ -10,14 +10,14 @@ type GroupChallenge struct {
 	gorm.Model
 	Title       string
 	Description string `db:"description"`
-	Emoji       string `db:"emoji"`
 }
 
 type GroupChallengeRepository interface {
+	CreateGroupChallenge(ctx context.Context, groupChallenge *GroupChallenge) (*GroupChallenge, error)
 }
 
 type GroupChallengeService interface {
-	CreateGroupChallenge(c context.Context, req CreateGroupChallengeRequest) (CreateGroupChallengeResponse, error)
+	CreateGroupChallenge(c context.Context, req CreateGroupChallengeRequest) error
 }
 
 type GroupChallengeController interface {

@@ -314,8 +314,9 @@ func Test_challengeRepository_ListChallenges(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				params: entity.ListMultiChallengeParams{
-					UserID:        testUserID,
-					StartDateTime: time.Time{},
+					UserID: testUserID,
+					Date:   time.Time{},
+					Type:   "",
 				},
 			},
 			mock: func() {

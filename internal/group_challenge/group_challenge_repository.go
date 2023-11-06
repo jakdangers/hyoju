@@ -1,6 +1,7 @@
 package group_challenge
 
 import (
+	"context"
 	"gorm.io/gorm"
 	"pixelix/entity"
 )
@@ -14,3 +15,8 @@ func NewGroupChallengeRepository(gormDB *gorm.DB) *groupChallengeRepository {
 }
 
 var _ entity.GroupChallengeRepository = (*groupChallengeRepository)(nil)
+
+func (g groupChallengeRepository) CreateGroupChallenge(ctx context.Context, groupChallenge *entity.GroupChallenge) (*entity.GroupChallenge, error) {
+	//TODO implement me
+	panic("implement me")
+}

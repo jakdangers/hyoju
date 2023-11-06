@@ -3,19 +3,33 @@ package group_challenge
 import (
 	"context"
 	"pixelix/entity"
+	"pixelix/pkg/cerrors"
 )
 
 type groupChallengeService struct {
-	groupChallengeRepository entity.GroupChallengeRepository
+	groupChallengeRepo entity.GroupChallengeRepository
+	userRepo           entity.UserRepository
 }
 
-func NewGroupChallengeService(groupChallengeRepository entity.GroupChallengeRepository) *groupChallengeService {
-	return &groupChallengeService{groupChallengeRepository: groupChallengeRepository}
+func NewGroupChallengeService(groupChallengeRepo entity.GroupChallengeRepository, userRepo entity.UserRepository) *groupChallengeService {
+	return &groupChallengeService{
+		groupChallengeRepo: groupChallengeRepo,
+		userRepo:           userRepo,
+	}
 }
 
 var _ entity.GroupChallengeService = (*groupChallengeService)(nil)
 
-func (g groupChallengeService) CreateGroupChallenge(c context.Context, req entity.CreateGroupChallengeRequest) (entity.CreateGroupChallengeResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (g groupChallengeService) CreateGroupChallenge(c context.Context, req entity.CreateGroupChallengeRequest) error {
+	op := "groupChallenge/service/createGroupChallenge"
+
+	_, err := g.groupChallengeRepo.CreateGroupChallenge(c, &entity.GroupChallenge{
+		Title:       req.Title,
+		Description: req.Description,
+	})
+	if err != nil {
+		return cerrors.E(op, cerrors.Internal, err)
+	}
+
+	return nil
 }

@@ -15,7 +15,7 @@ import (
 
 type serviceTestSuite struct {
 	challengeRepo            *mocks.ChallengeRepository
-	challengeParticipantRepo *mocks.MissionParticipantRepository
+	challengeParticipantRepo *mocks.ChallengeParticipantRepository
 	userRepo                 *mocks.UserRepository
 	service                  entity.ChallengeService
 }
@@ -24,7 +24,7 @@ func initServiceTestSuite(t *testing.T) serviceTestSuite {
 	var ts serviceTestSuite
 
 	ts.challengeRepo = mocks.NewChallengeRepository(t)
-	ts.challengeParticipantRepo = mocks.NewMissionParticipantRepository(t)
+	ts.challengeParticipantRepo = mocks.NewChallengeParticipantRepository(t)
 	ts.userRepo = mocks.NewUserRepository(t)
 	ts.service = NewChallengeService(ts.challengeRepo, ts.challengeParticipantRepo, ts.userRepo)
 
@@ -88,7 +88,7 @@ func Test_missionService_CreateChallenge(t *testing.T) {
 					Type:     "SINGLE",
 					Status:   entity.ChallengeStatusDeActivate,
 				}, nil).Once()
-				ts.challengeParticipantRepo.EXPECT().CreateMissionParticipant(mock.Anything, &entity.ChallengeParticipant{
+				ts.challengeParticipantRepo.EXPECT().CreateChallengeParticipant(mock.Anything, &entity.ChallengeParticipant{
 					UserID:      testUserID,
 					ChallengeID: 1,
 				}).Return(&entity.ChallengeParticipant{
