@@ -33,3 +33,8 @@ func (g groupChallengeService) CreateGroupChallenge(c context.Context, req entit
 
 	return nil
 }
+
+func (g groupChallengeService) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesRequest) (entity.ListGroupChallengesResponse, error) {
+	//TODO implement me
+	panic("implement me")
+}

@@ -65,6 +65,59 @@ func (_c *GroupChallengeService_CreateGroupChallenge_Call) RunAndReturn(run func
 	return _c
 }
 
+// ListGroupChallenges provides a mock function with given fields: c, req
+func (_m *GroupChallengeService) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesRequest) (entity.ListGroupChallengesResponse, error) {
+	ret := _m.Called(c, req)
+
+	var r0 entity.ListGroupChallengesResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListGroupChallengesRequest) (entity.ListGroupChallengesResponse, error)); ok {
+		return rf(c, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListGroupChallengesRequest) entity.ListGroupChallengesResponse); ok {
+		r0 = rf(c, req)
+	} else {
+		r0 = ret.Get(0).(entity.ListGroupChallengesResponse)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ListGroupChallengesRequest) error); ok {
+		r1 = rf(c, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GroupChallengeService_ListGroupChallenges_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGroupChallenges'
+type GroupChallengeService_ListGroupChallenges_Call struct {
+	*mock.Call
+}
+
+// ListGroupChallenges is a helper method to define mock.On call
+//   - c context.Context
+//   - req entity.ListGroupChallengesRequest
+func (_e *GroupChallengeService_Expecter) ListGroupChallenges(c interface{}, req interface{}) *GroupChallengeService_ListGroupChallenges_Call {
+	return &GroupChallengeService_ListGroupChallenges_Call{Call: _e.mock.On("ListGroupChallenges", c, req)}
+}
+
+func (_c *GroupChallengeService_ListGroupChallenges_Call) Run(run func(c context.Context, req entity.ListGroupChallengesRequest)) *GroupChallengeService_ListGroupChallenges_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.ListGroupChallengesRequest))
+	})
+	return _c
+}
+
+func (_c *GroupChallengeService_ListGroupChallenges_Call) Return(_a0 entity.ListGroupChallengesResponse, _a1 error) *GroupChallengeService_ListGroupChallenges_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *GroupChallengeService_ListGroupChallenges_Call) RunAndReturn(run func(context.Context, entity.ListGroupChallengesRequest) (entity.ListGroupChallengesResponse, error)) *GroupChallengeService_ListGroupChallenges_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewGroupChallengeService creates a new instance of GroupChallengeService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewGroupChallengeService(t interface {

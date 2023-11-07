@@ -76,3 +76,35 @@ func Test_groupChallengeController_CreateGroupChallenge(t *testing.T) {
 		})
 	}
 }
+
+func Test_groupChallengeController_ListGroupChallenge(t *testing.T) {
+	ts := initControllerTestSuite(t)
+
+	tests := []struct {
+		name   string
+		mock   func()
+		uri    func() string
+		status int
+	}{
+		{
+			name: "PASS 그룹 챌린지 목록 조회",
+			mock: func() {
+				ts.service.EXPECT().ListGroupChallenges(mock.Anything, entity.ListGroupChallengesRequest{}).Return(entity.ListGroupChallengesResponse{}, nil).Once()
+			},
+			uri:    nil,
+			status: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			req, _ := http.NewRequest(http.MethodGet, tt.uri(), nil)
+
+			rec := httptest.NewRecorder()
+			ts.router.ServeHTTP(rec, req)
+
+			assert.Equal(t, tt.status, rec.Code)
+			ts.service.AssertExpectations(t)
+		})
+	}
+}

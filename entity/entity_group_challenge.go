@@ -18,8 +18,10 @@ type GroupChallengeRepository interface {
 
 type GroupChallengeService interface {
 	CreateGroupChallenge(c context.Context, req CreateGroupChallengeRequest) error
+	ListGroupChallenges(c context.Context, req ListGroupChallengesRequest) (ListGroupChallengesResponse, error)
 }
 
 type GroupChallengeController interface {
 	CreateGroupChallenge(c *gin.Context)
+	ListGroupChallenges(c *gin.Context)
 }

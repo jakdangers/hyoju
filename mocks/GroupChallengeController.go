@@ -53,6 +53,39 @@ func (_c *GroupChallengeController_CreateGroupChallenge_Call) RunAndReturn(run f
 	return _c
 }
 
+// ListGroupChallenges provides a mock function with given fields: c
+func (_m *GroupChallengeController) ListGroupChallenges(c *gin.Context) {
+	_m.Called(c)
+}
+
+// GroupChallengeController_ListGroupChallenges_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGroupChallenges'
+type GroupChallengeController_ListGroupChallenges_Call struct {
+	*mock.Call
+}
+
+// ListGroupChallenges is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *GroupChallengeController_Expecter) ListGroupChallenges(c interface{}) *GroupChallengeController_ListGroupChallenges_Call {
+	return &GroupChallengeController_ListGroupChallenges_Call{Call: _e.mock.On("ListGroupChallenges", c)}
+}
+
+func (_c *GroupChallengeController_ListGroupChallenges_Call) Run(run func(c *gin.Context)) *GroupChallengeController_ListGroupChallenges_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *GroupChallengeController_ListGroupChallenges_Call) Return() *GroupChallengeController_ListGroupChallenges_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *GroupChallengeController_ListGroupChallenges_Call) RunAndReturn(run func(*gin.Context)) *GroupChallengeController_ListGroupChallenges_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewGroupChallengeController creates a new instance of GroupChallengeController. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewGroupChallengeController(t interface {

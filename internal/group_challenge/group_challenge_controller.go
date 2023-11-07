@@ -49,3 +49,8 @@ func (g groupChallengeController) CreateGroupChallenge(c *gin.Context) {
 
 	c.Status(200)
 }
+
+func (g groupChallengeController) ListGroupChallenges(c *gin.Context) {
+	//TODO implement me
+	panic("implement me")
+}
