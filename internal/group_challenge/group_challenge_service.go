@@ -21,7 +21,7 @@ func NewGroupChallengeService(groupChallengeRepo entity.GroupChallengeRepository
 var _ entity.GroupChallengeService = (*groupChallengeService)(nil)
 
 func (g groupChallengeService) CreateGroupChallenge(c context.Context, req entity.CreateGroupChallengeRequest) error {
-	op := "groupChallenge/service/createGroupChallenge"
+	var op cerrors.Op = "groupChallenge/service/createGroupChallenge"
 
 	_, err := g.groupChallengeRepo.CreateGroupChallenge(c, &entity.GroupChallenge{
 		Title:       req.Title,
