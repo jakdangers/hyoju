@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"pixelix/entity"
 	"pixelix/mocks"
 	"pixelix/pkg/logger"
@@ -89,12 +90,18 @@ func Test_groupChallengeController_ListGroupChallenge(t *testing.T) {
 		{
 			name: "PASS 그룹 챌린지 목록 조회",
 			mock: func() {
-				ts.service.EXPECT().ListGroupChallenges(mock.Anything, entity.ListGroupChallengesRequest{}).Return(entity.ListGroupChallengesResponse{}, nil).Once()
+				ts.service.EXPECT().
+					ListGroupChallenges(mock.Anything, entity.ListGroupChallengesRequest{}).
+					Return(entity.ListGroupChallengesResponse{}, nil).Once()
 			},
-			uri:    nil,
-			status: 0,
+			uri: func() string {
+				path, _ := url.JoinPath("/group-challenges", "1")
+				return path
+			},
+			status: http.StatusOK,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()

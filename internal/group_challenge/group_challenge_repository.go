@@ -27,3 +27,8 @@ func (g groupChallengeRepository) CreateGroupChallenge(ctx context.Context, grou
 
 	return groupChallenge, nil
 }
+
+func (g groupChallengeRepository) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesParams) (entity.GroupChallenges, error) {
+	//TODO implement me
+	panic("implement me")
+}

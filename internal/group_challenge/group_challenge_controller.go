@@ -3,6 +3,7 @@ package group_challenge
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"pixelix/entity"
 	"pixelix/pkg/cerrors"
 	"pixelix/pkg/logger"
@@ -13,6 +14,7 @@ func RegisterRoutes(e *gin.Engine, controller entity.GroupChallengeController) {
 	challenges := e.Group("/group-challenges")
 	{
 		challenges.POST("", controller.CreateGroupChallenge)
+		challenges.GET("/:userId", controller.ListGroupChallenges)
 	}
 }
 
@@ -51,6 +53,21 @@ func (g groupChallengeController) CreateGroupChallenge(c *gin.Context) {
 }
 
 func (g groupChallengeController) ListGroupChallenges(c *gin.Context) {
-	//TODO implement me
-	panic("implement me")
+	var req entity.ListGroupChallengesRequest
+
+	if err := c.ShouldBindUri(&req); err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), time.Second*30)
+	defer cancel()
+
+	res, err := g.service.ListGroupChallenges(ctx, req)
+	if err != nil {
+		c.JSON(cerrors.ToSentinelAPIError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
 }

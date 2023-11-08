@@ -110,9 +110,9 @@ func (m challengeService) ListChallenges(ctx context.Context, req entity.ListCha
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	var challengeDTOS []entity.ChallengeDTO
+	var challengeDTOS []entity.ChallengeDto
 	for _, challenge := range challenges {
-		challengeDTOS = append(challengeDTOS, entity.ChallengeDTOFrom(challenge))
+		challengeDTOS = append(challengeDTOS, entity.ChallengeDtoFrom(challenge))
 	}
 
 	return &entity.ListChallengesResponse{
@@ -177,5 +177,5 @@ func (m challengeService) PatchChallenge(ctx context.Context, req entity.PatchCh
 		return nil, cerrors.E(op, cerrors.Internal, err)
 	}
 
-	return &entity.PatchChallengeResponse{ChallengeDTO: entity.ChallengeDTOFrom(*patchMission)}, nil
+	return &entity.PatchChallengeResponse{ChallengeDto: entity.ChallengeDtoFrom(*patchMission)}, nil
 }

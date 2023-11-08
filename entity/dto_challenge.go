@@ -26,7 +26,7 @@ type GetChallengeRequest struct {
 }
 
 type GetChallengeResponse struct {
-	Challenge ChallengeDTO `json:"challenge"`
+	Challenge ChallengeDto `json:"challenge"`
 }
 
 type ListChallengesRequest struct {
@@ -35,7 +35,7 @@ type ListChallengesRequest struct {
 }
 
 type ListChallengesResponse struct {
-	Challenges []ChallengeDTO `json:"challenges"`
+	Challenges []ChallengeDto `json:"challenges"`
 }
 
 type PatchChallengeRequest struct {
@@ -54,10 +54,10 @@ type PatchChallengeRequest struct {
 }
 
 type PatchChallengeResponse struct {
-	ChallengeDTO
+	ChallengeDto
 }
 
-type ChallengeDTO struct {
+type ChallengeDto struct {
 	ID          uint      `json:"id"`
 	UserID      string    `json:"userId"`
 	Title       string    `json:"title"`
@@ -73,9 +73,9 @@ type ChallengeDTO struct {
 	Status      string    `json:"status"`
 }
 
-func ChallengeDTOFrom(challenge Challenge) ChallengeDTO {
+func ChallengeDtoFrom(challenge Challenge) ChallengeDto {
 
-	return ChallengeDTO{
+	return ChallengeDto{
 		ID:          challenge.ID,
 		UserID:      challenge.UserID.String(),
 		Title:       challenge.Title,

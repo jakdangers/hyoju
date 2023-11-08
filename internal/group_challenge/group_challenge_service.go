@@ -34,7 +34,27 @@ func (g groupChallengeService) CreateGroupChallenge(c context.Context, req entit
 	return nil
 }
 
-func (g groupChallengeService) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesRequest) (entity.ListGroupChallengesResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (g groupChallengeService) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesRequest) (*entity.ListGroupChallengesResponse, error) {
+	var op cerrors.Op = "groupChallenge/service/listGroupChallenges"
+
+	userID, err := entity.ParseUUID(req.UserID)
+	if err != nil {
+		return nil, cerrors.E(op, cerrors.Internal, err)
+	}
+
+	groupChallenges, err := g.groupChallengeRepo.ListGroupChallenges(c, entity.ListGroupChallengesParams{
+		UserID: userID,
+	})
+	if err != nil {
+		return nil, cerrors.E(op, cerrors.Internal, err)
+	}
+
+	var groupChallengeDtos []entity.GroupChallengeDto
+	for _, groupChallenge := range groupChallenges {
+		groupChallengeDtos = append(groupChallengeDtos, entity.GroupChallengeDtoFrom(groupChallenge))
+	}
+
+	return &entity.ListGroupChallengesResponse{
+		GroupChallenges: groupChallengeDtos,
+	}, nil
 }

@@ -168,7 +168,7 @@ func Test_challengeService_ListChallenges(t *testing.T) {
 				}, nil).Once()
 			},
 			want: &entity.ListChallengesResponse{
-				Challenges: []entity.ChallengeDTO{
+				Challenges: []entity.ChallengeDto{
 					{
 						ID:       1,
 						UserID:   testUserID.String(),
@@ -219,7 +219,7 @@ func Test_challengeService_ListChallenges(t *testing.T) {
 				}, nil).Once()
 			},
 			want: &entity.ListChallengesResponse{
-				Challenges: []entity.ChallengeDTO{
+				Challenges: []entity.ChallengeDto{
 					{
 						ID:       1,
 						UserID:   testUserID.String(),
@@ -329,7 +329,7 @@ func Test_missionService_PatchMission(t *testing.T) {
 				}, nil).Once()
 			},
 			want: &entity.PatchChallengeResponse{
-				ChallengeDTO: entity.ChallengeDTO{
+				ChallengeDto: entity.ChallengeDto{
 					ID:       1,
 					UserID:   testUserID.String(),
 					Title:    "modified_mission",
