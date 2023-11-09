@@ -76,3 +76,67 @@ func Test_groupChallengeService_CreateGroupChallenge(t *testing.T) {
 		})
 	}
 }
+
+func Test_groupChallengeService_ListGroupChallenges(t *testing.T) {
+	type args struct {
+		c   context.Context
+		req entity.ListGroupChallengesRequest
+	}
+
+	ts := initServiceTestSuite(t)
+	testUserID := entity.BinaryUUIDNew()
+
+	tests := []struct {
+		name    string
+		mock    func()
+		args    args
+		want    *entity.ListGroupChallengesResponse
+		wantErr bool
+	}{
+		{
+			name: "PASS",
+			mock: func() {
+				ts.groupChallengeRepo.EXPECT().
+					ListGroupChallenges(mock.Anything, entity.ListGroupChallengesParams{
+						UserID: testUserID,
+					}).
+					Return(entity.GroupChallenges{
+						{
+							Model: gorm.Model{
+								ID: 1,
+							},
+							Title:       "test_title",
+							Description: "test_description",
+						},
+					}, nil).Once()
+			},
+			args: args{
+				c: context.Background(),
+				req: entity.ListGroupChallengesRequest{
+					UserID: testUserID.String(),
+				},
+			},
+			want: &entity.ListGroupChallengesResponse{
+				GroupChallenges: []entity.GroupChallengeDto{
+					{
+						ID:          1,
+						Title:       "test_title",
+						Description: "test_description",
+					},
+				},
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := ts.service.ListGroupChallenges(tt.args.c, tt.args.req)
+			assert.Equal(t, tt.want, got)
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}

@@ -22,17 +22,17 @@ func (_m *GroupChallengeRepository) EXPECT() *GroupChallengeRepository_Expecter 
 	return &GroupChallengeRepository_Expecter{mock: &_m.Mock}
 }
 
-// CreateGroupChallenge provides a mock function with given fields: ctx, groupChallenge
-func (_m *GroupChallengeRepository) CreateGroupChallenge(ctx context.Context, groupChallenge *entity.GroupChallenge) (*entity.GroupChallenge, error) {
-	ret := _m.Called(ctx, groupChallenge)
+// CreateGroupChallenge provides a mock function with given fields: c, groupChallenge
+func (_m *GroupChallengeRepository) CreateGroupChallenge(c context.Context, groupChallenge *entity.GroupChallenge) (*entity.GroupChallenge, error) {
+	ret := _m.Called(c, groupChallenge)
 
 	var r0 *entity.GroupChallenge
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, *entity.GroupChallenge) (*entity.GroupChallenge, error)); ok {
-		return rf(ctx, groupChallenge)
+		return rf(c, groupChallenge)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, *entity.GroupChallenge) *entity.GroupChallenge); ok {
-		r0 = rf(ctx, groupChallenge)
+		r0 = rf(c, groupChallenge)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.GroupChallenge)
@@ -40,7 +40,7 @@ func (_m *GroupChallengeRepository) CreateGroupChallenge(ctx context.Context, gr
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, *entity.GroupChallenge) error); ok {
-		r1 = rf(ctx, groupChallenge)
+		r1 = rf(c, groupChallenge)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -54,13 +54,13 @@ type GroupChallengeRepository_CreateGroupChallenge_Call struct {
 }
 
 // CreateGroupChallenge is a helper method to define mock.On call
-//   - ctx context.Context
+//   - c context.Context
 //   - groupChallenge *entity.GroupChallenge
-func (_e *GroupChallengeRepository_Expecter) CreateGroupChallenge(ctx interface{}, groupChallenge interface{}) *GroupChallengeRepository_CreateGroupChallenge_Call {
-	return &GroupChallengeRepository_CreateGroupChallenge_Call{Call: _e.mock.On("CreateGroupChallenge", ctx, groupChallenge)}
+func (_e *GroupChallengeRepository_Expecter) CreateGroupChallenge(c interface{}, groupChallenge interface{}) *GroupChallengeRepository_CreateGroupChallenge_Call {
+	return &GroupChallengeRepository_CreateGroupChallenge_Call{Call: _e.mock.On("CreateGroupChallenge", c, groupChallenge)}
 }
 
-func (_c *GroupChallengeRepository_CreateGroupChallenge_Call) Run(run func(ctx context.Context, groupChallenge *entity.GroupChallenge)) *GroupChallengeRepository_CreateGroupChallenge_Call {
+func (_c *GroupChallengeRepository_CreateGroupChallenge_Call) Run(run func(c context.Context, groupChallenge *entity.GroupChallenge)) *GroupChallengeRepository_CreateGroupChallenge_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(*entity.GroupChallenge))
 	})
@@ -73,6 +73,61 @@ func (_c *GroupChallengeRepository_CreateGroupChallenge_Call) Return(_a0 *entity
 }
 
 func (_c *GroupChallengeRepository_CreateGroupChallenge_Call) RunAndReturn(run func(context.Context, *entity.GroupChallenge) (*entity.GroupChallenge, error)) *GroupChallengeRepository_CreateGroupChallenge_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ListGroupChallenges provides a mock function with given fields: c, req
+func (_m *GroupChallengeRepository) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesParams) (entity.GroupChallenges, error) {
+	ret := _m.Called(c, req)
+
+	var r0 entity.GroupChallenges
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListGroupChallengesParams) (entity.GroupChallenges, error)); ok {
+		return rf(c, req)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListGroupChallengesParams) entity.GroupChallenges); ok {
+		r0 = rf(c, req)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(entity.GroupChallenges)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, entity.ListGroupChallengesParams) error); ok {
+		r1 = rf(c, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GroupChallengeRepository_ListGroupChallenges_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGroupChallenges'
+type GroupChallengeRepository_ListGroupChallenges_Call struct {
+	*mock.Call
+}
+
+// ListGroupChallenges is a helper method to define mock.On call
+//   - c context.Context
+//   - req entity.ListGroupChallengesParams
+func (_e *GroupChallengeRepository_Expecter) ListGroupChallenges(c interface{}, req interface{}) *GroupChallengeRepository_ListGroupChallenges_Call {
+	return &GroupChallengeRepository_ListGroupChallenges_Call{Call: _e.mock.On("ListGroupChallenges", c, req)}
+}
+
+func (_c *GroupChallengeRepository_ListGroupChallenges_Call) Run(run func(c context.Context, req entity.ListGroupChallengesParams)) *GroupChallengeRepository_ListGroupChallenges_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(entity.ListGroupChallengesParams))
+	})
+	return _c
+}
+
+func (_c *GroupChallengeRepository_ListGroupChallenges_Call) Return(_a0 entity.GroupChallenges, _a1 error) *GroupChallengeRepository_ListGroupChallenges_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *GroupChallengeRepository_ListGroupChallenges_Call) RunAndReturn(run func(context.Context, entity.ListGroupChallengesParams) (entity.GroupChallenges, error)) *GroupChallengeRepository_ListGroupChallenges_Call {
 	_c.Call.Return(run)
 	return _c
 }

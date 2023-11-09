@@ -66,18 +66,20 @@ func (_c *GroupChallengeService_CreateGroupChallenge_Call) RunAndReturn(run func
 }
 
 // ListGroupChallenges provides a mock function with given fields: c, req
-func (_m *GroupChallengeService) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesRequest) (entity.ListGroupChallengesResponse, error) {
+func (_m *GroupChallengeService) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesRequest) (*entity.ListGroupChallengesResponse, error) {
 	ret := _m.Called(c, req)
 
-	var r0 entity.ListGroupChallengesResponse
+	var r0 *entity.ListGroupChallengesResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, entity.ListGroupChallengesRequest) (entity.ListGroupChallengesResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListGroupChallengesRequest) (*entity.ListGroupChallengesResponse, error)); ok {
 		return rf(c, req)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, entity.ListGroupChallengesRequest) entity.ListGroupChallengesResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, entity.ListGroupChallengesRequest) *entity.ListGroupChallengesResponse); ok {
 		r0 = rf(c, req)
 	} else {
-		r0 = ret.Get(0).(entity.ListGroupChallengesResponse)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.ListGroupChallengesResponse)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, entity.ListGroupChallengesRequest) error); ok {
@@ -108,12 +110,12 @@ func (_c *GroupChallengeService_ListGroupChallenges_Call) Run(run func(c context
 	return _c
 }
 
-func (_c *GroupChallengeService_ListGroupChallenges_Call) Return(_a0 entity.ListGroupChallengesResponse, _a1 error) *GroupChallengeService_ListGroupChallenges_Call {
+func (_c *GroupChallengeService_ListGroupChallenges_Call) Return(_a0 *entity.ListGroupChallengesResponse, _a1 error) *GroupChallengeService_ListGroupChallenges_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *GroupChallengeService_ListGroupChallenges_Call) RunAndReturn(run func(context.Context, entity.ListGroupChallengesRequest) (entity.ListGroupChallengesResponse, error)) *GroupChallengeService_ListGroupChallenges_Call {
+func (_c *GroupChallengeService_ListGroupChallenges_Call) RunAndReturn(run func(context.Context, entity.ListGroupChallengesRequest) (*entity.ListGroupChallengesResponse, error)) *GroupChallengeService_ListGroupChallenges_Call {
 	_c.Call.Return(run)
 	return _c
 }

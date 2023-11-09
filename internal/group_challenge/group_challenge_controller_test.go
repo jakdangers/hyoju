@@ -92,7 +92,7 @@ func Test_groupChallengeController_ListGroupChallenge(t *testing.T) {
 			mock: func() {
 				ts.service.EXPECT().
 					ListGroupChallenges(mock.Anything, entity.ListGroupChallengesRequest{}).
-					Return(entity.ListGroupChallengesResponse{}, nil).Once()
+					Return(&entity.ListGroupChallengesResponse{}, nil).Once()
 			},
 			uri: func() string {
 				path, _ := url.JoinPath("/group-challenges", "1")

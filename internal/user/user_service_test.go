@@ -211,7 +211,7 @@ func Test_userService_OAuthLoginUser(t *testing.T) {
 			},
 			mock: func() {
 				us.repository.EXPECT().FindByEmail(mock.Anything, "blipix@blipix.com").Return(nil, nil).Once()
-				us.repository.EXPECT().FindByFriendCode(mock.Anything, mock.Anything).Return(nil, nil).Once()
+				us.repository.EXPECT().FindByCode(mock.Anything, mock.Anything).Return(nil, nil).Once()
 				us.repository.EXPECT().CreateUser(mock.Anything, mock.Anything).Return(&entity.User{
 					NickName:    "blipix@blipix.com",
 					Email:       "blipix@blipix.com",
