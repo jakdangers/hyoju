@@ -28,7 +28,8 @@ func (g groupChallengeRepository) CreateGroupChallenge(ctx context.Context, grou
 	return groupChallenge, nil
 }
 
-func (g groupChallengeRepository) ListGroupChallenges(c context.Context, req entity.ListGroupChallengesParams) (entity.GroupChallenges, error) {
-	//TODO implement me
+func (g groupChallengeRepository) ListGroupChallenges(ctx context.Context, req entity.ListGroupChallengesParams) (entity.GroupChallenges, error) {
+	//var op cerrors.Op = "groupChallenge/repository/listGroupChallenges"
+	//result := g.gormDB.WithContext(ctx).InnerJoins("")
 	panic("implement me")
 }

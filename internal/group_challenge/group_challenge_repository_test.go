@@ -95,3 +95,39 @@ func Test_groupChallengeRepository_CreateGroupChallenge(t *testing.T) {
 		})
 	}
 }
+
+func Test_groupChallengeRepository_ListGroupChallenges(t *testing.T) {
+	type args struct {
+		c   context.Context
+		req entity.ListGroupChallengesParams
+	}
+
+	ts := initRepoTestSuite()
+
+	tests := []struct {
+		name    string
+		mock    func()
+		args    args
+		want    entity.GroupChallenges
+		wantErr bool
+	}{
+		{
+			name:    "",
+			mock:    nil,
+			args:    args{},
+			want:    nil,
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+			got, err := ts.repository.ListGroupChallenges(tt.args.c, tt.args.req)
+			assert.Equal(t, tt.want, got)
+			if err != nil {
+				assert.Equalf(t, tt.wantErr, err != nil, err.Error())
+			}
+		})
+	}
+}
