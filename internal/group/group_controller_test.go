@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
 	"pixelix/entity"
@@ -45,12 +46,12 @@ func Test_groupController_CreateGroup(t *testing.T) {
 		{
 			name: "PASS group 생성",
 			mock: func() {
-				//ts.service.EXPECT().CreateGroup(mock.Anything, entity.CreateGroupRequest{
-				//	Name:        "test_group",
-				//	UserID:      testUserID.String(),
-				//	Description: "test_description",
-				//	Image:       "test_image",
-				//}).Return(nil)
+				ts.service.EXPECT().CreateGroup(mock.Anything, entity.CreateGroupRequest{
+					Name:        "test_group",
+					UserID:      testUserID.String(),
+					Description: "test_description",
+					Image:       "test_image",
+				}).Return(nil)
 			},
 			body: func() *bytes.Reader {
 				req := entity.CreateGroupRequest{
@@ -77,7 +78,7 @@ func Test_groupController_CreateGroup(t *testing.T) {
 			ts.router.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.status, rec.Code)
-			//ts.service.AssertExpectations(t)
+			ts.service.AssertExpectations(t)
 		})
 	}
 }
