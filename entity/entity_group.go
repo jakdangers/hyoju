@@ -17,7 +17,9 @@ type Group struct {
 	Code        string
 }
 
-type GroupRepository interface{}
+type GroupRepository interface {
+	CreateGroup(c context.Context, group *Group) (*Group, error)
+}
 
 type GroupService interface {
 	CreateGroup(c context.Context, req CreateGroupRequest) error

@@ -1,6 +1,7 @@
 package group
 
 import (
+	"context"
 	"gorm.io/gorm"
 	"pixelix/entity"
 )
@@ -14,3 +15,8 @@ func NewGroupRepository(gormDB *gorm.DB) entity.GroupRepository {
 }
 
 var _ entity.GroupRepository = (*groupRepository)(nil)
+
+func (g groupRepository) CreateGroup(c context.Context, group *entity.Group) (*entity.Group, error) {
+	//TODO implement me
+	panic("implement me")
+}
